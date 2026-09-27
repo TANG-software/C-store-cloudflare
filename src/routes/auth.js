@@ -97,8 +97,16 @@ auth.post('/change-password', async (c) => {
   if (!sess.uid) return c.redirect('/login');
   const b = await c.req.parseBody();
   const user = await q.first(c, 'SELECT * FROM users WHERE id = ?', sess.uid);
-  if (!user || !(await verifyPassword(String(b.current || ''), user.password_hash)) || String(b.password || '').length < 8 || b.password !== b.confirm) {
-    await flash(c, 'error', 'Password change failed — check your current password and make sure the new one matches.');
+  if (!user || !(await verifyPassword(String(b.current || ''), user.password_hash))) {
+    await flash(c, 'error', 'Your current password is not correct — it is the one you just logged in with. Please try again.');
+    return c.redirect('/change-password');
+  }
+  if (String(b.password || '').length < 8) {
+    await flash(c, 'error', 'Your new password must be at least 8 characters long.');
+    return c.redirect('/change-password');
+  }
+  if (b.password !== b.confirm) {
+    await flash(c, 'error', 'The two new passwords do not match — please type them again.');
     return c.redirect('/change-password');
   }
   await q.run(c, 'UPDATE users SET password_hash = ?, force_password_change = 0 WHERE id = ?', await hashPassword(String(b.password)), sess.uid);

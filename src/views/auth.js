@@ -79,9 +79,9 @@ export function changePassword(ctx, forced) {
     <h1>Change password</h1>
     ${forced ? '<div class="flash flash-warn">🔐 For security you must set your own password before continuing. This is your first login with the default admin password.</div>' : ''}
     <form action="/change-password" method="POST">
-      <label>Current password<input type="password" name="current" required></label>
-      <label>New password<input type="password" name="password" required minlength="8"></label>
-      <label>Confirm new password<input type="password" name="confirm" required minlength="8"></label>
+      <label>Current password<input type="password" name="current" autocomplete="current-password" required></label>
+      <label>New password (at least 8 characters)<input type="password" name="password" autocomplete="new-password" required minlength="8"></label>
+      <label>Confirm new password<input type="password" name="confirm" autocomplete="new-password" required minlength="8"></label>
       <button type="submit" class="btn btn-lg btn-block">Save new password</button>
     </form>
   </div>
