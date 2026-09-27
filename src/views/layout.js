@@ -1,0 +1,107 @@
+// C Store Workers — layout: header, footer, page wrapper. Same design as the Node edition.
+import { esc } from '../lib.js';
+
+const CAT_ICONS = {
+  electronics: '🔌', fashion: '👕', 'home-living': '🏡', beauty: '💄',
+  'sports-outdoors': '⚽', 'toys-games': '🎲', groceries: '🛒', books: '📚',
+};
+
+export function header(ctx) {
+  const { user, settings, path, cartCount, q, flash } = ctx;
+  const f = (flash || []).map((x) => `<div class="flash flash-${esc(x.type)}">${esc(x.msg)}</div>`).join('\n  ');
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${ctx.title ? esc(ctx.title) + ' · ' : ''}${esc(settings.store_name)}</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="/" class="logo"><span class="logo-mark">C</span><span class="logo-text">${esc(settings.store_name)}</span></a>
+    <form class="search-bar" action="/shop" method="get">
+      <input type="search" name="q" placeholder="Search products…" value="${esc(q || '')}">
+      <button type="submit" aria-label="Search">🔍</button>
+    </form>
+    <nav class="main-nav">
+      <a href="/shop" class="${path === '/shop' ? 'active' : ''}">Shop</a>
+      ${user ? `
+        <a href="/account" class="${path.startsWith('/account') ? 'active' : ''}">My account</a>
+        ${user.role === 'admin' ? `<a href="/admin" class="admin-link">Admin</a>` : ''}
+        <form action="/logout" method="POST" class="inline-form"><button class="link-btn">Log out</button></form>
+      ` : `
+        <a href="/login" class="${path === '/login' ? 'active' : ''}">Log in</a>
+        <a href="/register" class="btn btn-small">Create account</a>
+      `}
+      <a href="/cart" class="cart-link ${path === '/cart' ? 'active' : ''}" aria-label="Cart">🛒 <span class="cart-count">${cartCount}</span></a>
+    </nav>
+  </div>
+</header>
+${user && (!user.email_verified || !user.phone_verified) ? `
+<div class="banner-warn">
+  <div class="container">⚠️ Please <a href="/verify">verify your email address and mobile number</a> to place orders.</div>
+</div>` : ''}
+<main class="container">
+  ${f}
+</main>
+<main class="container main-content">`;
+}
+
+export function footer(ctx) {
+  const { settings } = ctx;
+  const phone = settings.support_phone || '';
+  return `</main>
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div>
+      <div class="logo"><span class="logo-mark">C</span> ${esc(settings.store_name)}</div>
+      <p class="muted">${esc(settings.store_tagline || '')}</p>
+    </div>
+    <div>
+      <h4>Shop</h4>
+      <a href="/shop">All products</a>
+      <a href="/cart">Cart</a>
+      <a href="/account">My account</a>
+    </div>
+    <div>
+      <h4>Payments accepted</h4>
+      <p class="muted">PayPal · Bitcoin · Ethereum · USDT and 300+ cryptocurrencies</p>
+    </div>
+    <div>
+      <h4>Need help?</h4>
+      <p class="muted">
+        <a href="/help">Help & contact</a><br>
+        📧 <a href="mailto:${esc(settings.support_email)}">${esc(settings.support_email)}</a><br>
+        ${phone ? `📞 <a href="tel:${esc(phone.replace(/\s/g, ''))}">${esc(phone)}</a>` : ''}
+      </p>
+    </div>
+  </div>
+  <div class="container footer-bottom">
+    <span>© ${new Date().getFullYear()} ${esc(settings.store_name)}. All prices include 21% VAT (btw).</span>
+  </div>
+</footer>
+</body>
+</html>`;
+}
+
+export function page(ctx, body) {
+  return header(ctx) + '\n' + body + '\n' + footer(ctx);
+}
+
+export function productCard(p) {
+  return `<a href="/product/${esc(p.slug)}" class="product-card">
+  <div class="product-img"><img src="${esc(p.image_url)}" alt="${esc(p.name)}" loading="lazy"></div>
+  <div class="product-body">
+    <span class="product-cat">${esc(p.category_name || '')}</span>
+    <h3 class="product-name">${esc(p.name)}</h3>
+    <div class="product-foot">
+      <span class="price">€${(p.price_cents / 100).toFixed(2)}</span>
+      ${p.stock > 0 ? '<span class="stock in">In stock</span>' : '<span class="stock out">Sold out</span>'}
+    </div>
+  </div>
+</a>`;
+}
+
+export { CAT_ICONS };
