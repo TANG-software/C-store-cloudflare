@@ -1,0 +1,23 @@
+{
+  "name": "c-store-workers",
+  "version": "1.0.0",
+  "description": "C Store — Cloudflare Workers + D1 edition (commercial, free tier, no sleep)",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "db:migrate:local": "wrangler d1 migrations apply c-store --local",
+    "db:migrate": "wrangler d1 migrations apply c-store --remote"
+  },
+  "dependencies": {
+    "elliptic": "^6.5.7",
+    "hono": "^4.6.14",
+    "qrcode-generator": "^1.4.4"
+  },
+  "devDependencies": {
+    "@hono/node-server": "^2.1.1",
+    "better-sqlite3": "^11.10.0",
+    "wrangler": "^4.141.0"
+  }
+}
