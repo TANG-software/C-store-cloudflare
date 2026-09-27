@@ -53,7 +53,7 @@ export function products(ctx, { products }) {
   const rows = products.map((p) => `
       <tr>
         <td>${p.id}</td>
-        <td><img class="thumb" src="${esc(p.image_url)}" alt=""> <a href="/product/${esc(p.slug)}">${esc(p.name)}</a></td>
+        <td><img class="thumb" src="${esc(p.image_url)}" alt="" loading="lazy" decoding="async"> <a href="/product/${esc(p.slug)}">${esc(p.name)}</a></td>
         <td>${esc(p.category_name)}</td>
         <td>€${(p.price_cents / 100).toFixed(2)}</td>
         <td>${p.stock}</td>
