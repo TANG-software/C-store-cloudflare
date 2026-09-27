@@ -100,6 +100,7 @@ export function footer(ctx) {
     });
   }, { threshold: 0.06, rootMargin: '0px 0px -30px 0px' });
   els.forEach(function (el) { io.observe(el); });
+  setTimeout(function () { els.forEach(function (el) { el.classList.add('in'); }); }, 1600);
 })();
 </script>
 </body>

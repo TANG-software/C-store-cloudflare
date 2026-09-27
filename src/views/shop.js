@@ -68,7 +68,7 @@ export function product(ctx, { p, category, related }) {
   return page(ctx, `
 <section class="product-detail">
   <div class="pd-img">
-    <img src="${esc(p.image_url)}" alt="${esc(p.name)}">
+    <img src="${esc(p.image_url)}" alt="${esc(p.name)}" loading="lazy" decoding="async">
   </div>
   <div class="pd-info">
     <a href="/shop?category=${esc(category.slug)}" class="product-cat">${esc(category.name)}</a>
@@ -99,7 +99,7 @@ export function cart(ctx, { details }) {
   const rows = details.items.map((it) => `
         <tr>
           <td class="cart-prod">
-            <img src="${esc(it.product.image_url)}" alt="">
+            <img src="${esc(it.product.image_url)}" alt="" loading="lazy" decoding="async">
             <div><a href="/product/${esc(it.product.slug)}">${esc(it.product.name)}</a></div>
           </td>
           <td>€${(it.product.price_cents / 100).toFixed(2)}</td>
