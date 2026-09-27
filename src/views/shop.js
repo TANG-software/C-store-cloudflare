@@ -6,15 +6,15 @@ export function home(ctx, { categories, featured, newest }) {
   return page(ctx, `
 <section class="hero">
   <div>
-    <h1>Everything you need,<br>delivered across the Netherlands.</h1>
+    <h1>Everything you need,<br><em>delivered with care</em> across the Netherlands.</h1>
     <p>Electronics, fashion, home & living, beauty and more — pay with PayPal or crypto.</p>
     <a href="/shop" class="btn btn-lg">Start shopping</a>
   </div>
   <div class="hero-badges">
-    <span>🇳🇱 Ships from the Netherlands</span>
-    <span>🅿️ PayPal accepted</span>
-    <span>🪙 300+ cryptocurrencies</span>
-    <span>🚚 Free shipping over €${(Number(ctx.settings.free_shipping_threshold_cents) / 100).toFixed(2)}</span>
+    <span>Ships from the Netherlands</span>
+    <span>PayPal accepted</span>
+    <span>300+ cryptocurrencies</span>
+    <span>Free shipping over €${(Number(ctx.settings.free_shipping_threshold_cents) / 100).toFixed(2)}</span>
   </div>
 </section>
 
@@ -23,7 +23,7 @@ export function home(ctx, { categories, featured, newest }) {
   <div class="category-grid">
     ${categories.map((c) => `
       <a href="/shop?category=${esc(c.slug)}" class="category-card">
-        <span class="category-icon">${CAT_ICONS[c.slug] || '🛍️'}</span>
+        <span class="category-icon">${esc(c.name.charAt(0))}</span>
         <span class="category-name">${esc(c.name)}</span>
       </a>`).join('')}
   </div>
@@ -142,21 +142,21 @@ export function help(ctx) {
   return page(ctx, `
 <section class="section narrow">
   <div class="card center">
-    <div class="big-icon">💬</div>
+    <div class="big-icon">✦</div>
     <h1>Help & contact</h1>
     <p class="muted">Need a hand with your order, payment or account? We're here to help.</p>
   </div>
 
   <div class="verify-grid">
     <div class="card center contact-card">
-      <div class="big-icon">📧</div>
+      <div class="big-icon">✦</div>
       <h2>Email us</h2>
       <p><a href="mailto:${esc(settings.support_email)}">${esc(settings.support_email)}</a></p>
       <p class="muted small">We usually reply within one business day.</p>
     </div>
 
     <div class="card center contact-card">
-      <div class="big-icon">📞</div>
+      <div class="big-icon">✦</div>
       <h2>Call us</h2>
       ${settings.support_phone
         ? `<p><a href="tel:${esc(settings.support_phone.replace(/\s/g, ''))}">${esc(settings.support_phone)}</a></p>

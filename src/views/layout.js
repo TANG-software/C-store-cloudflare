@@ -16,6 +16,10 @@ export function header(ctx) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${ctx.title ? esc(ctx.title) + ' · ' : ''}${esc(settings.store_name)}</title>
   <link rel="stylesheet" href="/css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+  <script>document.documentElement.classList.add('js');</script>
 </head>
 <body>
 <header class="site-header">
@@ -23,7 +27,7 @@ export function header(ctx) {
     <a href="/" class="logo"><span class="logo-mark">C</span><span class="logo-text">${esc(settings.store_name)}</span></a>
     <form class="search-bar" action="/shop" method="get">
       <input type="search" name="q" placeholder="Search products…" value="${esc(q || '')}">
-      <button type="submit" aria-label="Search">🔍</button>
+      <button type="submit" aria-label="Search"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4.2-4.2"/></svg></button>
     </form>
     <nav class="main-nav">
       <a href="/shop" class="${path === '/shop' ? 'active' : ''}">Shop</a>
@@ -35,7 +39,7 @@ export function header(ctx) {
         <a href="/login" class="${path === '/login' ? 'active' : ''}">Log in</a>
         <a href="/register" class="btn btn-small">Create account</a>
       `}
-      <a href="/cart" class="cart-link ${path === '/cart' ? 'active' : ''}" aria-label="Cart">🛒 <span class="cart-count">${cartCount}</span></a>
+      <a href="/cart" class="cart-link ${path === '/cart' ? 'active' : ''}" aria-label="Cart"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8h12l-1.2 12.2a1.4 1.4 0 0 1-1.4 1.3H8.6a1.4 1.4 0 0 1-1.4-1.3L6 8z"/><path d="M9 10V6.5a3 3 0 0 1 6 0V10"/></svg> <span class="cart-count">${cartCount}</span></a>
     </nav>
   </div>
 </header>
@@ -73,8 +77,8 @@ export function footer(ctx) {
       <h4>Need help?</h4>
       <p class="muted">
         <a href="/help">Help & contact</a><br>
-        📧 <a href="mailto:${esc(settings.support_email)}">${esc(settings.support_email)}</a><br>
-        ${phone ? `📞 <a href="tel:${esc(phone.replace(/\s/g, ''))}">${esc(phone)}</a>` : ''}
+        Email — <a href="mailto:${esc(settings.support_email)}">${esc(settings.support_email)}</a><br>
+        ${phone ? `Phone — <a href="tel:${esc(phone.replace(/\s/g, ''))}">${esc(phone)}</a>` : ''}
       </p>
     </div>
   </div>
@@ -82,6 +86,22 @@ export function footer(ctx) {
     <span>© ${new Date().getFullYear()} ${esc(settings.store_name)}. All prices include 21% VAT (btw).</span>
   </div>
 </footer>
+<script>
+(function () {
+  var header = document.querySelector('.site-header');
+  var onScroll = function () { if (header) header.classList.toggle('scrolled', window.scrollY > 8); };
+  window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
+  if (!('IntersectionObserver' in window)) return;
+  var els = document.querySelectorAll('.product-card, .category-card, .card, .hero, .section');
+  els.forEach(function (el) { el.classList.add('reveal'); });
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.06, rootMargin: '0px 0px -30px 0px' });
+  els.forEach(function (el) { io.observe(el); });
+})();
+</script>
 </body>
 </html>`;
 }
