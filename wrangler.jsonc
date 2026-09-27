@@ -11,7 +11,7 @@
     {
       "binding": "DB",
       "database_name": "c-store",
-      "database_id": "REPLACE_WITH_YOUR_DATABASE_ID"
+      "database_id": "34d39bf1-d514-453d-88bd-17ec10a16c5e" 
     }
   ]
 }
