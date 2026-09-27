@@ -68,7 +68,7 @@ auth.post('/verify/:channel/resend', async (c) => {
   if (!sess.uid) return c.redirect('/login');
   const r = await issueCode(c, sess.uid, c.req.param('channel'));
   if (r.sent) {
-    const settings = c.get('ctx').settings);
+    const settings = c.get('ctx').settings;
     const user = await q.first(c, 'SELECT email, phone FROM users WHERE id = ?', sess.uid);
     if (c.req.param('channel') === 'email') await sendMail(c, settings, user.email, 'Your C Store verification code', OTP_MSG(r.code));
     else await sendSms(c, settings, user.phone, OTP_MSG(r.code));
