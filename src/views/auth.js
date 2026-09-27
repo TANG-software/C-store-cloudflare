@@ -2,14 +2,15 @@
 import { esc } from '../lib.js';
 import { page } from './layout.js';
 
-export function login(ctx, next) {
+export function login(ctx, next, email, error) {
   return page(ctx, `
 <section class="section narrow">
   <div class="card auth-card">
     <h1>Log in</h1>
+    ${error ? `<div class="flash flash-error">${esc(error)}</div>` : ''}
     <form action="/login" method="POST">
       <input type="hidden" name="next" value="${esc(next || '')}">
-      <label>Email<input type="email" name="email" required autofocus></label>
+      <label>Email<input type="email" name="email" value="${esc(email || '')}" required autofocus></label>
       <label>Password<input type="password" name="password" required></label>
       <button type="submit" class="btn btn-lg btn-block">Log in</button>
     </form>

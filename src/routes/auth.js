@@ -38,7 +38,7 @@ auth.post('/login', async (c) => {
   const email = String(b.email || '').trim().toLowerCase();
   const user = await q.first(c, 'SELECT * FROM users WHERE email = ?', email);
   if (!user || !(await verifyPassword(String(b.password || ''), user.password_hash))) {
-    return c.html(views.login(c.get('ctx'), b.next), 401);
+    return c.html(views.login(c.get('ctx'), b.next, email, 'Invalid email or password — please check both and try again.'), 401);
   }
   const sess = await readSigned(c, 'cstore_session');
   await writeSigned(c, 'cstore_session', { uid: user.id, cart: sess?.cart || {} });
@@ -68,7 +68,7 @@ auth.post('/verify/:channel/resend', async (c) => {
   if (!sess.uid) return c.redirect('/login');
   const r = await issueCode(c, sess.uid, c.req.param('channel'));
   if (r.sent) {
-    const settings = c.get('ctx').settings;
+    const settings = c.get('ctx').settings);
     const user = await q.first(c, 'SELECT email, phone FROM users WHERE id = ?', sess.uid);
     if (c.req.param('channel') === 'email') await sendMail(c, settings, user.email, 'Your C Store verification code', OTP_MSG(r.code));
     else await sendSms(c, settings, user.phone, OTP_MSG(r.code));
