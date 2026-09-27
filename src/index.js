@@ -2,6 +2,7 @@
 // Serves the storefront, admin panel, payment flows and webhooks.
 import { Hono } from 'hono';
 import { getSettings, readSigned, takeFlash, q, eur } from './lib.js';
+import { ensureDb } from './bootstrap.js';
 import { sendMail, sendSms } from './notify.js';
 import { issueCode } from './otp.js';
 import shop from './routes/shop.js';
@@ -17,6 +18,7 @@ const app = new Hono();
 app.use('*', async (c, next) => {
   const session = (await readSigned(c, 'cstore_session')) || {};
   if (typeof session.cart !== 'object' || !session.cart) session.cart = {};
+  await ensureDb(c);
   const settings = await getSettings(c);
   const user = session.uid ? await q.first(c, 'SELECT * FROM users WHERE id = ?', session.uid) : null;
   const cartCount = Object.values(session.cart).reduce((a, b) => a + Number(b), 0);
