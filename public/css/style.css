@@ -230,17 +230,17 @@ html.js .category-grid .reveal:nth-child(2n) { transition-delay: 0.07s; }
 /* ============ Buttons ============ */
 .btn {
   position: relative; overflow: hidden;
-  display: inline-block; background: var(--ink); color: #f4efe2;
-  border: 1px solid var(--ink); border-radius: 999px; padding: 12px 26px;
-  font-size: 0.94rem; font-weight: 600; letter-spacing: 0.03em; cursor: pointer; text-align: center; white-space: nowrap;
-  transition: background 0.3s, color 0.3s, border-color 0.3s, transform 0.15s, box-shadow 0.3s;
+  display: inline-block; background: var(--gold-grad); color: #221a0c;
+  border: 1px solid var(--gold-strong); border-radius: 999px; padding: 12px 26px;
+  font-size: 0.94rem; font-weight: 700; letter-spacing: 0.03em; cursor: pointer; text-align: center; white-space: nowrap;
+  transition: filter 0.3s, color 0.3s, border-color 0.3s, transform 0.15s, box-shadow 0.3s;
 }
 .btn::after {
   content: ""; position: absolute; top: 0; bottom: 0; left: -80%; width: 45%;
-  background: linear-gradient(105deg, transparent, rgba(232, 207, 154, 0.35), transparent);
+  background: linear-gradient(105deg, transparent, rgba(255, 253, 247, 0.55), transparent);
   transform: skewX(-20deg); transition: left 0.5s ease;
 }
-.btn:hover { background: var(--ink-2); border-color: var(--gold); color: #fff; text-decoration: none; box-shadow: 0 8px 24px rgba(30, 25, 15, 0.25); }
+.btn:hover { filter: brightness(1.07); border-color: var(--ink); color: #171410; text-decoration: none; box-shadow: 0 8px 24px rgba(143, 111, 53, 0.38); }
 .btn:hover::after { left: 130%; }
 .btn:active { transform: translateY(1px) scale(0.99); }
 .btn-lg { padding: 15px 34px; font-size: 1rem; }
