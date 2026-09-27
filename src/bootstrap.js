@@ -151,8 +151,9 @@ let ready = false;
 
 function statements(sql) {
   return sql
+    .replace(/--[^\n]*/g, '')
     .split(';')
-    .map((s) => s.replace(/^--[^\n]*\n/gm, '').trim())
+    .map((s) => s.trim())
     .filter((s) => s.length > 0);
 }
 

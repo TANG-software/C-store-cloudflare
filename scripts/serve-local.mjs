@@ -15,28 +15,25 @@ import app from '../src/index.js';
 
 export function createLocalDb(file) {
   const db = new Database(file);
+  const make = (sql, args) => ({
+    first: async () => db.prepare(sql).get(...args) ?? null,
+    all: async () => ({ results: db.prepare(sql).all(...args) }),
+    run: async () => {
+      const info = db.prepare(sql).run(...args);
+      return { meta: { last_row_id: Number(info.lastInsertRowid) } };
+    },
+  });
   return {
     prepare(sql) {
-      return {
-        bind: (...args) => ({
-          first: async () => db.prepare(sql).get(...args) ?? null,
-          all: async () => ({ results: db.prepare(sql).all(...args) }),
-          run: async () => {
-            const info = db.prepare(sql).run(...args);
-            return { meta: { last_row_id: Number(info.lastInsertRowid) } };
-          },
-        }),
-      };
+      const direct = make(sql, []);
+      return { bind: (...args) => make(sql, args), first: direct.first, all: direct.all, run: direct.run };
     },
     exec: (sql) => db.exec(sql),
   };
 }
 
 const db = createLocalDb(process.argv[2] || '/tmp/cstore-test.db');
-for (const f of fs.readdirSync(new URL('../migrations', import.meta.url)).sort()) {
-  if (f.endsWith('.sql')) db.exec(fs.readFileSync(new URL('../migrations/' + f, import.meta.url), 'utf8'));
-}
-console.log('migrations applied');
+console.log('starting with EMPTY database (app self-bootstraps)');
 
 const env = { DB: db, SESSION_SECRET: 'test-secret' };
 const PORT = Number(process.env.PORT || 3666);
