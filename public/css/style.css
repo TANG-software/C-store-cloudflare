@@ -217,6 +217,18 @@ html.js .category-grid .reveal:nth-child(2n) { transition-delay: 0.07s; }
 .table { min-width: 460px; }
 .card:hover { box-shadow: var(--shadow-lift); border-color: var(--purple-line); }
 
+/* ---------- live stats ---------- */
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; margin-top: 18px; }
+.stat-box {
+  background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 26px 14px; text-align: center;
+  transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+}
+.stat-box:hover { transform: translateY(-3px); border-color: var(--purple-line); box-shadow: var(--glow); }
+.stat-box .num { display: block; font-family: var(--head); font-size: 2.1rem; font-weight: 800; color: #fff; line-height: 1.1; }
+.stat-box .bar { display: block; width: 36px; height: 3px; margin: 10px auto 9px; border-radius: 2px; background: var(--purple-grad); box-shadow: 0 0 10px rgba(168, 85, 247, 0.55); }
+.stat-box .lbl { display: block; font-size: 0.82rem; color: var(--muted); letter-spacing: 0.03em; }
+
 /* ---------- feature bento ---------- */
 .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(215px, 1fr)); gap: 14px; margin-top: 18px; }
 .feature-card {
