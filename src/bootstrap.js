@@ -147,6 +147,33 @@ INSERT OR IGNORE INTO users(name, email, phone, password_hash, role, email_verif
 
 `;
 
+// ---------- homepage cards (admin-editable feature/review/payment cards) ----------
+// Kept separate from SCHEMA_SQL so an EXISTING database (settings table already
+// present) also gets upgraded automatically on the first request after deploy.
+const CARDS_SCHEMA_SQL = `CREATE TABLE IF NOT EXISTS homepage_cards (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  section TEXT NOT NULL,
+  sort INTEGER NOT NULL DEFAULT 0,
+  title TEXT NOT NULL,
+  body TEXT NOT NULL DEFAULT '',
+  stars INTEGER NOT NULL DEFAULT 5,
+  when_label TEXT NOT NULL DEFAULT '',
+  icon TEXT NOT NULL DEFAULT 'bolt'
+)`;
+
+const CARDS_SEED_SQL = `INSERT INTO homepage_cards(section, sort, title, body, stars, when_label, icon) VALUES ('feature', 1, 'Ships same day', 'Order before 15:00 on a weekday and it leaves the same afternoon. Most of the Netherlands receives within 48 hours.', 5, '', 'bolt');
+INSERT INTO homepage_cards(section, sort, title, body, stars, when_label, icon) VALUES ('feature', 2, 'You pay, we never look', 'Payments run through PayPal or established crypto processors. Card details never touch our servers.', 5, '', 'shield');
+INSERT INTO homepage_cards(section, sort, title, body, stars, when_label, icon) VALUES ('feature', 3, 'Real answers', 'Questions about an order or a payment? Email us and a person replies — usually within one working day.', 5, '', 'headphones');
+INSERT INTO homepage_cards(section, sort, title, body, stars, when_label, icon) VALUES ('feature', 4, 'Chosen, not endless', 'We stock a deliberate range — what we would use ourselves, nothing padded.', 5, '', 'package');
+INSERT INTO homepage_cards(section, sort, title, body, stars, when_label, icon) VALUES ('review', 1, 'Femke — Den Haag', 'Ordered Friday evening and the package was in my hands Monday morning. The packaging was sturdier than I expected — nothing rattled.', 5, '2 weeks ago', '');
+INSERT INTO homepage_cards(section, sort, title, body, stars, when_label, icon) VALUES ('review', 2, 'Joep — Eindhoven', 'Good shop. Paid with crypto and the confirmation took a bit longer than I thought it would, but support replied within the hour and the delivery arrived right on time.', 4, '1 month ago', '');
+INSERT INTO homepage_cards(section, sort, title, body, stars, when_label, icon) VALUES ('review', 3, 'Amber — Groningen', 'Paid with USDT, got the payment confirmation the same evening and the parcel two days later. Exactly what was promised, including the invoice with VAT.', 5, '2 months ago', '');
+INSERT INTO homepage_cards(section, sort, title, body, stars, when_label, icon) VALUES ('pay', 1, 'PayPal', '', 5, '', '');
+INSERT INTO homepage_cards(section, sort, title, body, stars, when_label, icon) VALUES ('pay', 2, 'Bitcoin', '₿', 5, '', '');
+INSERT INTO homepage_cards(section, sort, title, body, stars, when_label, icon) VALUES ('pay', 3, 'Ethereum', 'Ξ', 5, '', '');
+INSERT INTO homepage_cards(section, sort, title, body, stars, when_label, icon) VALUES ('pay', 4, 'USDT', '₮', 5, '', '');
+INSERT INTO homepage_cards(section, sort, title, body, stars, when_label, icon) VALUES ('pay', 5, '300+ coins', '', 5, '', '');`;
+
 let ready = false;
 
 function statements(sql) {
@@ -157,15 +184,32 @@ function statements(sql) {
     .filter((s) => s.length > 0);
 }
 
+async function ensureHomepageCards(c) {
+  const has = await c.env.DB.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='homepage_cards'").first();
+  if (has) return;
+  for (const s of statements(CARDS_SCHEMA_SQL)) {
+    await c.env.DB.prepare(s).run();
+  }
+  for (const s of statements(CARDS_SEED_SQL)) {
+    await c.env.DB.prepare(s).run();
+  }
+}
+
 export async function ensureDb(c) {
   if (ready) return;
   const check = await c.env.DB.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='settings'").first();
-  if (check) { ready = true; return; }
+  if (check) {
+    // Existing database: still upgrade it with the homepage cards table if missing.
+    await ensureHomepageCards(c);
+    ready = true;
+    return;
+  }
   for (const s of statements(SCHEMA_SQL)) {
     await c.env.DB.prepare(s).run();
   }
   for (const s of statements(SEED_SQL)) {
     await c.env.DB.prepare(s).run();
   }
+  await ensureHomepageCards(c);
   ready = true;
 }

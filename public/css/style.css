@@ -504,3 +504,18 @@ details p { margin: 6px 0 12px; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
   html.js .reveal { opacity: 1; transform: none; }
 }
+
+/* ============ Admin: homepage card editor ============ */
+.hp-edit {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 12px;
+}
+.hp-edit .inline-form { margin-top: 4px; }
+.hp-add {
+  border: 1px dashed rgba(168, 85, 247, 0.45);
+  border-radius: 12px;
+  padding: 14px;
+  margin-top: 8px;
+}

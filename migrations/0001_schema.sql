@@ -83,3 +83,15 @@ CREATE TABLE IF NOT EXISTS settings (
 CREATE INDEX IF NOT EXISTS idx_products_category ON products(category_id);
 CREATE INDEX IF NOT EXISTS idx_orders_user ON orders(user_id);
 CREATE INDEX IF NOT EXISTS idx_payments_order ON payments(order_id);
+
+-- Admin-editable homepage cards (feature cards, reviews, payment tiles)
+CREATE TABLE IF NOT EXISTS homepage_cards (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  section TEXT NOT NULL,
+  sort INTEGER NOT NULL DEFAULT 0,
+  title TEXT NOT NULL,
+  body TEXT NOT NULL DEFAULT '',
+  stars INTEGER NOT NULL DEFAULT 5,
+  when_label TEXT NOT NULL DEFAULT '',
+  icon TEXT NOT NULL DEFAULT 'bolt'
+);

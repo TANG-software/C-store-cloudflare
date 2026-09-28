@@ -1,6 +1,12 @@
 // C Store Workers — admin panel views.
 import { esc } from '../lib.js';
 import { page } from './layout.js';
+import { FEATURE_ICONS } from './shop.js';
+
+const ICON_LABELS = {
+  bolt: 'Lightning', shield: 'Shield', headphones: 'Headphones', package: 'Box',
+  truck: 'Truck', lock: 'Lock', star: 'Star', chat: 'Chat bubble', tag: 'Price tag', coin: 'Coin',
+};
 
 function adminNav(ctx) {
   const { path } = ctx;
@@ -12,6 +18,7 @@ function adminNav(ctx) {
   ${link('/admin/categories', 'Categories', path.startsWith('/admin/categories'))}
   ${link('/admin/orders', 'Orders', path.startsWith('/admin/orders'))}
   ${link('/admin/users', 'Users', path.startsWith('/admin/users'))}
+  ${link('/admin/homepage', 'Homepage', path.startsWith('/admin/homepage'))}
   ${link('/admin/payments', 'Payments', path.startsWith('/admin/payments'))}
   ${link('/admin/settings', 'Settings', path.startsWith('/admin/settings'))}
 </nav>`;
@@ -236,6 +243,84 @@ export function users(ctx, { users, me }) {
     <tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Verified</th><th>Orders</th><th>Role</th><th></th></tr>
     ${rows}
   </table>
+</div>`);
+}
+
+// -------- Homepage cards (features / reviews / payment tiles) --------
+export function homepage(ctx, { cards }) {
+  const feats = cards.filter((x) => x.section === 'feature');
+  const revs = cards.filter((x) => x.section === 'review');
+  const pays = cards.filter((x) => x.section === 'pay');
+
+  const del = (id, what) => `
+      <form class="inline-form" action="/admin/homepage/${id}/delete" method="POST" onsubmit="return confirm('Remove this ${what} from the homepage?')">
+        <button class="btn btn-small btn-danger">Remove</button>
+      </form>`;
+
+  const featureForm = (f) => `
+    <form action="/admin/homepage/save" method="POST" class="form-grid hp-form">
+      <input type="hidden" name="section" value="feature">
+      ${f ? `<input type="hidden" name="id" value="${f.id}">` : ''}
+      <label>Title<input name="title" required value="${f ? esc(f.title) : ''}" placeholder="e.g. Ships same day"></label>
+      <label>Icon
+        <select name="icon">
+          ${Object.keys(FEATURE_ICONS).map((k) => `<option value="${k}" ${f && f.icon === k ? 'selected' : ''}>${ICON_LABELS[k]}</option>`).join('')}
+        </select>
+      </label>
+      <label class="span2">Text<textarea name="body" rows="3" placeholder="What the card says">${f ? esc(f.body) : ''}</textarea></label>
+      <div class="span2"><button class="btn">${f ? 'Save card' : 'Add feature card'}</button></div>
+    </form>`;
+
+  const reviewForm = (r) => `
+    <form action="/admin/homepage/save" method="POST" class="form-grid hp-form">
+      <input type="hidden" name="section" value="review">
+      ${r ? `<input type="hidden" name="id" value="${r.id}">` : ''}
+      <label>Name — City<input name="title" required value="${r ? esc(r.title) : ''}" placeholder="e.g. Sanne — Utrecht"></label>
+      <label>When
+        <select name="when_label">
+          ${['', 'last week', '2 weeks ago', '3 weeks ago', '1 month ago', '2 months ago', '3 months ago', '6 months ago', '1 year ago'].map((w) => `<option value="${w}" ${r && r.when_label === w ? 'selected' : ''}>${w || '— no date shown —'}</option>`).join('')}
+        </select>
+      </label>
+      <label>Stars
+        <select name="stars">
+          ${[5, 4, 3, 2, 1].map((s) => `<option value="${s}" ${r && r.stars === s ? 'selected' : ''}>${'★'.repeat(s)}</option>`).join('')}
+        </select>
+      </label>
+      <label class="span2">Review text<textarea name="body" rows="3" placeholder="What the customer wrote">${r ? esc(r.body) : ''}</textarea></label>
+      <div class="span2"><button class="btn">${r ? 'Save review' : 'Add review'}</button></div>
+    </form>`;
+
+  const payForm = (p) => `
+    <form action="/admin/homepage/save" method="POST" class="form-grid hp-form">
+      <input type="hidden" name="section" value="pay">
+      ${p ? `<input type="hidden" name="id" value="${p.id}">` : ''}
+      <label>Name<input name="title" required value="${p ? esc(p.title) : ''}" placeholder="e.g. PayPal"></label>
+      <label>Symbol / extra (optional)<input name="body" value="${p ? esc(p.body) : ''}" placeholder="e.g. ₿"></label>
+      <div class="span2"><button class="btn">${p ? 'Save tile' : 'Add payment tile'}</button></div>
+    </form>`;
+
+  return adminPage(ctx, `
+<h1>Homepage cards</h1>
+<p class="muted">Everything shown in the About-us, Reviews and “We support” sections of the homepage is managed here. Removing all cards of a type hides that section completely. Changes are live immediately.</p>
+
+<div class="card">
+  <h2>About-us feature cards</h2>
+  ${feats.map((f) => `<div class="hp-edit">${featureForm(f)}${del(f.id, 'card')}</div>`).join('') || '<p class="muted">No feature cards — the About-us card list is hidden on the homepage.</p>'}
+  <div class="hp-add">${featureForm(null)}</div>
+</div>
+
+<div class="card">
+  <h2>Customer reviews</h2>
+  <div class="flash flash-warn">Only publish reviews from real customers — invented reviews can get a store fined in the EU. The current reviews are placeholders: edit or remove them before launch.</div>
+  ${revs.map((r) => `<div class="hp-edit">${reviewForm(r)}${del(r.id, 'review')}</div>`).join('') || '<p class="muted">No reviews — the “What customers say” section is hidden on the homepage.</p>'}
+  <div class="hp-add">${reviewForm(null)}</div>
+</div>
+
+<div class="card">
+  <h2>Payment tiles</h2>
+  <p class="muted small">These are the tiles in the “We support” strip at the bottom of the homepage. They are labels only — the actual payment methods at checkout are configured under <a href="/admin/payments">Payments</a>.</p>
+  ${pays.map((p) => `<div class="hp-edit">${payForm(p)}${del(p.id, 'tile')}</div>`).join('') || '<p class="muted">No payment tiles — the “We support” section is hidden on the homepage.</p>'}
+  <div class="hp-add">${payForm(null)}</div>
 </div>`);
 }
 

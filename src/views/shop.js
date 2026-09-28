@@ -2,10 +2,25 @@
 import { esc } from '../lib.js';
 import { page, productCard, CAT_ICONS } from './layout.js';
 
-export function home(ctx, { categories, featured, newest, stats }) {
+// Icons available for homepage feature cards (admin picks one per card).
+export const FEATURE_ICONS = {
+  bolt: '<path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/>',
+  shield: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+  headphones: '<path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>',
+  package: '<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12.01"/>',
+  truck: '<path d="M1 3h15v13H1z"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>',
+  lock: '<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+  star: '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
+  chat: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+  tag: '<path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/>',
+  coin: '<circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/>',
+};
+
+export function home(ctx, { categories, featured, newest, stats, cards }) {
   const S = ctx.settings;
   const free = (Number(S.free_shipping_threshold_cents) / 100).toFixed(2);
   const icon = (paths, extra = '') => `<span class="feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ${extra}>${paths}</svg></span>`;
+  const stars = (n) => '★'.repeat(n) + '☆'.repeat(Math.max(0, 5 - n));
   return page(ctx, `
 <section class="hero">
   <p class="hero-overline">Netherlands &middot; EU shipping</p>
@@ -30,34 +45,21 @@ export function home(ctx, { categories, featured, newest, stats }) {
   </div>
 </section>
 
+${cards.feature.length ? `
 <section class="section">
   <div class="card">
     <h2>About us</h2>
     <p class="muted">${esc(S.store_name)} keeps it simple: we hold our own stock in the Netherlands, describe every product the way it actually arrives, and answer email ourselves — no scripts, no call center. Prices include VAT, and shipping is free above €${free}.</p>
     <div class="feature-grid">
+      ${cards.feature.map((f) => `
       <div class="feature-card">
-        ${icon('<path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/>')}
-        <h3>Ships same day</h3>
-        <p>Order before 15:00 on a weekday and it leaves the same afternoon. Most of the Netherlands receives within 48 hours.</p>
-      </div>
-      <div class="feature-card">
-        ${icon('<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>')}
-        <h3>You pay, we never look</h3>
-        <p>Payments run through PayPal or established crypto processors. Card details never touch our servers.</p>
-      </div>
-      <div class="feature-card">
-        ${icon('<path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>')}
-        <h3>Real answers</h3>
-        <p>Questions about an order or a payment? Email us and a person replies — usually within one working day.</p>
-      </div>
-      <div class="feature-card">
-        ${icon('<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>')}
-        <h3>Chosen, not endless</h3>
-        <p>${categories.length} categories and a deliberate range — we stock what we would use ourselves, nothing padded.</p>
-      </div>
+        ${icon(FEATURE_ICONS[f.icon] || FEATURE_ICONS.bolt)}
+        <h3>${esc(f.title)}</h3>
+        <p>${esc(f.body)}</p>
+      </div>`).join('')}
     </div>
   </div>
-</section>
+</section>` : ''}
 
 <section class="section">
   <h2>Shop by category</h2>
@@ -80,38 +82,27 @@ export function home(ctx, { categories, featured, newest, stats }) {
   <div class="product-grid">${newest.map((p) => productCard(p)).join('')}</div>
 </section>
 
+${cards.review.length ? `
 <section class="section">
   <h2>What customers say</h2>
   <div class="review-grid">
+    ${cards.review.map((r) => `
     <div class="review-card">
-      <div class="review-top"><span class="stars">★★★★★</span><span class="review-date">2 weeks ago</span></div>
-      <p>Ordered Friday evening and the package was in my hands Monday morning. The packaging was sturdier than I expected — nothing rattled.</p>
-      <div class="review-user"><span class="review-avatar">F</span><span>Femke — Den Haag</span></div>
-    </div>
-    <div class="review-card">
-      <div class="review-top"><span class="stars">★★★★☆</span><span class="review-date">1 month ago</span></div>
-      <p>Good shop. Paid with crypto and the confirmation took a bit longer than I thought it would, but support replied within the hour and the delivery arrived right on time.</p>
-      <div class="review-user"><span class="review-avatar">J</span><span>Joep — Eindhoven</span></div>
-    </div>
-    <div class="review-card">
-      <div class="review-top"><span class="stars">★★★★★</span><span class="review-date">2 months ago</span></div>
-      <p>Paid with USDT, got the payment confirmation the same evening and the parcel two days later. Exactly what was promised, including the invoice with VAT.</p>
-      <div class="review-user"><span class="review-avatar">A</span><span>Amber — Groningen</span></div>
-    </div>
+      <div class="review-top"><span class="stars">${stars(r.stars)}</span><span class="review-date">${esc(r.when_label)}</span></div>
+      <p>${esc(r.body)}</p>
+      <div class="review-user"><span class="review-avatar">${esc(r.title.charAt(0).toUpperCase())}</span><span>${esc(r.title)}</span></div>
+    </div>`).join('')}
   </div>
-</section>
+</section>` : ''}
 
+${cards.pay.length ? `
 <section class="section">
   <h2 class="center">We support</h2>
   <p class="muted center small">Multiple secure payment methods at checkout</p>
   <div class="pay-strip">
-    <div class="pay-tile">PayPal</div>
-    <div class="pay-tile">Bitcoin <span class="cur">₿</span></div>
-    <div class="pay-tile">Ethereum <span class="cur">Ξ</span></div>
-    <div class="pay-tile">USDT <span class="cur">₮</span></div>
-    <div class="pay-tile">300+ coins</div>
+    ${cards.pay.map((p) => `<div class="pay-tile">${esc(p.title)}${p.body ? ` <span class="cur">${esc(p.body)}</span>` : ''}</div>`).join('')}
   </div>
-</section>`);
+</section>` : ''}`);
 }
 
 export function shop(ctx, { categories, cat, products, q }) {

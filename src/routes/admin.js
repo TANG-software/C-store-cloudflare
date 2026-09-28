@@ -4,6 +4,7 @@ import { Hono } from 'hono';
 import { q, flash, setSetting, slugify } from '../lib.js';
 import { availableMethods } from '../payments.js';
 import { mailConfigured, smsConfigured } from '../notify.js';
+import { FEATURE_ICONS } from '../views/shop.js';
 import * as views from '../views/admin.js';
 
 const admin = new Hono();
@@ -166,6 +167,54 @@ admin.post('/payments', async (c) => {
   }
   await flash(c, 'success', 'Saved — the new settings are active immediately.');
   return c.redirect('/admin/payments');
+});
+
+// ---------- homepage cards (features / reviews / payment tiles) ----------
+admin.get('/homepage', async (c) => {
+  const cards = await q.all(c, 'SELECT * FROM homepage_cards ORDER BY section, sort, id');
+  return c.html(views.homepage(c.get('ctx'), { cards }));
+});
+
+admin.post('/homepage/save', async (c) => {
+  const b = await c.req.parseBody();
+  const section = ['feature', 'review', 'pay'].includes(String(b.section)) ? String(b.section) : null;
+  if (!section) return c.redirect('/admin/homepage');
+  const id = b.id ? Number(b.id) : null;
+  const title = String(b.title || '').trim();
+  const body = String(b.body || '').trim();
+  if (!title) {
+    await flash(c, 'error', 'A card needs at least a title.');
+    return c.redirect('/admin/homepage');
+  }
+  let stars = 5;
+  let when = '';
+  let icon = '';
+  if (section === 'review') {
+    stars = Math.min(Math.max(Number(b.stars) || 5, 1), 5);
+    when = String(b.when_label || '').trim();
+  } else if (section === 'feature') {
+    icon = Object.keys(FEATURE_ICONS).includes(String(b.icon)) ? String(b.icon) : 'bolt';
+  }
+  if (id) {
+    const existing = await q.first(c, 'SELECT section FROM homepage_cards WHERE id = ?', id);
+    if (existing && existing.section === section) {
+      await q.run(c, 'UPDATE homepage_cards SET title = ?, body = ?, stars = ?, when_label = ?, icon = ? WHERE id = ?',
+        title, body, stars, when, icon, id);
+      await flash(c, 'success', 'Card updated.');
+    }
+  } else {
+    const next = await q.first(c, 'SELECT COALESCE(MAX(sort), 0) + 1 AS n FROM homepage_cards WHERE section = ?', section);
+    await q.run(c, 'INSERT INTO homepage_cards(section, sort, title, body, stars, when_label, icon) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      section, next.n, title, body, stars, when, icon);
+    await flash(c, 'success', 'Card added.');
+  }
+  return c.redirect('/admin/homepage');
+});
+
+admin.post('/homepage/:id/delete', async (c) => {
+  await q.run(c, 'DELETE FROM homepage_cards WHERE id = ?', Number(c.req.param('id')));
+  await flash(c, 'success', 'Card removed from the homepage.');
+  return c.redirect('/admin/homepage');
 });
 
 // ---------- settings ----------

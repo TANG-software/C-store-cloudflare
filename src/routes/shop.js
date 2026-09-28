@@ -14,7 +14,10 @@ shop.get('/', async (c) => {
     customers: (await q.first(c, "SELECT COUNT(*) AS n FROM users WHERE role = 'customer'")).n,
     products: (await q.first(c, 'SELECT COUNT(*) AS n FROM products WHERE active = 1')).n,
   };
-  return c.html(views.home(c.get('ctx'), { categories, featured, newest, stats }));
+  const cardRows = await q.all(c, 'SELECT * FROM homepage_cards ORDER BY section, sort, id');
+  const cards = { feature: [], review: [], pay: [] };
+  for (const row of cardRows) if (cards[row.section]) cards[row.section].push(row);
+  return c.html(views.home(c.get('ctx'), { categories, featured, newest, stats, cards }));
 });
 
 shop.get('/shop', async (c) => {

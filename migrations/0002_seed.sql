@@ -54,3 +54,17 @@ INSERT OR IGNORE INTO products(category_id, name, slug, description, price_cents
 INSERT OR IGNORE INTO products(category_id, name, slug, description, price_cents, stock, image_url) VALUES ((SELECT id FROM categories WHERE slug = 'books'), 'Kids'' Adventure Atlas', 'kids-adventure-atlas', 'Colourful world atlas with fun facts for ages 6–11.', 1995, 50, 'https://picsum.photos/seed/kids-adventure-atlas/600/450');
 INSERT OR IGNORE INTO users(name, email, phone, password_hash, role, email_verified, phone_verified, force_password_change) VALUES ('Store Administrator', 'admin@cstore.com', '+31000000000', 'pbkdf2$100000$lWOMXg3ZRvboFUaS/6ixPA==$Kz6EdGReSkyrEKmIFzNkqFLgFrT6JoOut0F0vMnQAnI=', 'admin', 1, 1, 1);
 COMMIT;
+
+-- Homepage cards (editable in Admin -> Homepage; seeded from the original design)
+INSERT INTO homepage_cards(section, sort, title, body, stars, when_label, icon) VALUES ('feature', 1, 'Ships same day', 'Order before 15:00 on a weekday and it leaves the same afternoon. Most of the Netherlands receives within 48 hours.', 5, '', 'bolt');
+INSERT INTO homepage_cards(section, sort, title, body, stars, when_label, icon) VALUES ('feature', 2, 'You pay, we never look', 'Payments run through PayPal or established crypto processors. Card details never touch our servers.', 5, '', 'shield');
+INSERT INTO homepage_cards(section, sort, title, body, stars, when_label, icon) VALUES ('feature', 3, 'Real answers', 'Questions about an order or a payment? Email us and a person replies — usually within one working day.', 5, '', 'headphones');
+INSERT INTO homepage_cards(section, sort, title, body, stars, when_label, icon) VALUES ('feature', 4, 'Chosen, not endless', 'We stock a deliberate range — what we would use ourselves, nothing padded.', 5, '', 'package');
+INSERT INTO homepage_cards(section, sort, title, body, stars, when_label, icon) VALUES ('review', 1, 'Femke — Den Haag', 'Ordered Friday evening and the package was in my hands Monday morning. The packaging was sturdier than I expected — nothing rattled.', 5, '2 weeks ago', '');
+INSERT INTO homepage_cards(section, sort, title, body, stars, when_label, icon) VALUES ('review', 2, 'Joep — Eindhoven', 'Good shop. Paid with crypto and the confirmation took a bit longer than I thought it would, but support replied within the hour and the delivery arrived right on time.', 4, '1 month ago', '');
+INSERT INTO homepage_cards(section, sort, title, body, stars, when_label, icon) VALUES ('review', 3, 'Amber — Groningen', 'Paid with USDT, got the payment confirmation the same evening and the parcel two days later. Exactly what was promised, including the invoice with VAT.', 5, '2 months ago', '');
+INSERT INTO homepage_cards(section, sort, title, body, stars, when_label, icon) VALUES ('pay', 1, 'PayPal', '', 5, '', '');
+INSERT INTO homepage_cards(section, sort, title, body, stars, when_label, icon) VALUES ('pay', 2, 'Bitcoin', '₿', 5, '', '');
+INSERT INTO homepage_cards(section, sort, title, body, stars, when_label, icon) VALUES ('pay', 3, 'Ethereum', 'Ξ', 5, '', '');
+INSERT INTO homepage_cards(section, sort, title, body, stars, when_label, icon) VALUES ('pay', 4, 'USDT', '₮', 5, '', '');
+INSERT INTO homepage_cards(section, sort, title, body, stars, when_label, icon) VALUES ('pay', 5, '300+ coins', '', 5, '', '');
