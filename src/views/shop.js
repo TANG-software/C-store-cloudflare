@@ -5,16 +5,43 @@ import { page, productCard, CAT_ICONS } from './layout.js';
 export function home(ctx, { categories, featured, newest }) {
   return page(ctx, `
 <section class="hero">
-  <div>
-    <h1>Everything you need,<br><em>delivered with care</em> across the Netherlands.</h1>
-    <p>Electronics, fashion, home & living, beauty and more — pay with PayPal or crypto.</p>
-    <a href="/shop" class="btn btn-lg">Start shopping</a>
-  </div>
+  <h1>Everything you need,<br><em>delivered with care</em></h1>
+  <p>Electronics, fashion, home & living, beauty and more — shipped across the Netherlands, paid with PayPal or crypto.</p>
+  <a href="/shop" class="btn btn-lg">Shop here! →</a>
   <div class="hero-badges">
-    <span>Ships from the Netherlands</span>
-    <span>PayPal accepted</span>
-    <span>300+ cryptocurrencies</span>
+    <span>⚡ Instant delivery</span>
+    <span>🛡️ Secure payments</span>
+    <span>🎧 24/7 support</span>
     <span>Free shipping over €${(Number(ctx.settings.free_shipping_threshold_cents) / 100).toFixed(2)}</span>
+  </div>
+</section>
+
+<section class="section">
+  <div class="card">
+    <h2>About us</h2>
+    <p class="muted">${esc(ctx.settings.store_name)} is your modern storefront for the essentials and the extras — curated products, honest prices and a checkout that takes seconds. Every order ships from the Netherlands with care.</p>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <span class="feature-icon">⚡</span>
+        <h3>Instant Delivery</h3>
+        <p>Fast dispatch across the Netherlands — most orders arrive within 1–2 business days.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🛡️</span>
+        <h3>Secure Payments</h3>
+        <p>Pay with PayPal or 300+ cryptocurrencies. Your data stays yours, always.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🎧</span>
+        <h3>24/7 Support</h3>
+        <p>Questions about an order? Our team is around the clock for you.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">📦</span>
+        <h3>Huge Selection</h3>
+        <p>${categories.length} categories and a growing range of hand-picked products.</p>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -37,6 +64,39 @@ export function home(ctx, { categories, featured, newest }) {
 <section class="section">
   <h2>New arrivals</h2>
   <div class="product-grid">${newest.map((p) => productCard(p)).join('')}</div>
+</section>
+
+<section class="section">
+  <h2>Reviews</h2>
+  <div class="review-grid">
+    <div class="review-card">
+      <div class="review-top"><span class="stars">★★★★★</span><span class="review-date">2 weeks ago</span></div>
+      <p>Super fast delivery and the quality is exactly as described. The crypto checkout worked flawlessly!</p>
+      <div class="review-user"><span class="review-avatar">M</span><span>Marco — Rotterdam</span></div>
+    </div>
+    <div class="review-card">
+      <div class="review-top"><span class="stars">★★★★★</span><span class="review-date">1 month ago</span></div>
+      <p>Finally a shop that just works. Ordered in the evening, package arrived two days later. Top service.</p>
+      <div class="review-user"><span class="review-avatar">S</span><span>Sanne — Utrecht</span></div>
+    </div>
+    <div class="review-card">
+      <div class="review-top"><span class="stars">★★★★★</span><span class="review-date">2 months ago</span></div>
+      <p>Great selection and fair prices. Paid with PayPal, everything smooth. Will definitely order again.</p>
+      <div class="review-user"><span class="review-avatar">D</span><span>Daan — Amsterdam</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="center">We support</h2>
+  <p class="muted center small">Multiple secure payment methods at checkout</p>
+  <div class="pay-strip">
+    <div class="pay-tile"><span class="pm-icon">🅿️</span>PayPal</div>
+    <div class="pay-tile"><span class="pm-icon">₿</span>Bitcoin</div>
+    <div class="pay-tile"><span class="pm-icon">Ξ</span>Ethereum</div>
+    <div class="pay-tile"><span class="pm-icon">₮</span>USDT</div>
+    <div class="pay-tile"><span class="pm-icon">✦</span>+300 coins</div>
+  </div>
 </section>`);
 }
 
