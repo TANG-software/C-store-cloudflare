@@ -1,10 +1,29 @@
-// C Store Workers — layout: header, footer, page wrapper. Same design as the Node edition.
+// C Store Workers — layout: header, footer, page wrapper. Neon purple edition.
 import { esc } from '../lib.js';
 
 const CAT_ICONS = {
   electronics: '🔌', fashion: '👕', 'home-living': '🏡', beauty: '💄',
   'sports-outdoors': '⚽', 'toys-games': '🎲', groceries: '🛒', books: '📚',
 };
+
+function navLinks(ctx, mobile) {
+  const { user, path } = ctx;
+  const cls = (href, starts) => `class="${starts ? 'active' : ''}"`;
+  return `
+  <nav>
+    <a href="/shop" ${cls(path, path === '/shop')}>Shop</a>
+    ${user ? `
+      <a href="/account" ${cls(path, path.startsWith('/account'))}>My account</a>
+      <a href="/cart" ${cls(path, path === '/cart')}>Cart</a>
+      ${user.role === 'admin' ? `<a href="/admin" class="admin-link">Admin</a>` : ''}
+      <form action="/logout" method="POST" class="inline-form"><button class="link-btn">Log out</button></form>
+    ` : `
+      <a href="/cart" ${cls(path, path === '/cart')}>Cart</a>
+      <a href="/login" ${cls(path, path === '/login')}>Log in</a>
+      <a href="/register" class="btn btn-small ${mobile ? 'mobile-cta' : ''}">Create account</a>
+    `}
+  </nav>`;
+}
 
 export function header(ctx) {
   const { user, settings, path, cartCount, q, flash } = ctx;
@@ -18,7 +37,7 @@ export function header(ctx) {
   <link rel="stylesheet" href="/css/style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
   <script>document.documentElement.classList.add('js');</script>
 </head>
 <body>
@@ -39,8 +58,20 @@ export function header(ctx) {
         <a href="/login" class="${path === '/login' ? 'active' : ''}">Log in</a>
         <a href="/register" class="btn btn-small">Create account</a>
       `}
-      <a href="/cart" class="cart-link ${path === '/cart' ? 'active' : ''}" aria-label="Cart"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8h12l-1.2 12.2a1.4 1.4 0 0 1-1.4 1.3H8.6a1.4 1.4 0 0 1-1.4-1.3L6 8z"/><path d="M9 10V6.5a3 3 0 0 1 6 0V10"/></svg> <span class="cart-count">${cartCount}</span></a>
     </nav>
+    <div class="header-actions">
+      <a href="/cart" class="cart-link" aria-label="Cart"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8h12l-1.2 12.2a1.4 1.4 0 0 1-1.4 1.3H8.6a1.4 1.4 0 0 1-1.4-1.3L6 8z"/><path d="M9 10V6.5a3 3 0 0 1 6 0V10"/></svg> <span class="cart-count">${cartCount}</span></a>
+      <button class="menu-btn" aria-label="Menu" onclick="document.getElementById('mobileMenu').classList.toggle('open')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <form class="search-bar" action="/shop" method="get">
+      <input type="search" name="q" placeholder="Search products…" value="${esc(q || '')}">
+      <button type="submit" aria-label="Search"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4.2-4.2"/></svg></button>
+    </form>
+    ${navLinks(ctx, true)}
   </div>
 </header>
 ${user && (!user.email_verified || !user.phone_verified) ? `
@@ -64,21 +95,25 @@ export function footer(ctx) {
       <p class="muted">${esc(settings.store_tagline || '')}</p>
     </div>
     <div>
-      <h4>Shop</h4>
+      <h4>Navigation</h4>
       <a href="/shop">All products</a>
       <a href="/cart">Cart</a>
+      <a href="/help">Help & contact</a>
+    </div>
+    <div>
+      <h4>My account</h4>
       <a href="/account">My account</a>
+      <a href="/login">Log in</a>
+      <a href="/register">Create account</a>
     </div>
     <div>
       <h4>Payments accepted</h4>
-      <p class="muted">PayPal · Bitcoin · Ethereum · USDT and 300+ cryptocurrencies</p>
-    </div>
-    <div>
-      <h4>Need help?</h4>
-      <p class="muted">
-        <a href="/help">Help & contact</a><br>
-        Email — <a href="mailto:${esc(settings.support_email)}">${esc(settings.support_email)}</a><br>
-        ${phone ? `Phone — <a href="tel:${esc(phone.replace(/\s/g, ''))}">${esc(phone)}</a>` : ''}
+      <div class="footer-pay">
+        <span>PayPal</span><span>BTC</span><span>ETH</span><span>USDT</span><span>+300 coins</span>
+      </div>
+      <p class="muted small" style="margin-bottom:0">
+        <a href="mailto:${esc(settings.support_email)}">${esc(settings.support_email)}</a>
+        ${phone ? `<br>Phone — <a href="tel:${esc(phone.replace(/\s/g, ''))}">${esc(phone)}</a>` : ''}
       </p>
     </div>
   </div>
@@ -117,9 +152,10 @@ export function productCard(p) {
   <div class="product-body">
     <span class="product-cat">${esc(p.category_name || '')}</span>
     <h3 class="product-name">${esc(p.name)}</h3>
+    ${p.stock > 0 ? `<span class="stock in">${p.stock} In Stock</span>` : '<span class="stock out">Out of Stock</span>'}
     <div class="product-foot">
       <span class="price">€${(p.price_cents / 100).toFixed(2)}</span>
-      ${p.stock > 0 ? '<span class="stock in">In stock</span>' : '<span class="stock out">Sold out</span>'}
+      <span class="card-go" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></span>
     </div>
   </div>
 </a>`;
