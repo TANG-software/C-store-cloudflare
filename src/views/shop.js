@@ -2,7 +2,7 @@
 import { esc } from '../lib.js';
 import { page, productCard, CAT_ICONS } from './layout.js';
 
-export function home(ctx, { categories, featured, newest }) {
+export function home(ctx, { categories, featured, newest, stats }) {
   const S = ctx.settings;
   const free = (Number(S.free_shipping_threshold_cents) / 100).toFixed(2);
   const icon = (paths, extra = '') => `<span class="feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ${extra}>${paths}</svg></span>`;
@@ -17,6 +17,16 @@ export function home(ctx, { categories, featured, newest }) {
     <span>1–2 day delivery in NL</span>
     <span>PayPal & 300+ cryptocurrencies</span>
     <span>21% VAT included</span>
+  </div>
+</section>
+
+<section class="section">
+  <h2>${esc(S.store_name)} stats</h2>
+  <p class="muted">A quick look at what we've achieved and what keeps our customers coming back — updated live with every order.</p>
+  <div class="stats-grid">
+    <div class="stat-box"><span class="num">${stats.orders}</span><span class="bar"></span><span class="lbl">Orders completed</span></div>
+    <div class="stat-box"><span class="num">${stats.customers}</span><span class="bar"></span><span class="lbl">Happy customers</span></div>
+    <div class="stat-box"><span class="num">${stats.products}</span><span class="bar"></span><span class="lbl">Products listed</span></div>
   </div>
 </section>
 

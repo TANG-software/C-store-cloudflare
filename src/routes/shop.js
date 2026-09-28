@@ -9,7 +9,12 @@ shop.get('/', async (c) => {
   const categories = await q.all(c, 'SELECT * FROM categories ORDER BY id');
   const featured = await q.all(c, `SELECT p.*, c.name AS category_name FROM products p JOIN categories c ON c.id = p.category_id WHERE p.active = 1 ORDER BY (p.id * 7) % 13 LIMIT 8`);
   const newest = await q.all(c, `SELECT p.*, c.name AS category_name FROM products p JOIN categories c ON c.id = p.category_id WHERE p.active = 1 ORDER BY p.id DESC LIMIT 8`);
-  return c.html(views.home(c.get('ctx'), { categories, featured, newest }));
+  const stats = {
+    orders: (await q.first(c, "SELECT COUNT(*) AS n FROM orders WHERE status IN ('paid', 'shipped')")).n,
+    customers: (await q.first(c, "SELECT COUNT(*) AS n FROM users WHERE role = 'customer'")).n,
+    products: (await q.first(c, 'SELECT COUNT(*) AS n FROM products WHERE active = 1')).n,
+  };
+  return c.html(views.home(c.get('ctx'), { categories, featured, newest, stats }));
 });
 
 shop.get('/shop', async (c) => {
