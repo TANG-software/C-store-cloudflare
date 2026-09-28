@@ -34,13 +34,14 @@ export function header(ctx) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${ctx.title ? esc(ctx.title) + ' · ' : ''}${esc(settings.store_name)}</title>
-  <link rel="stylesheet" href="/css/style.css?v=2">
+  <link rel="stylesheet" href="/css/style.css?v=3">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
   <script>document.documentElement.classList.add('js');</script>
 </head>
 <body>
+<div class="top-bar"><div class="container">Free EU shipping over €${(Number(settings.free_shipping_threshold_cents) / 100).toFixed(2)} &middot; PayPal & 300+ cryptocurrencies &middot; 21% VAT included</div></div>
 <header class="site-header">
   <div class="container header-inner">
     <a href="/" class="logo"><span class="logo-mark">C</span><span class="logo-text">${esc(settings.store_name)}</span></a>

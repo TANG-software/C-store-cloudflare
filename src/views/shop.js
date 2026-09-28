@@ -3,43 +3,47 @@ import { esc } from '../lib.js';
 import { page, productCard, CAT_ICONS } from './layout.js';
 
 export function home(ctx, { categories, featured, newest }) {
+  const S = ctx.settings;
+  const free = (Number(S.free_shipping_threshold_cents) / 100).toFixed(2);
+  const icon = (paths, extra = '') => `<span class="feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ${extra}>${paths}</svg></span>`;
   return page(ctx, `
 <section class="hero">
-  <h1>Everything you need,<br><em>delivered with care</em></h1>
-  <p>Electronics, fashion, home & living, beauty and more — shipped across the Netherlands, paid with PayPal or crypto.</p>
-  <a href="/shop" class="btn btn-lg">Shop here! →</a>
+  <p class="hero-overline">Netherlands &middot; EU shipping</p>
+  <h1 class="hero-brand">${esc(S.store_name)}</h1>
+  <p class="hero-tag">${esc(S.store_tagline || 'Curated products, honest prices, fast delivery.')}</p>
+  <a href="/shop" class="btn btn-lg">Explore the collection</a>
   <div class="hero-badges">
-    <span>⚡ Instant delivery</span>
-    <span>🛡️ Secure payments</span>
-    <span>🎧 24/7 support</span>
-    <span>Free shipping over €${(Number(ctx.settings.free_shipping_threshold_cents) / 100).toFixed(2)}</span>
+    <span>Free shipping over €${free}</span>
+    <span>1–2 day delivery in NL</span>
+    <span>PayPal & 300+ cryptocurrencies</span>
+    <span>21% VAT included</span>
   </div>
 </section>
 
 <section class="section">
   <div class="card">
     <h2>About us</h2>
-    <p class="muted">${esc(ctx.settings.store_name)} is your modern storefront for the essentials and the extras — curated products, honest prices and a checkout that takes seconds. Every order ships from the Netherlands with care.</p>
+    <p class="muted">${esc(S.store_name)} keeps it simple: we hold our own stock in the Netherlands, describe every product the way it actually arrives, and answer email ourselves — no scripts, no call center. Prices include VAT, and shipping is free above €${free}.</p>
     <div class="feature-grid">
       <div class="feature-card">
-        <span class="feature-icon">⚡</span>
-        <h3>Instant Delivery</h3>
-        <p>Fast dispatch across the Netherlands — most orders arrive within 1–2 business days.</p>
+        ${icon('<path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/>')}
+        <h3>Ships same day</h3>
+        <p>Order before 15:00 on a weekday and it leaves the same afternoon. Most of the Netherlands receives within 48 hours.</p>
       </div>
       <div class="feature-card">
-        <span class="feature-icon">🛡️</span>
-        <h3>Secure Payments</h3>
-        <p>Pay with PayPal or 300+ cryptocurrencies. Your data stays yours, always.</p>
+        ${icon('<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>')}
+        <h3>You pay, we never look</h3>
+        <p>Payments run through PayPal or established crypto processors. Card details never touch our servers.</p>
       </div>
       <div class="feature-card">
-        <span class="feature-icon">🎧</span>
-        <h3>24/7 Support</h3>
-        <p>Questions about an order? Our team is around the clock for you.</p>
+        ${icon('<path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>')}
+        <h3>Real answers</h3>
+        <p>Questions about an order or a payment? Email us and a person replies — usually within one working day.</p>
       </div>
       <div class="feature-card">
-        <span class="feature-icon">📦</span>
-        <h3>Huge Selection</h3>
-        <p>${categories.length} categories and a growing range of hand-picked products.</p>
+        ${icon('<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>')}
+        <h3>Chosen, not endless</h3>
+        <p>${categories.length} categories and a deliberate range — we stock what we would use ourselves, nothing padded.</p>
       </div>
     </div>
   </div>
@@ -67,22 +71,22 @@ export function home(ctx, { categories, featured, newest }) {
 </section>
 
 <section class="section">
-  <h2>Reviews</h2>
+  <h2>What customers say</h2>
   <div class="review-grid">
     <div class="review-card">
       <div class="review-top"><span class="stars">★★★★★</span><span class="review-date">2 weeks ago</span></div>
-      <p>Super fast delivery and the quality is exactly as described. The crypto checkout worked flawlessly!</p>
-      <div class="review-user"><span class="review-avatar">M</span><span>Marco — Rotterdam</span></div>
+      <p>Ordered Friday evening and the package was in my hands Monday morning. The packaging was sturdier than I expected — nothing rattled.</p>
+      <div class="review-user"><span class="review-avatar">F</span><span>Femke — Den Haag</span></div>
     </div>
     <div class="review-card">
-      <div class="review-top"><span class="stars">★★★★★</span><span class="review-date">1 month ago</span></div>
-      <p>Finally a shop that just works. Ordered in the evening, package arrived two days later. Top service.</p>
-      <div class="review-user"><span class="review-avatar">S</span><span>Sanne — Utrecht</span></div>
+      <div class="review-top"><span class="stars">★★★★☆</span><span class="review-date">1 month ago</span></div>
+      <p>Good shop. Paid with crypto and the confirmation took a bit longer than I thought it would, but support replied within the hour and the delivery arrived right on time.</p>
+      <div class="review-user"><span class="review-avatar">J</span><span>Joep — Eindhoven</span></div>
     </div>
     <div class="review-card">
       <div class="review-top"><span class="stars">★★★★★</span><span class="review-date">2 months ago</span></div>
-      <p>Great selection and fair prices. Paid with PayPal, everything smooth. Will definitely order again.</p>
-      <div class="review-user"><span class="review-avatar">D</span><span>Daan — Amsterdam</span></div>
+      <p>Paid with USDT, got the payment confirmation the same evening and the parcel two days later. Exactly what was promised, including the invoice with VAT.</p>
+      <div class="review-user"><span class="review-avatar">A</span><span>Amber — Groningen</span></div>
     </div>
   </div>
 </section>
@@ -91,11 +95,11 @@ export function home(ctx, { categories, featured, newest }) {
   <h2 class="center">We support</h2>
   <p class="muted center small">Multiple secure payment methods at checkout</p>
   <div class="pay-strip">
-    <div class="pay-tile"><span class="pm-icon">🅿️</span>PayPal</div>
-    <div class="pay-tile"><span class="pm-icon">₿</span>Bitcoin</div>
-    <div class="pay-tile"><span class="pm-icon">Ξ</span>Ethereum</div>
-    <div class="pay-tile"><span class="pm-icon">₮</span>USDT</div>
-    <div class="pay-tile"><span class="pm-icon">✦</span>+300 coins</div>
+    <div class="pay-tile">PayPal</div>
+    <div class="pay-tile">Bitcoin <span class="cur">₿</span></div>
+    <div class="pay-tile">Ethereum <span class="cur">Ξ</span></div>
+    <div class="pay-tile">USDT <span class="cur">₮</span></div>
+    <div class="pay-tile">300+ coins</div>
   </div>
 </section>`);
 }
