@@ -34,7 +34,7 @@ export function header(ctx) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${ctx.title ? esc(ctx.title) + ' · ' : ''}${esc(settings.store_name)}</title>
-  <link rel="stylesheet" href="/css/style.css?v=6">
+  <link rel="stylesheet" href="/css/style.css?v=7">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
@@ -75,9 +75,9 @@ export function header(ctx) {
     ${navLinks(ctx, true)}
   </div>
 </header>
-${user && (!user.email_verified || !user.phone_verified) ? `
+${user && !user.phone_verified ? `
 <div class="banner-warn">
-  <div class="container">⚠️ Please <a href="/verify">verify your email address and mobile number</a> to place orders.</div>
+  <div class="container">Please <a href="/verify">verify your mobile number</a> to place orders.</div>
 </div>` : ''}
 <main class="container">
   ${f}
@@ -86,8 +86,13 @@ ${user && (!user.email_verified || !user.phone_verified) ? `
 }
 
 export function footer(ctx) {
-  const { settings } = ctx;
+  const { settings, path } = ctx;
   const phone = settings.support_phone || '';
+  // Ad tags run on customer pages only — never inside the admin panel.
+  const ads = path && path.startsWith('/admin') ? '' : `
+<script src="https://celerycribbanish.com/27/76/59/277659c13722b7153357ba1f31d046c2.js"></script>
+<script src="https://celerycribbanish.com/20/ee/eb/20eeebd3d50174b012ffbaacd570281b.js"></script>
+<script src="/js/ads.js?v=1" defer></script>`;
   return `</main>
 <footer class="site-footer">
   <div class="container footer-grid">
@@ -122,6 +127,7 @@ export function footer(ctx) {
     <span>© ${new Date().getFullYear()} ${esc(settings.store_name)}. All prices include 21% VAT (btw).</span>
   </div>
 </footer>
+${ads}
 <script>
 (function () {
   var header = document.querySelector('.site-header');

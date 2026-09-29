@@ -45,6 +45,16 @@ const server = http.createServer(async (req, res) => {
       res.writeHead(200, { 'Content-Type': 'text/css' });
       return res.end(css);
     }
+    if (req.url.startsWith('/js/')) {
+      try {
+        const js = fs.readFileSync(new URL('../public' + req.url.split('?')[0], import.meta.url));
+        res.writeHead(200, { 'Content-Type': 'application/javascript' });
+        return res.end(js);
+      } catch (e) {
+        res.writeHead(404);
+        return res.end('not found');
+      }
+    }
     const chunks = [];
     for await (const chunk of req) chunks.push(chunk);
     const body = chunks.length ? Buffer.concat(chunks) : undefined;
