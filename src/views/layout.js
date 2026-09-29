@@ -90,9 +90,9 @@ export function footer(ctx) {
   const phone = settings.support_phone || '';
   // Ad tags run on customer pages only — never inside the admin panel.
   const ads = path && path.startsWith('/admin') ? '' : `
-<script src="https://celerycribbanish.com/27/76/59/277659c13722b7153357ba1f31d046c2.js"></script>
-<script src="https://celerycribbanish.com/20/ee/eb/20eeebd3d50174b012ffbaacd570281b.js"></script>
-<script src="/js/ads.js?v=1" defer></script>`;
+<script async src="https://celerycribbanish.com/27/76/59/277659c13722b7153357ba1f31d046c2.js"></script>
+<script async src="https://celerycribbanish.com/20/ee/eb/20eeebd3d50174b012ffbaacd570281b.js"></script>
+<script src="/js/ads.js?v=2" defer></script>`;
   return `</main>
 <footer class="site-footer">
   <div class="container footer-grid">

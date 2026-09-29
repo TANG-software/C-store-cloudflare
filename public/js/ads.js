@@ -27,20 +27,24 @@
     if (modal) { modal.classList.remove('open'); }
   }
 
+  function buildModal() {
+    // Built immediately at page load (hidden) so the ad iframe loads in the
+    // background during the first 30 s — the popup opens with content ready.
+    if (modal || noVideo) return;
+    modal = document.createElement('div');
+    modal.className = 'ad-modal';
+    modal.innerHTML =
+      '<div class="ad-modal-card" role="dialog" aria-label="Advertisement">' +
+      '<div class="ad-modal-head"><span>Advertisement &middot; closes in <b class="ad-count">10</b>s</span>' +
+      '<button type="button" class="ad-close" aria-label="Close ad">✕</button></div>' +
+      '<div class="ad-modal-body"><p class="ad-fallback">Advertisement&hellip;</p>' +
+      '<iframe class="ad-frame" src="' + SMARTLINK + '" referrerpolicy="no-referrer-when-downgrade" allow="autoplay; fullscreen"></iframe></div></div>';
+    document.body.appendChild(modal);
+    modal.querySelector('.ad-close').addEventListener('click', closeVideo);
+  }
+
   function showVideo() {
-    if (document.hidden || noVideo) return;
-    if (!modal) {
-      modal = document.createElement('div');
-      modal.className = 'ad-modal';
-      modal.innerHTML =
-        '<div class="ad-modal-card" role="dialog" aria-label="Advertisement">' +
-        '<div class="ad-modal-head"><span>Advertisement &middot; closes in <b class="ad-count">10</b>s</span>' +
-        '<button type="button" class="ad-close" aria-label="Close ad">✕</button></div>' +
-        '<div class="ad-modal-body"><p class="ad-fallback">Advertisement&hellip;</p>' +
-        '<iframe class="ad-frame" src="' + SMARTLINK + '" referrerpolicy="no-referrer-when-downgrade" allow="autoplay; fullscreen"></iframe></div></div>';
-      document.body.appendChild(modal);
-      modal.querySelector('.ad-close').addEventListener('click', closeVideo);
-    }
+    if (document.hidden || !modal) return;
     var countEl = modal.querySelector('.ad-count');
     var count = VIDEO_DURATION;
     countEl.textContent = count;
@@ -54,6 +58,7 @@
     hideTimer = setTimeout(closeVideo, VIDEO_DURATION * 1000);
   }
 
+  buildModal();
   if (!noVideo) setInterval(showVideo, VIDEO_INTERVAL * 1000);
 
   // ---------- click popup ----------
