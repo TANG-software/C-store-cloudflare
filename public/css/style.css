@@ -375,8 +375,9 @@ label { display: flex; flex-direction: column; gap: 6px; font-weight: 600; font-
 .form-grid.wide { grid-template-columns: 1fr 1fr; }
 .auth-card { max-width: 470px; margin: 0 auto; }
 .muted-input { background: #0e0e15; }
-.otp-form { display: flex; gap: 10px; align-items: center; }
-.otp-form input { font-size: 1.5rem; letter-spacing: 8px; text-align: center; max-width: 215px; font-family: var(--head); }
+.otp-form { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.otp-form input { flex: 1 1 150px; min-width: 0; font-size: 1.5rem; letter-spacing: 8px; text-align: center; max-width: 215px; font-family: var(--head); }
+.otp-form .btn { flex-shrink: 0; white-space: nowrap; }
 
 /* ============ Tables ============ */
 .table { width: 100%; border-collapse: collapse; font-size: 0.93rem; }
