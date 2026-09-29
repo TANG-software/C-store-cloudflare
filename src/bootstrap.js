@@ -195,12 +195,32 @@ async function ensureHomepageCards(c) {
   }
 }
 
+// ---------- upgrades for databases created before these features existed ----------
+// Runs on every boot; each statement is idempotent (INSERT OR IGNORE / column check).
+const UPGRADE_SETTINGS_SQL = `INSERT OR IGNORE INTO settings(key, value) VALUES ('hero_headline', 'C Store is the perfect destination for all your needs!');
+INSERT OR IGNORE INTO settings(key, value) VALUES ('hero_badges', 'Free shipping over €75\n1–2 day delivery in NL\nPayPal & 300+ cryptocurrencies\n21% VAT included');
+INSERT OR IGNORE INTO settings(key, value) VALUES ('about_text', 'C Store keeps it simple: we hold our own stock in the Netherlands, describe every product the way it actually arrives, and answer email ourselves — no scripts, no call center. Prices include VAT, and shipping is free above €75.');
+INSERT OR IGNORE INTO settings(key, value) VALUES ('discord_url', '');
+INSERT OR IGNORE INTO settings(key, value) VALUES ('telegram_url', '');`;
+
+async function ensureUpgrades(c) {
+  for (const s of statements(UPGRADE_SETTINGS_SQL)) {
+    await c.env.DB.prepare(s).run();
+  }
+  // products.payment_methods (admin can restrict which payment methods a product allows)
+  const row = await c.env.DB.prepare("SELECT sql FROM sqlite_master WHERE type='table' AND name='products'").first();
+  if (row && row.sql && !/payment_methods/i.test(row.sql)) {
+    await c.env.DB.prepare("ALTER TABLE products ADD COLUMN payment_methods TEXT NOT NULL DEFAULT ''").run();
+  }
+}
+
 export async function ensureDb(c) {
   if (ready) return;
   const check = await c.env.DB.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='settings'").first();
   if (check) {
-    // Existing database: still upgrade it with the homepage cards table if missing.
+    // Existing database: still upgrade it (new settings + columns) if missing.
     await ensureHomepageCards(c);
+    await ensureUpgrades(c);
     ready = true;
     return;
   }
@@ -211,5 +231,6 @@ export async function ensureDb(c) {
     await c.env.DB.prepare(s).run();
   }
   await ensureHomepageCards(c);
+  await ensureUpgrades(c);
   ready = true;
 }

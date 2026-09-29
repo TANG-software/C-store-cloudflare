@@ -68,3 +68,13 @@ INSERT INTO homepage_cards(section, sort, title, body, stars, when_label, icon) 
 INSERT INTO homepage_cards(section, sort, title, body, stars, when_label, icon) VALUES ('pay', 3, 'Ethereum', 'Ξ', 5, '', '');
 INSERT INTO homepage_cards(section, sort, title, body, stars, when_label, icon) VALUES ('pay', 4, 'USDT', '₮', 5, '', '');
 INSERT INTO homepage_cards(section, sort, title, body, stars, when_label, icon) VALUES ('pay', 5, '300+ coins', '', 5, '', '');
+
+-- Homepage text + social links (editable in Admin)
+INSERT OR IGNORE INTO settings(key, value) VALUES ('hero_headline', 'C Store is the perfect destination for all your needs!');
+INSERT OR IGNORE INTO settings(key, value) VALUES ('hero_badges', 'Free shipping over €75
+1–2 day delivery in NL
+PayPal & 300+ cryptocurrencies
+21% VAT included');
+INSERT OR IGNORE INTO settings(key, value) VALUES ('about_text', 'C Store keeps it simple: we hold our own stock in the Netherlands, describe every product the way it actually arrives, and answer email ourselves — no scripts, no call center. Prices include VAT, and shipping is free above €75.');
+INSERT OR IGNORE INTO settings(key, value) VALUES ('discord_url', '');
+INSERT OR IGNORE INTO settings(key, value) VALUES ('telegram_url', '');

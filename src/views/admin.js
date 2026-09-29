@@ -45,7 +45,7 @@ export function dashboard(ctx, { stats, recentOrders }) {
   <div class="card stat"><span class="stat-num">${stats.products}</span><span class="muted">Products</span></div>
   <div class="card stat"><span class="stat-num">${stats.customers}</span><span class="muted">Customers</span></div>
 </div>
-${stats.pendingVerification > 0 ? `<div class="flash flash-warn">${stats.pendingVerification} user(s) still need mobile-number verification — you can manually verify them from the <a href="/admin/users">Users</a>.</div>` : ''}
+${stats.pendingVerification > 0 ? `<div class="flash flash-warn">${stats.pendingVerification} user(s) still need email verification — you can manually verify them from the <a href="/admin/users">Users</a>.</div>` : ''}
 
 <div class="card">
   <h2>Recent orders</h2>
@@ -87,6 +87,10 @@ export function products(ctx, { products }) {
 
 export function productForm(ctx, { p, categories }) {
   const opt = (c) => `<option value="${c.id}" ${p && p.category_id == c.id ? 'selected' : ''}>${esc(c.name)}</option>`;
+  const PM = [['paypal', 'PayPal'], ['coinbase', 'Coinbase Commerce'], ['nowpayments', 'NOWPayments'], ['bitpay', 'BitPay'], ['manual_crypto', 'Direct wallet transfer']];
+  const pmSel = new Set(String((p && p.payment_methods) || '').split(',').map((s) => s.trim()).filter(Boolean));
+  const pmChecks = PM.map(([id, name]) => `
+      <label class="pm-check"><input type="checkbox" name="payment_methods" value="${id}" ${pmSel.has(id) ? 'checked' : ''}> ${name}</label>`).join('');
   return adminPage(ctx, `
 <h1>${p ? 'Edit product' : 'New product'}</h1>
 <div class="card">
@@ -106,6 +110,13 @@ export function productForm(ctx, { p, categories }) {
     </label>
     <label class="span2">Image URL<input name="image_url" value="${p ? esc(p.image_url) : ''}" placeholder="https://…"></label>
     <label class="span2">Description<textarea name="description" rows="4">${p ? esc(p.description) : ''}</textarea></label>
+    <div class="span2">
+      <label class="pm-label">Payment methods allowed for this product
+        <div class="pm-checks">${pmChecks}
+        </div>
+      </label>
+      <p class="muted small">Leave all unchecked to allow every payment method that is configured under Payments. If you check any, this product can only be bought with those methods — the cart and checkout apply this automatically.</p>
+    </div>
     <div class="span2">
       <button class="btn btn-lg" type="submit">Save product</button>
       <a class="link-btn" href="/admin/products">Cancel</a>
@@ -304,6 +315,17 @@ export function homepage(ctx, { cards }) {
 <p class="muted">Everything shown in the About-us, Reviews and “We support” sections of the homepage is managed here. Removing all cards of a type hides that section completely. Changes are live immediately.</p>
 
 <div class="card">
+  <h2>Homepage text</h2>
+  <p class="muted small">The big headline, the small badges underneath the button, and the About-us paragraph — everything a visitor reads on the main page.</p>
+  <form action="/admin/settings" method="POST" class="form-grid">
+    <label class="span2">Hero headline<input name="hero_headline" value="${esc(ctx.settings.hero_headline || '')}" placeholder="C Store is the perfect destination for all your needs!"></label>
+    <label class="span2">Badges under the button (one per line)<textarea name="hero_badges" rows="4">${esc(ctx.settings.hero_badges || '')}</textarea></label>
+    <label class="span2">About-us paragraph<textarea name="about_text" rows="4">${esc(ctx.settings.about_text || '')}</textarea></label>
+    <div class="span2"><button class="btn">Save homepage text</button></div>
+  </form>
+</div>
+
+<div class="card">
   <h2>About-us feature cards</h2>
   ${feats.map((f) => `<div class="hp-edit">${featureForm(f)}${del(f.id, 'card')}</div>`).join('') || '<p class="muted">No feature cards — the About-us card list is hidden on the homepage.</p>'}
   <div class="hp-add">${featureForm(null)}</div>
@@ -411,6 +433,8 @@ export function settings(ctx, { s, baseUrl }) {
     <form action="/admin/settings" method="POST" class="form-grid">
       <label>Support email<input name="support_email" value="${v('support_email')}" placeholder="support@cstore.nl"></label>
       <label>Support phone<input name="support_phone" value="${v('support_phone')}" placeholder="+31 20 123 4567"></label>
+      <label>Discord invite URL (optional)<input name="discord_url" value="${v('discord_url')}" placeholder="https://discord.gg/…"></label>
+      <label>Telegram URL (optional)<input name="telegram_url" value="${v('telegram_url')}" placeholder="https://t.me/…"></label>
       <label class="span2">Store address (optional)<textarea name="store_address" rows="2" placeholder="Keizersgracht 1, 1015 CJ Amsterdam, Netherlands">${v('store_address')}</textarea></label>
       <div class="span2"><button class="btn">Save contact details</button></div>
     </form>

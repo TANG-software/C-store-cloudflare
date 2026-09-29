@@ -4,7 +4,7 @@ import { page } from './layout.js';
 
 const EU = ['NL', 'BE', 'DE', 'FR', 'LU', 'AT', 'IT', 'ES', 'PT', 'DK', 'SE', 'FI', 'IE', 'PL', 'CZ', 'SK', 'HU', 'SI', 'HR', 'EE', 'LV', 'LT', 'GR', 'RO', 'BG', 'CY', 'MT'];
 
-export function checkout(ctx, { user, details, methods }) {
+export function checkout(ctx, { user, details, methods, restricted }) {
   const firstAvailable = (ms) => {
     const i = ms.findIndex((m) => m.available);
     return i === -1 ? -2 : i;
@@ -44,6 +44,7 @@ export function checkout(ctx, { user, details, methods }) {
 
       <div class="card">
         <h2>Payment method</h2>
+        ${restricted ? '<p class="muted small">Some products in your cart only allow certain payment methods — the options below reflect that.</p>' : ''}
         ${methods.map(option).join('')}
       </div>
     </div>

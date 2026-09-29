@@ -11,32 +11,50 @@ checkout.get('/checkout', async (c) => {
   if (!sess.uid) return c.redirect('/login?next=/checkout');
   const user = await q.first(c, 'SELECT * FROM users WHERE id = ?', sess.uid);
   if (!user) return c.redirect('/login');
-  if (!user.phone_verified) { await flash(c, 'error', 'Please verify your mobile number before placing an order — it only takes a minute.'); return c.redirect('/verify'); }
+  if (!user.email_verified) { await flash(c, 'error', 'Please verify your email address before placing an order — it only takes a minute.'); return c.redirect('/verify'); }
   const details = await c.get('helpers').cartDetails(c);
   if (!details.items.length) return c.redirect('/cart');
 
   const settings = c.get('ctx').settings;
   const avail = availableMethods(settings);
-  const methods = Object.entries(METHOD_META).map(([id, m]) => ({ id, ...m, available: !!avail[id] }));
+  const allMethods = Object.entries(METHOD_META).map(([id, m]) => ({ id, ...m, available: !!avail[id] }));
+  // Per-product payment methods: every item in the cart must allow the method.
+  let allowed = new Set(Object.keys(METHOD_META));
+  for (const it of details.items) {
+    const pm = String(it.product.payment_methods || '').trim();
+    if (!pm) continue; // empty = all methods allowed for this product
+    const set = new Set(pm.split(',').map((s) => s.trim()).filter(Boolean));
+    allowed = new Set([...allowed].filter((m) => set.has(m)));
+  }
+  const methods = allMethods.filter((m) => m.available && allowed.has(m.id));
+  const restricted = allowed.size < Object.keys(METHOD_META).length;
   if (!methods.some((m) => m.available)) {
-    await flash(c, 'error', 'No payment method is configured yet — please check back soon.');
+    await flash(c, 'error', restricted ? 'No available payment method is allowed for the products in your cart — please remove them or contact us.' : 'No payment method is configured yet — please check back soon.');
     return c.redirect('/cart');
   }
-  return c.html(views.checkout(c.get('ctx'), { user, details, methods }));
+  return c.html(views.checkout(c.get('ctx'), { user, details, methods, restricted }));
 });
 
 checkout.post('/checkout', async (c) => {
   const sess = c.get('session');
   if (!sess.uid) return c.redirect('/login?next=/checkout');
   const user = await q.first(c, 'SELECT * FROM users WHERE id = ?', sess.uid);
-  if (!user || !user.phone_verified) return c.redirect('/verify');
+  if (!user || !user.email_verified) return c.redirect('/verify');
   const b = await c.req.parseBody();
   const method = String(b.payment_method || '');
   const settings = c.get('ctx').settings;
   const avail = availableMethods(settings);
-  if (!avail[method]) { await flash(c, 'error', 'That payment method is not available.'); return c.redirect('/checkout'); }
+  const details2 = await c.get('helpers').cartDetails(c);
+  let allowed2 = new Set(Object.keys(METHOD_META));
+  for (const it of details2.items) {
+    const pm = String(it.product.payment_methods || '').trim();
+    if (!pm) continue;
+    const set = new Set(pm.split(',').map((s) => s.trim()).filter(Boolean));
+    allowed2 = new Set([...allowed2].filter((m) => set.has(m)));
+  }
+  if (!avail[method] || !allowed2.has(method)) { await flash(c, 'error', 'That payment method is not available for the products in your cart.'); return c.redirect('/checkout'); }
 
-  const details = await c.get('helpers').cartDetails(c);
+  const details = details2;
   if (!details.items.length) return c.redirect('/cart');
 
   // stock check

@@ -36,6 +36,7 @@ CREATE TABLE IF NOT EXISTS products (
   stock INTEGER NOT NULL DEFAULT 0,
   image_url TEXT NOT NULL DEFAULT '',
   active INTEGER NOT NULL DEFAULT 1,
+  payment_methods TEXT NOT NULL DEFAULT '',
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 CREATE TABLE IF NOT EXISTS orders (

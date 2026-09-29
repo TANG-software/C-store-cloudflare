@@ -12,7 +12,7 @@ export function login(ctx, next, email, error) {
       <input type="hidden" name="next" value="${esc(next || '')}">
       <label>Email<input type="email" name="email" value="${esc(email || '')}" required autofocus></label>
       <label>Password<input type="password" name="password" required></label>
-      <button type="submit" class="btn btn-lg btn-block">Log in</button>
+      <button type="submit" class="btn btn-lg btn-block btn-pill">Log in</button>
     </form>
     <p class="muted center">New here? <a href="/register">Create an account</a></p>
   </div>
@@ -25,14 +25,14 @@ export function register(ctx, values) {
 <section class="section narrow">
   <div class="card auth-card">
     <h1>Create account</h1>
-    <p class="muted">We'll text a code to your mobile number to verify it — that's required before you can place an order. Email verification is optional.</p>
+    <p class="muted">We'll email you a 6-digit code to verify your address — that's required before you can place an order. Verifying your mobile number is optional.</p>
     <form action="/register" method="POST">
       <label>Full name<input name="name" required value="${v('name')}"></label>
       <label>Email address<input type="email" name="email" required value="${v('email')}"></label>
       <label>Mobile number<input name="phone" required placeholder="+31 6 12345678" value="${v('phone')}"></label>
       <label>Password<input type="password" name="password" required minlength="8"></label>
       <label>Confirm password<input type="password" name="confirm" required minlength="8"></label>
-      <button type="submit" class="btn btn-lg btn-block">Create account</button>
+      <button type="submit" class="btn btn-lg btn-block btn-pill">Create account</button>
     </form>
     <p class="muted center">Already registered? <a href="/login">Log in</a></p>
   </div>
@@ -53,28 +53,28 @@ export function verify(ctx, { user, smsReady, mailReady }) {
   return page(ctx, `
 <section class="section narrow">
   <div class="card center auth-card verify-hero">
-    <span class="feature-icon">${PHONE_ICON}</span>
-    <h1>${user.phone_verified ? 'Mobile number verified' : 'Verify your mobile number'}</h1>
-    ${user.phone_verified
-      ? `<p class="muted">Your mobile number <strong>${esc(user.phone)}</strong> is verified — you can place orders.</p>
+    <span class="feature-icon">${MAIL_ICON}</span>
+    <h1>${user.email_verified ? 'Email verified' : 'Verify your email'}</h1>
+    ${user.email_verified
+      ? `<p class="muted">Your email address <strong>${esc(user.email)}</strong> is verified — you can place orders.</p>
          <a class="btn btn-lg" href="/shop">Continue shopping</a>`
-      : `<p class="muted">Required before you can place an order. We sent a 6-digit code by text message to <strong>${esc(user.phone)}</strong>.</p>
-         ${!smsReady ? '<div class="flash flash-warn">Text messages are not set up for this store yet, so the code cannot reach your phone. The store owner needs to add the SMS settings under Admin → Payments first — until then, ask the store owner to verify your number manually from the admin Users page.</div>' : ''}
-         ${codeForm('phone')}`}
+      : `<p class="muted">Required before you can place an order. We sent a 6-digit code by email to <strong>${esc(user.email)}</strong>.</p>
+         ${!mailReady ? '<div class="flash flash-warn">Email sending is not set up for this store yet, so the code cannot reach your inbox. The store owner needs to add the email settings under Admin → Payments first — until then, ask the store owner to verify your email manually from the admin Users page.</div>' : ''}
+         ${codeForm('email')}`}
   </div>
 
   <div class="card auth-card verify-optional">
     <div class="verify-opt-head">
-      <span class="feature-icon">${MAIL_ICON}</span>
-      <h2>Email verification</h2>
+      <span class="feature-icon">${PHONE_ICON}</span>
+      <h2>Mobile verification</h2>
       <span class="badge badge-pending">optional</span>
-      ${user.email_verified ? '<span class="badge badge-paid">verified</span>' : ''}
+      ${user.phone_verified ? '<span class="badge badge-paid">verified</span>' : ''}
     </div>
-    ${user.email_verified
-      ? `<p class="muted">Your email address <strong>${esc(user.email)}</strong> is verified — you'll receive order confirmations by email.</p>`
-      : `<p class="muted">Optional — verifying your email lets you receive order confirmations. You can place orders without it.</p>
-         ${!mailReady ? '<div class="flash flash-warn">Email sending is not set up for this store yet, so email codes cannot be delivered. The store owner needs to add the email settings under Admin → Payments first.</div>' : ''}
-         ${codeForm('email')}`}
+    ${user.phone_verified
+      ? `<p class="muted">Your mobile number <strong>${esc(user.phone)}</strong> is verified.</p>`
+      : `<p class="muted">Optional — you can place orders without it. Adding a verified mobile number makes it easier for us to reach you about your delivery.</p>
+         ${!smsReady ? '<div class="flash flash-warn">Text messages are not set up for this store yet, so SMS codes cannot be delivered. The store owner needs to add the SMS settings under Admin → Payments first.</div>' : ''}
+         ${codeForm('phone')}`}
   </div>
 </section>`);
 }
@@ -89,7 +89,7 @@ export function changePassword(ctx, forced) {
       <label>Current password<input type="password" name="current" autocomplete="current-password" required></label>
       <label>New password (at least 8 characters)<input type="password" name="password" autocomplete="new-password" required minlength="8"></label>
       <label>Confirm new password<input type="password" name="confirm" autocomplete="new-password" required minlength="8"></label>
-      <button type="submit" class="btn btn-lg btn-block">Save new password</button>
+      <button type="submit" class="btn btn-lg btn-block btn-pill">Save new password</button>
     </form>
   </div>
 </section>`);
@@ -135,13 +135,13 @@ export function account(ctx, { user, orders }) {
       <h2>Profile</h2>
       <table class="table">
       <tr><td>Name</td><td>${esc(user.name)}</td></tr>
-      <tr><td>Email</td><td>${esc(user.email)} ${user.email_verified ? '✓' : '<span class="muted small">(optional, not verified)</span>'}</td></tr>
-      <tr><td>Mobile</td><td>${esc(user.phone)} ${user.phone_verified ? '✓' : '<strong style="color:#e5484d">not verified</strong>'}</td></tr>
+      <tr><td>Email</td><td>${esc(user.email)} ${user.email_verified ? '✓' : '<strong style="color:#e5484d">not verified</strong>'}</td></tr>
+      <tr><td>Mobile</td><td>${esc(user.phone)} ${user.phone_verified ? '✓' : '<span class="muted small">(optional, not verified)</span>'}</td></tr>
       <tr><td>Member since</td><td>${esc(user.created_at.slice(0, 10))}</td></tr>
     </table>
-    ${!user.phone_verified
-      ? '<a class="btn btn-block" href="/verify">Verify my mobile number</a>'
-      : (!user.email_verified ? '<p class="muted small center"><a href="/verify">Verify email as well (optional)</a> — get order confirmations by email.</p>' : '')}
+    ${!user.email_verified
+      ? '<a class="btn btn-block" href="/verify">Verify my email</a>'
+      : (!user.phone_verified ? '<p class="muted small center"><a href="/verify">Verify mobile as well (optional)</a> — easier delivery updates.</p>' : '')}
       <details class="profile-edit">
         <summary>Edit name / phone</summary>
         <form action="/account/profile" method="POST">

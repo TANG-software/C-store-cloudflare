@@ -99,14 +99,6 @@ html.js .category-grid .reveal:nth-child(2n) { transition-delay: 0.07s; }
 .header-inner { display: flex; align-items: center; gap: 18px; padding-top: 14px; padding-bottom: 14px; flex-wrap: wrap; }
 .logo { font-family: var(--head); font-weight: 800; font-size: 1.25rem; color: #fff; display: inline-flex; align-items: center; gap: 11px; letter-spacing: 0.01em; }
 .logo:hover { color: #fff; }
-.logo-mark {
-  background: var(--purple-grad);
-  color: #fff; width: 38px; height: 38px; border-radius: 999px;
-  display: inline-flex; align-items: center; justify-content: center;
-  font-family: var(--head); font-size: 1.2rem; font-weight: 800;
-  box-shadow: 0 0 18px rgba(168, 85, 247, 0.5);
-  animation: logoPulse 4s ease-in-out infinite;
-}
 @keyframes logoPulse { 0%, 100% { box-shadow: 0 0 14px rgba(168, 85, 247, 0.4); } 50% { box-shadow: 0 0 26px rgba(168, 85, 247, 0.7); } }
 .search-bar { flex: 1; display: flex; min-width: 200px; max-width: 440px; border: 1px solid var(--line); border-radius: 999px; background: var(--card); overflow: hidden; transition: border-color 0.25s, box-shadow 0.25s; }
 .search-bar:focus-within { border-color: var(--purple); box-shadow: 0 0 0 3px var(--purple-soft); }
@@ -139,9 +131,7 @@ html.js .category-grid .reveal:nth-child(2n) { transition-delay: 0.07s; }
   display: none; background: transparent; border: 1px solid var(--line); border-radius: 10px;
   width: 40px; height: 40px; align-items: center; justify-content: center; cursor: pointer; color: #fff;
 }
-.mobile-menu { display: none; border-top: 1px solid var(--line-soft); padding: 14px 22px 20px; background: rgba(12, 12, 17, 0.98); }
-.mobile-menu.open { display: block; animation: pageIn 0.25s ease both; }
-.mobile-menu .search-bar { max-width: none; margin-bottom: 14px; }
+.mobile-menu { padding: 0; border: 0; }
 .mobile-menu nav { display: flex; flex-direction: column; gap: 4px; }
 .mobile-menu nav a { color: var(--text); padding: 11px 14px; border-radius: 10px; font-weight: 600; }
 .mobile-menu nav a:hover, .mobile-menu nav a.active { background: var(--purple-soft); color: #fff; text-decoration: none; }
@@ -297,7 +287,7 @@ html.js .category-grid .reveal:nth-child(2n) { transition-delay: 0.07s; }
 /* ============ Product grid ============ */
 .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(235px, 1fr)); gap: 18px; }
 .product-card {
-  background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+  background: var(--card); border: 1px solid rgba(168, 85, 247, 0.3); border-radius: var(--radius);
   overflow: hidden; color: var(--text); display: flex; flex-direction: column;
   transition: transform 0.3s cubic-bezier(0.22, 0.61, 0.36, 1), box-shadow 0.3s, border-color 0.3s;
 }
@@ -465,7 +455,7 @@ details p { margin: 6px 0 12px; }
 .site-footer a:hover { color: #fff; }
 .site-footer h4 { color: #fff; margin: 0 0 10px; font-family: var(--head); font-size: 0.98rem; letter-spacing: 0.04em; }
 .site-footer .logo { color: #fff; }
-.site-footer .logo-mark { background: rgba(168, 85, 247, 0.16); animation: none; }
+.site-footer .logo-badge { filter: none; opacity: 0.85; }
 .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1.2fr; gap: 28px; }
 .footer-bottom { border-top: 1px solid var(--line-soft); margin-top: 30px; padding-top: 18px; font-size: 0.84rem; }
 .footer-pay { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
@@ -488,7 +478,6 @@ details p { margin: 6px 0 12px; }
   .header-inner .search-bar, .header-inner .main-nav { display: none; }
   .menu-btn { display: inline-flex; }
 }
-@media (min-width: 901px) { .mobile-menu { display: none !important; } }
 @media (max-width: 700px) {
   .header-inner { gap: 12px; }
   .top-bar { font-size: 0.66rem; letter-spacing: 0.03em; }
@@ -538,3 +527,44 @@ details p { margin: 6px 0 12px; }
 .ad-side-close:hover { color: #fff; background: rgba(255, 255, 255, 0.08); }
 .ad-side-body { padding: 8px; min-height: 110px; max-height: 260px; overflow: hidden; background: #0a0a10; }
 @media (max-width: 520px) { .ad-side { right: 8px; left: 8px; width: auto; bottom: 80px; } }
+
+/* ============ Logo (animated circular badge) ============ */
+.logo-badge { position: relative; flex: none; width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center; }
+.logo-ring { position: absolute; inset: 0; border-radius: 50%; background: conic-gradient(from 0deg, #a855f7, #6366f1, #d946ef, #7c3aed, #a855f7); animation: logoSpin 7s linear infinite; }
+.logo-ring::before { content: ""; position: absolute; inset: 2.5px; border-radius: 50%; background: #0c0c13; }
+.logo-core { position: relative; z-index: 1; font-family: var(--head); font-weight: 800; font-size: 1.2rem; color: #fff; letter-spacing: 0; }
+.logo-badge { filter: drop-shadow(0 0 7px rgba(168, 85, 247, 0.45)); animation: logoBreathe 5s ease-in-out infinite; }
+@keyframes logoSpin { to { transform: rotate(360deg); } }
+@keyframes logoBreathe { 0%, 100% { filter: drop-shadow(0 0 5px rgba(168, 85, 247, 0.35)); } 50% { filter: drop-shadow(0 0 13px rgba(168, 85, 247, 0.7)); } }
+
+/* ============ Minimal header + overlay menu ============ */
+.header-actions { margin-left: auto; }
+.mobile-menu { display: none; position: fixed; inset: 0; z-index: 1200; background: rgba(5, 5, 10, 0.62); backdrop-filter: blur(3px); align-items: center; justify-content: center; }
+.mobile-menu.open { display: flex; animation: pageIn 0.22s ease both; }
+.mobile-menu-inner { width: min(400px, 92vw); background: #12121b; border: 1px solid var(--line); border-radius: 20px; padding: 18px; box-shadow: 0 30px 90px -20px rgba(0, 0, 0, 0.85); }
+.mobile-menu-inner .search-bar { max-width: none; margin-bottom: 12px; }
+
+/* ============ Hero headline ============ */
+.hero-headline { font-family: var(--head); font-size: clamp(1.75rem, 4.6vw, 3.1rem); font-weight: 800; color: #fff; letter-spacing: -0.01em; line-height: 1.14; margin: 10px auto 0; max-width: 780px; }
+
+/* ============ Pill buttons ============ */
+.btn-pill { border-radius: 999px; padding-left: 26px; padding-right: 26px; }
+.btn-pill::after { content: "\2192"; margin-left: 10px; font-family: inherit; }
+
+/* ============ Footer ============ */
+.site-footer h4 { position: relative; display: inline-block; padding-bottom: 7px; }
+.site-footer h4::after { content: ""; position: absolute; left: 0; bottom: 0; width: 34px; height: 3px; border-radius: 3px; background: var(--purple-grad); }
+.footer-social { display: flex; gap: 10px; margin-bottom: 12px; }
+.footer-social a { width: 38px; height: 38px; border-radius: 11px; display: inline-flex; align-items: center; justify-content: center; color: #cfcfda; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--line); transition: color 0.2s, border-color 0.2s, transform 0.2s; }
+.footer-social a:hover { color: #fff; border-color: rgba(168, 85, 247, 0.55); transform: translateY(-2px); text-decoration: none; }
+
+/* ============ Admin: payment method checkboxes ============ */
+.pm-label { font-weight: 600; }
+.pm-checks { display: flex; flex-wrap: wrap; gap: 10px 18px; margin-top: 6px; }
+.pm-check { display: inline-flex; align-items: center; gap: 7px; font-weight: 400; font-size: 0.92rem; color: var(--text); }
+.pm-check input { accent-color: #a855f7; width: 16px; height: 16px; }
+
+/* ============ Product cards: single column on phones ============ */
+@media (max-width: 640px) {
+  .product-grid { grid-template-columns: 1fr; }
+}

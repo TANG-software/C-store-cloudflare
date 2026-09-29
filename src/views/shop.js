@@ -19,20 +19,21 @@ export const FEATURE_ICONS = {
 export function home(ctx, { categories, featured, newest, stats, cards }) {
   const S = ctx.settings;
   const free = (Number(S.free_shipping_threshold_cents) / 100).toFixed(2);
+  const headline = String(S.hero_headline || '').trim() || `${S.store_name} is the perfect destination for all your needs!`;
+  const badges = String(S.hero_badges || '').split('\n').map((s) => s.trim()).filter(Boolean);
+  const aboutText = String(S.about_text || '').trim() || `${S.store_name} keeps it simple: we hold our own stock in the Netherlands, describe every product the way it actually arrives, and answer email ourselves — no scripts, no call center. Prices include VAT, and shipping is free above €${free}.`;
   const icon = (paths, extra = '') => `<span class="feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ${extra}>${paths}</svg></span>`;
   const stars = (n) => '★'.repeat(n) + '☆'.repeat(Math.max(0, 5 - n));
   return page(ctx, `
 <section class="hero">
   <p class="hero-overline">Netherlands &middot; EU shipping</p>
-  <h1 class="hero-brand">${esc(S.store_name)}</h1>
-  <p class="hero-tag">${esc(S.store_tagline || 'Curated products, honest prices, fast delivery.')}</p>
-  <a href="/shop" class="btn btn-lg">Explore the collection</a>
+  <h1 class="hero-headline">${esc(headline)}</h1>
+  ${S.store_tagline ? `<p class="hero-tag">${esc(S.store_tagline)}</p>` : ''}
+  <a href="/shop" class="btn btn-lg btn-pill">Shop here!</a>
+  ${badges.length ? `
   <div class="hero-badges">
-    <span>Free shipping over €${free}</span>
-    <span>1–2 day delivery in NL</span>
-    <span>PayPal & 300+ cryptocurrencies</span>
-    <span>21% VAT included</span>
-  </div>
+    ${badges.map((b) => `<span>${esc(b)}</span>`).join('')}
+  </div>` : ''}
 </section>
 
 <section class="section">
@@ -49,7 +50,7 @@ ${cards.feature.length ? `
 <section class="section">
   <div class="card">
     <h2>About us</h2>
-    <p class="muted">${esc(S.store_name)} keeps it simple: we hold our own stock in the Netherlands, describe every product the way it actually arrives, and answer email ourselves — no scripts, no call center. Prices include VAT, and shipping is free above €${free}.</p>
+    <p class="muted">${esc(aboutText)}</p>
     <div class="feature-grid">
       ${cards.feature.map((f) => `
       <div class="feature-card">
@@ -97,7 +98,7 @@ ${cards.review.length ? `
 
 ${cards.pay.length ? `
 <section class="section">
-  <h2 class="center">We support</h2>
+  <h2 class="center">We support different payment methods</h2>
   <p class="muted center small">Multiple secure payment methods at checkout</p>
   <div class="pay-strip">
     ${cards.pay.map((p) => `<div class="pay-tile">${esc(p.title)}${p.body ? ` <span class="cur">${esc(p.body)}</span>` : ''}</div>`).join('')}
@@ -240,8 +241,8 @@ export function help(ctx) {
     <h2>Frequently asked questions</h2>
     <details><summary>Which payment methods do you accept?</summary>
       <p class="muted">PayPal (including card payments through PayPal) and cryptocurrencies — Bitcoin, Ethereum, USDT and 300+ coins, depending on the options available at checkout.</p></details>
-    <details><summary>Why do I need to verify my mobile number?</summary>
-      <p class="muted">For your security and to prevent fraud, we verify every customer's mobile number with a one-time code before the first order — that's all that's required. Verifying your email as well is optional, and lets you receive order confirmations by email.</p></details>
+    <details><summary>Why do I need to verify my email address?</summary>
+      <p class="muted">For your security and to prevent fraud, we verify every customer's email address with a one-time code before the first order — that's all that's required. Verifying your mobile number as well is optional, and makes it easier for us to reach you about your delivery.</p></details>
     <details><summary>I paid with crypto — why is my order still “pending”?</summary>
       <p class="muted">Cryptocurrency payments need network confirmations. Hosted checkouts (Coinbase Commerce, NOWPayments, BitPay) confirm automatically within minutes. Direct wallet transfers are verified by our team, usually within a few hours.</p></details>
     <details><summary>Where do you ship?</summary>

@@ -33,7 +33,7 @@ admin.get('/', async (c) => {
     revenue: await q.first(c, "SELECT COALESCE(SUM(total_cents), 0) n FROM orders WHERE status IN ('paid', 'shipped')").then((r) => r.n),
     products: await q.first(c, 'SELECT COUNT(*) n FROM products WHERE active = 1').then((r) => r.n),
     customers: await q.first(c, "SELECT COUNT(*) n FROM users WHERE role = 'customer'").then((r) => r.n),
-    pendingVerification: await q.first(c, "SELECT COUNT(*) n FROM users WHERE role = 'customer' AND phone_verified = 0").then((r) => r.n),
+    pendingVerification: await q.first(c, "SELECT COUNT(*) n FROM users WHERE role = 'customer' AND email_verified = 0").then((r) => r.n),
   };
   const recentOrders = await q.all(c, `SELECT o.*, u.name AS user_name FROM orders o JOIN users u ON u.id = o.user_id ORDER BY o.id DESC LIMIT 10`);
   return c.html(views.dashboard(c.get('ctx'), { stats, recentOrders }));
@@ -61,13 +61,14 @@ admin.post('/products/save', async (c) => {
   const b = await c.req.parseBody();
   const price = Math.round(Number(String(b.price_eur || '0').replace(',', '.')) * 100);
   const slug = slugify(b.name);
+  const paymentMethods = [].concat(b.payment_methods || []).join(',');
   if (b.id) {
-    await q.run(c, `UPDATE products SET category_id = ?, name = ?, slug = ?, description = ?, price_cents = ?, stock = ?, image_url = ?, active = ? WHERE id = ?`,
-      Number(b.category_id), String(b.name), slug, String(b.description || ''), price, Number(b.stock) || 0, String(b.image_url || ''), b.active === '1' ? 1 : 0, Number(b.id));
+    await q.run(c, `UPDATE products SET category_id = ?, name = ?, slug = ?, description = ?, price_cents = ?, stock = ?, image_url = ?, active = ?, payment_methods = ? WHERE id = ?`,
+      Number(b.category_id), String(b.name), slug, String(b.description || ''), price, Number(b.stock) || 0, String(b.image_url || ''), b.active === '1' ? 1 : 0, paymentMethods, Number(b.id));
     await flash(c, 'success', 'Product updated.');
   } else {
-    await q.run(c, `INSERT INTO products(category_id, name, slug, description, price_cents, stock, image_url, active) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-      Number(b.category_id), String(b.name), slug + '-' + Date.now().toString(36).slice(-4), String(b.description || ''), price, Number(b.stock) || 0, String(b.image_url || ''), b.active === '1' ? 1 : 0);
+    await q.run(c, `INSERT INTO products(category_id, name, slug, description, price_cents, stock, image_url, active, payment_methods) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      Number(b.category_id), String(b.name), slug + '-' + Date.now().toString(36).slice(-4), String(b.description || ''), price, Number(b.stock) || 0, String(b.image_url || ''), b.active === '1' ? 1 : 0, paymentMethods);
     await flash(c, 'success', 'Product created.');
   }
   return c.redirect('/admin/products');
@@ -229,7 +230,7 @@ admin.post('/settings', async (c) => {
   for (const [form, key] of Object.entries(euros)) {
     if (form in b) await setSetting(c, key, String(Math.round(Number(String(b[form] || '0').replace(',', '.')) * 100)));
   }
-  for (const key of ['store_name', 'store_tagline', 'support_email', 'support_phone', 'store_address', 'public_base_url', 'wallet_btc', 'wallet_eth', 'wallet_usdt_trc20']) {
+  for (const key of ['store_name', 'store_tagline', 'support_email', 'support_phone', 'store_address', 'public_base_url', 'wallet_btc', 'wallet_eth', 'wallet_usdt_trc20', 'hero_headline', 'hero_badges', 'about_text', 'discord_url', 'telegram_url']) {
     if (key in b) await setSetting(c, key, String(b[key] ?? '').trim());
   }
   await flash(c, 'success', 'Settings saved.');

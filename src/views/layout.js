@@ -34,7 +34,7 @@ export function header(ctx) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${ctx.title ? esc(ctx.title) + ' · ' : ''}${esc(settings.store_name)}</title>
-  <link rel="stylesheet" href="/css/style.css?v=8">
+  <link rel="stylesheet" href="/css/style.css?v=9">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
@@ -44,22 +44,10 @@ export function header(ctx) {
 <div class="top-bar"><div class="container">Free EU shipping over €${(Number(settings.free_shipping_threshold_cents) / 100).toFixed(2)} &middot; PayPal & 300+ cryptocurrencies &middot; 21% VAT included</div></div>
 <header class="site-header">
   <div class="container header-inner">
-    <a href="/" class="logo"><span class="logo-mark">C</span><span class="logo-text">${esc(settings.store_name)}</span></a>
-    <form class="search-bar" action="/shop" method="get">
-      <input type="search" name="q" placeholder="Search products…" value="${esc(q || '')}">
-      <button type="submit" aria-label="Search"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4.2-4.2"/></svg></button>
-    </form>
-    <nav class="main-nav">
-      <a href="/shop" class="${path === '/shop' ? 'active' : ''}">Shop</a>
-      ${user ? `
-        <a href="/account" class="${path.startsWith('/account') ? 'active' : ''}">My account</a>
-        ${user.role === 'admin' ? `<a href="/admin" class="admin-link">Admin</a>` : ''}
-        <form action="/logout" method="POST" class="inline-form"><button class="link-btn">Log out</button></form>
-      ` : `
-        <a href="/login" class="${path === '/login' ? 'active' : ''}">Log in</a>
-        <a href="/register" class="btn btn-small">Create account</a>
-      `}
-    </nav>
+    <a href="/" class="logo" aria-label="Home">
+      <span class="logo-badge"><span class="logo-ring"></span><span class="logo-core">C</span></span>
+      <span class="logo-text">${esc(settings.store_name)}</span>
+    </a>
     <div class="header-actions">
       <a href="/cart" class="cart-link" aria-label="Cart"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8h12l-1.2 12.2a1.4 1.4 0 0 1-1.4 1.3H8.6a1.4 1.4 0 0 1-1.4-1.3L6 8z"/><path d="M9 10V6.5a3 3 0 0 1 6 0V10"/></svg> <span class="cart-count">${cartCount}</span></a>
       <button class="menu-btn" aria-label="Menu" onclick="document.getElementById('mobileMenu').classList.toggle('open')">
@@ -67,17 +55,19 @@ export function header(ctx) {
       </button>
     </div>
   </div>
-  <div class="mobile-menu" id="mobileMenu">
-    <form class="search-bar" action="/shop" method="get">
-      <input type="search" name="q" placeholder="Search products…" value="${esc(q || '')}">
-      <button type="submit" aria-label="Search"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4.2-4.2"/></svg></button>
-    </form>
-    ${navLinks(ctx, true)}
+  <div class="mobile-menu" id="mobileMenu" onclick="if (event.target === this) this.classList.remove('open')">
+    <div class="mobile-menu-inner">
+      <form class="search-bar" action="/shop" method="get">
+        <input type="search" name="q" placeholder="Search products…" value="${esc(q || '')}">
+        <button type="submit" aria-label="Search"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4.2-4.2"/></svg></button>
+      </form>
+      ${navLinks(ctx, true)}
+    </div>
   </div>
 </header>
-${user && !user.phone_verified ? `
+${user && !user.email_verified ? `
 <div class="banner-warn">
-  <div class="container">Please <a href="/verify">verify your mobile number</a> to place orders.</div>
+  <div class="container">Please <a href="/verify">verify your email address</a> to place orders.</div>
 </div>` : ''}
 <main class="container">
   ${f}
@@ -103,7 +93,7 @@ export function footer(ctx) {
 <footer class="site-footer">
   <div class="container footer-grid">
     <div>
-      <div class="logo"><span class="logo-mark">C</span> ${esc(settings.store_name)}</div>
+      <div class="logo"><span class="logo-badge"><span class="logo-ring"></span><span class="logo-core">C</span></span> ${esc(settings.store_name)}</div>
       <p class="muted">${esc(settings.store_tagline || '')}</p>
     </div>
     <div>
@@ -130,7 +120,12 @@ export function footer(ctx) {
     </div>
   </div>
   <div class="container footer-bottom">
-    <span>© ${new Date().getFullYear()} ${esc(settings.store_name)}. All prices include 21% VAT (btw).</span>
+    ${(settings.discord_url || settings.telegram_url) ? `
+    <div class="footer-social">
+      ${settings.discord_url ? `<a href="${esc(settings.discord_url)}" rel="noopener" target="_blank" aria-label="Discord"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.3 4.4A19.8 19.8 0 0 0 15.9 3l-.2.4c1.6.4 2.4 1 3.2 1.7a13.4 13.4 0 0 0-11.8 0c.8-.7 1.8-1.3 3.2-1.7L10.1 3a19.8 19.8 0 0 0-4.4 1.4C2.7 9.3 2 14.1 2.3 18.8A16 16 0 0 0 7.2 21l.5-.7c-.9-.3-1.7-.8-2.4-1.4l.6-.4a11.4 11.4 0 0 0 10.2 0l.6.4c-.7.6-1.5 1.1-2.4 1.4l.5.7a16 16 0 0 0 4.9-2.2c.4-5.4-.7-10.1-3.4-14.4zM8.9 15.7c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2zm6.2 0c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2z"/></svg></a>` : ''}
+      ${settings.telegram_url ? `<a href="${esc(settings.telegram_url)}" rel="noopener" target="_blank" aria-label="Telegram"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M21.9 4.6c.3-1.3-.7-1.9-1.6-1.5L2.9 9.7c-1.2.5-1.2 1.4-.2 1.7l4.6 1.4 1.8 5.6c.2.7 1.1.9 1.7.4l2.6-2.1 4.5 3.3c.6.4 1.5.1 1.7-.7l3-14.7z"/></svg></a>` : ''}
+    </div>` : ''}
+    <span>© ${new Date().getFullYear()} ${esc(settings.store_name)}. All rights reserved. All prices include 21% VAT (btw).</span>
   </div>
 </footer>
 ${ads}
