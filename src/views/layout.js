@@ -34,7 +34,7 @@ export function header(ctx) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${ctx.title ? esc(ctx.title) + ' · ' : ''}${esc(settings.store_name)}</title>
-  <link rel="stylesheet" href="/css/style.css?v=7">
+  <link rel="stylesheet" href="/css/style.css?v=8">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
@@ -90,9 +90,15 @@ export function footer(ctx) {
   const phone = settings.support_phone || '';
   // Ad tags run on customer pages only — never inside the admin panel.
   const ads = path && path.startsWith('/admin') ? '' : `
-<script async src="https://celerycribbanish.com/27/76/59/277659c13722b7153357ba1f31d046c2.js"></script>
+<div class="ad-side" id="adSide">
+  <div class="ad-side-head"><span>Sponsored</span><button type="button" class="ad-side-close" aria-label="Hide ad">✕</button></div>
+  <div class="ad-side-body">
+    <script async="async" data-cfasync="false" src="https://celerycribbanish.com/782b52d4fbc0e6542b57e224518e4e1b/invoke.js"></script>
+    <div id="container-782b52d4fbc0e6542b57e224518e4e1b"></div>
+  </div>
+</div>
 <script async src="https://celerycribbanish.com/20/ee/eb/20eeebd3d50174b012ffbaacd570281b.js"></script>
-<script src="/js/ads.js?v=2" defer></script>`;
+<script src="/js/ads.js?v=3" defer></script>`;
   return `</main>
 <footer class="site-footer">
   <div class="container footer-grid">

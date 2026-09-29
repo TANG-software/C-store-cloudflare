@@ -82,11 +82,6 @@ ${cards.feature.length ? `
   <div class="product-grid">${newest.map((p) => productCard(p)).join('')}</div>
 </section>
 
-<div class="ad-slot">
-  <script async="async" data-cfasync="false" src="https://celerycribbanish.com/782b52d4fbc0e6542b57e224518e4e1b/invoke.js"></script>
-  <div id="container-782b52d4fbc0e6542b57e224518e4e1b"></div>
-</div>
-
 ${cards.review.length ? `
 <section class="section">
   <h2>What customers say</h2>
@@ -129,10 +124,6 @@ export function shop(ctx, { categories, cat, products, q }) {
         ? '<p class="muted empty-note">No products found. Try another search or category.</p>'
         : `<div class="product-grid">${products.map((p) => productCard(p)).join('')}</div>`}
     </div>
-  </div>
-  <div class="ad-slot">
-    <script async="async" data-cfasync="false" src="https://celerycribbanish.com/782b52d4fbc0e6542b57e224518e4e1b/invoke.js"></script>
-    <div id="container-782b52d4fbc0e6542b57e224518e4e1b"></div>
   </div>
 </section>`);
 }
