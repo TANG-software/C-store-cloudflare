@@ -45,7 +45,7 @@ export function dashboard(ctx, { stats, recentOrders }) {
   <div class="card stat"><span class="stat-num">${stats.products}</span><span class="muted">Products</span></div>
   <div class="card stat"><span class="stat-num">${stats.customers}</span><span class="muted">Customers</span></div>
 </div>
-${stats.pendingVerification > 0 ? `<div class="flash flash-warn">${stats.pendingVerification} user(s) still need email/phone verification — you can manually verify them under <a href="/admin/users">Users</a>.</div>` : ''}
+${stats.pendingVerification > 0 ? `<div class="flash flash-warn">${stats.pendingVerification} user(s) still need mobile-number verification — you can manually verify them from the <a href="/admin/users">Users</a>.</div>` : ''}
 
 <div class="card">
   <h2>Recent orders</h2>

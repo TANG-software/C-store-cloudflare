@@ -58,23 +58,30 @@ auth.get('/verify', async (c) => {
   const settings = c.get('ctx').settings;
   return c.html(views.verify(c.get('ctx'), {
     user,
-    required: !user.email_verified || !user.phone_verified,
-    showOtpDev: !mailConfigured(settings) || !smsConfigured(settings),
+    smsReady: smsConfigured(settings),
+    mailReady: mailConfigured(settings),
   }));
 });
 
 auth.post('/verify/:channel/resend', async (c) => {
   const sess = c.get('session');
   if (!sess.uid) return c.redirect('/login');
-  const r = await issueCode(c, sess.uid, c.req.param('channel'));
-  if (r.sent) {
-    const settings = c.get('ctx').settings;
-    const user = await q.first(c, 'SELECT email, phone FROM users WHERE id = ?', sess.uid);
-    if (c.req.param('channel') === 'email') await sendMail(c, settings, user.email, 'Your C Store verification code', OTP_MSG(r.code));
-    else await sendSms(c, settings, user.phone, OTP_MSG(r.code));
-    await flash(c, 'success', 'A new code has been sent.');
+  const channel = c.req.param('channel');
+  const r = await issueCode(c, sess.uid, channel);
+  if (!r.sent) { await flash(c, 'error', r.reason); return c.redirect('/verify'); }
+  const settings = c.get('ctx').settings;
+  const user = await q.first(c, 'SELECT email, phone FROM users WHERE id = ?', sess.uid);
+  const res = channel === 'email'
+    ? await sendMail(c, settings, user.email, 'Your C Store verification code', OTP_MSG(r.code))
+    : await sendSms(c, settings, user.phone, OTP_MSG(r.code));
+  if (res && res.dev) {
+    await flash(c, 'error', channel === 'phone'
+      ? 'A new code was created, but text messages are not set up yet — it could not be delivered to your phone. The store owner needs to add the SMS settings under Admin → Payments first.'
+      : 'A new code was created, but email sending is not set up yet — it could not be delivered. The store owner needs to add the email settings under Admin → Payments first.');
+  } else if (res && !res.ok) {
+    await flash(c, 'error', 'The message could not be delivered by the provider — please try again in a moment.');
   } else {
-    await flash(c, 'error', r.reason);
+    await flash(c, 'success', 'A new code has been sent.');
   }
   return c.redirect('/verify');
 });

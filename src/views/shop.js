@@ -240,8 +240,8 @@ export function help(ctx) {
     <h2>Frequently asked questions</h2>
     <details><summary>Which payment methods do you accept?</summary>
       <p class="muted">PayPal (including card payments through PayPal) and cryptocurrencies — Bitcoin, Ethereum, USDT and 300+ coins, depending on the options available at checkout.</p></details>
-    <details><summary>Why do I need to verify my email and mobile number?</summary>
-      <p class="muted">For your security and to prevent fraud, we verify every customer's email address and mobile number with a one-time code before the first order. Verification happens once, right after you register.</p></details>
+    <details><summary>Why do I need to verify my mobile number?</summary>
+      <p class="muted">For your security and to prevent fraud, we verify every customer's mobile number with a one-time code before the first order — that's all that's required. Verifying your email as well is optional, and lets you receive order confirmations by email.</p></details>
     <details><summary>I paid with crypto — why is my order still “pending”?</summary>
       <p class="muted">Cryptocurrency payments need network confirmations. Hosted checkouts (Coinbase Commerce, NOWPayments, BitPay) confirm automatically within minutes. Direct wallet transfers are verified by our team, usually within a few hours.</p></details>
     <details><summary>Where do you ship?</summary>

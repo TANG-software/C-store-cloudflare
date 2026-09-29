@@ -519,3 +519,12 @@ details p { margin: 6px 0 12px; }
   padding: 14px;
   margin-top: 8px;
 }
+
+/* ============ Verify page (phone-first) ============ */
+.verify-hero { border: 1px solid rgba(168, 85, 247, 0.5); box-shadow: 0 12px 40px -22px rgba(168, 85, 247, 0.55); margin-bottom: 18px; }
+.verify-hero .feature-icon { margin: 0 auto 4px; }
+.verify-optional { margin-top: 4px; }
+.verify-opt-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.verify-opt-head h2 { margin: 0; font-size: 1.05rem; }
+.otp-note { margin: 12px 0 0; }
+.otp-note form { display: inline; }

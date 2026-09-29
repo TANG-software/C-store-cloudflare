@@ -11,7 +11,7 @@ checkout.get('/checkout', async (c) => {
   if (!sess.uid) return c.redirect('/login?next=/checkout');
   const user = await q.first(c, 'SELECT * FROM users WHERE id = ?', sess.uid);
   if (!user) return c.redirect('/login');
-  if (!user.email_verified || !user.phone_verified) { await flash(c, 'error', 'Verify your email address and mobile number before placing an order.'); return c.redirect('/verify'); }
+  if (!user.phone_verified) { await flash(c, 'error', 'Please verify your mobile number before placing an order — it only takes a minute.'); return c.redirect('/verify'); }
   const details = await c.get('helpers').cartDetails(c);
   if (!details.items.length) return c.redirect('/cart');
 
@@ -29,7 +29,7 @@ checkout.post('/checkout', async (c) => {
   const sess = c.get('session');
   if (!sess.uid) return c.redirect('/login?next=/checkout');
   const user = await q.first(c, 'SELECT * FROM users WHERE id = ?', sess.uid);
-  if (!user || !user.email_verified || !user.phone_verified) return c.redirect('/verify');
+  if (!user || !user.phone_verified) return c.redirect('/verify');
   const b = await c.req.parseBody();
   const method = String(b.payment_method || '');
   const settings = c.get('ctx').settings;

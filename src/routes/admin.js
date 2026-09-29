@@ -33,7 +33,7 @@ admin.get('/', async (c) => {
     revenue: await q.first(c, "SELECT COALESCE(SUM(total_cents), 0) n FROM orders WHERE status IN ('paid', 'shipped')").then((r) => r.n),
     products: await q.first(c, 'SELECT COUNT(*) n FROM products WHERE active = 1').then((r) => r.n),
     customers: await q.first(c, "SELECT COUNT(*) n FROM users WHERE role = 'customer'").then((r) => r.n),
-    pendingVerification: await q.first(c, 'SELECT COUNT(*) n FROM users WHERE email_verified = 0 OR phone_verified = 0').then((r) => r.n),
+    pendingVerification: await q.first(c, "SELECT COUNT(*) n FROM users WHERE role = 'customer' AND phone_verified = 0").then((r) => r.n),
   };
   const recentOrders = await q.all(c, `SELECT o.*, u.name AS user_name FROM orders o JOIN users u ON u.id = o.user_id ORDER BY o.id DESC LIMIT 10`);
   return c.html(views.dashboard(c.get('ctx'), { stats, recentOrders }));

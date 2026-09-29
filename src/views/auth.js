@@ -25,7 +25,7 @@ export function register(ctx, values) {
 <section class="section narrow">
   <div class="card auth-card">
     <h1>Create account</h1>
-    <p class="muted">We'll verify both your email address and mobile number — required before you can place an order.</p>
+    <p class="muted">We'll text a code to your mobile number to verify it — that's required before you can place an order. Email verification is optional.</p>
     <form action="/register" method="POST">
       <label>Full name<input name="name" required value="${v('name')}"></label>
       <label>Email address<input type="email" name="email" required value="${v('email')}"></label>
@@ -39,35 +39,42 @@ export function register(ctx, values) {
 </section>`);
 }
 
-export function verify(ctx, { user, required, showOtpDev }) {
-  const block = (done, icon, channel, channelLabel, addr) => done
-    ? `<p class="muted">Your ${channelLabel} <strong>${esc(addr)}</strong> is verified. ✓</p>`
-    : `<p class="muted">We sent a 6-digit code to <strong>${esc(addr)}</strong>.</p>
-        <form action="/verify/${channel}" method="POST" class="otp-form">
-          <input name="code" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" placeholder="••••••" required>
-          <button class="btn">Verify ${channelLabel}</button>
-        </form>
-        <form action="/verify/${channel}/resend" method="POST"><button class="link-btn">Resend code</button></form>`;
+const PHONE_ICON = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>';
+const MAIL_ICON = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></svg>';
+
+export function verify(ctx, { user, smsReady, mailReady }) {
+  const codeForm = (channel) => `
+      <form action="/verify/${channel}" method="POST" class="otp-form">
+        <input name="code" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" placeholder="••••••" required autofocus>
+        <button class="btn">Verify</button>
+      </form>
+      <p class="muted small otp-note">Didn't get it? <form action="/verify/${channel}/resend" method="POST" class="inline-form"><button class="link-btn">Send a new code</button></form> (wait about a minute between codes)</p>`;
+
   return page(ctx, `
 <section class="section narrow">
-  <div class="card center">
-    <h1>Verify your account</h1>
-    <p class="muted">${required ? 'Both your email and mobile number must be verified before you can place an order.' : 'One last step — confirm it\'s really you.'}</p>
+  <div class="card center auth-card verify-hero">
+    <span class="feature-icon">${PHONE_ICON}</span>
+    <h1>${user.phone_verified ? 'Mobile number verified' : 'Verify your mobile number'}</h1>
+    ${user.phone_verified
+      ? `<p class="muted">Your mobile number <strong>${esc(user.phone)}</strong> is verified — you can place orders.</p>
+         <a class="btn btn-lg" href="/shop">Continue shopping</a>`
+      : `<p class="muted">Required before you can place an order. We sent a 6-digit code by text message to <strong>${esc(user.phone)}</strong>.</p>
+         ${!smsReady ? '<div class="flash flash-warn">Text messages are not set up for this store yet, so the code cannot reach your phone. The store owner needs to add the SMS settings under Admin → Payments first — until then, ask the store owner to verify your number manually from the admin Users page.</div>' : ''}
+         ${codeForm('phone')}`}
   </div>
 
-  ${showOtpDev ? `
-  <div class="flash flash-warn">⚠️ Development mode: no email/SMS provider configured yet, so verification codes are printed in the server logs (visible with <code>wrangler tail</code>). Add an email API key and Twilio credentials in Admin → Payments to send real codes.</div>` : ''}
-
-  <div class="verify-grid">
-    <div class="card">
-      <h2>📧 Email verification <span class="badge ${user.email_verified ? 'badge-paid' : 'badge-pending'}">${user.email_verified ? 'verified' : 'pending'}</span></h2>
-      ${block(user.email_verified, '📧', 'email', 'email', user.email)}
+  <div class="card auth-card verify-optional">
+    <div class="verify-opt-head">
+      <span class="feature-icon">${MAIL_ICON}</span>
+      <h2>Email verification</h2>
+      <span class="badge badge-pending">optional</span>
+      ${user.email_verified ? '<span class="badge badge-paid">verified</span>' : ''}
     </div>
-
-    <div class="card">
-      <h2>📱 Mobile verification <span class="badge ${user.phone_verified ? 'badge-paid' : 'badge-pending'}">${user.phone_verified ? 'verified' : 'pending'}</span></h2>
-      ${block(user.phone_verified, '📱', 'phone', 'phone', user.phone)}
-    </div>
+    ${user.email_verified
+      ? `<p class="muted">Your email address <strong>${esc(user.email)}</strong> is verified — you'll receive order confirmations by email.</p>`
+      : `<p class="muted">Optional — verifying your email lets you receive order confirmations. You can place orders without it.</p>
+         ${!mailReady ? '<div class="flash flash-warn">Email sending is not set up for this store yet, so email codes cannot be delivered. The store owner needs to add the email settings under Admin → Payments first.</div>' : ''}
+         ${codeForm('email')}`}
   </div>
 </section>`);
 }
@@ -127,12 +134,14 @@ export function account(ctx, { user, orders }) {
     <div class="card">
       <h2>Profile</h2>
       <table class="table">
-        <tr><td>Name</td><td>${esc(user.name)}</td></tr>
-        <tr><td>Email</td><td>${esc(user.email)} ${user.email_verified ? '✅' : '❌'}</td></tr>
-        <tr><td>Mobile</td><td>${esc(user.phone)} ${user.phone_verified ? '✅' : '❌'}</td></tr>
-        <tr><td>Member since</td><td>${esc(user.created_at.slice(0, 10))}</td></tr>
-      </table>
-      ${(!user.email_verified || !user.phone_verified) ? '<a class="btn btn-block" href="/verify">Complete verification</a>' : ''}
+      <tr><td>Name</td><td>${esc(user.name)}</td></tr>
+      <tr><td>Email</td><td>${esc(user.email)} ${user.email_verified ? '✓' : '<span class="muted small">(optional, not verified)</span>'}</td></tr>
+      <tr><td>Mobile</td><td>${esc(user.phone)} ${user.phone_verified ? '✓' : '<strong style="color:#e5484d">not verified</strong>'}</td></tr>
+      <tr><td>Member since</td><td>${esc(user.created_at.slice(0, 10))}</td></tr>
+    </table>
+    ${!user.phone_verified
+      ? '<a class="btn btn-block" href="/verify">Verify my mobile number</a>'
+      : (!user.email_verified ? '<p class="muted small center"><a href="/verify">Verify email as well (optional)</a> — get order confirmations by email.</p>' : '')}
       <details class="profile-edit">
         <summary>Edit name / phone</summary>
         <form action="/account/profile" method="POST">
