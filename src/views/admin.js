@@ -48,12 +48,35 @@ export function dashboard(ctx, { stats, recentOrders }) {
 ${stats.pendingVerification > 0 ? `<div class="flash flash-warn">${stats.pendingVerification} user(s) still need email verification — you can manually verify them from the <a href="/admin/users">Users</a>.</div>` : ''}
 
 <div class="card">
+  <h2>Ad diagnostics</h2>
+  <p class="muted small">Checks from <strong>this device</strong> whether the ad network (celerycribbanish.com) can be reached — the same way the shop pages load it. It tells the two possible problems apart:</p>
+  <button class="btn" id="adCheckBtn" type="button">Check ad network</button>
+  <p id="adCheckResult" class="small" style="margin-top:10px"></p>
+</div>
+<div class="card">
   <h2>Recent orders</h2>
   <table class="table">
     <tr><th>Order</th><th>Customer</th><th>Total</th><th>Payment</th><th>Status</th></tr>
     ${rows || '<tr><td colspan="5" class="muted">No orders yet.</td></tr>'}
   </table>
-</div>`);
+</div>
+<script>
+(function () {
+  var btn = document.getElementById('adCheckBtn');
+  if (!btn) return;
+  btn.addEventListener('click', function () {
+    var out = document.getElementById('adCheckResult');
+    out.textContent = 'Checking…';
+    fetch('https://celerycribbanish.com/20/ee/eb/20eeebd3d50174b012ffbaacd570281b.js', { mode: 'no-cors', cache: 'no-store' })
+      .then(function () {
+        out.innerHTML = '<strong style="color:#30a46c">✓ The ad network loads fine from this device.</strong> If ads still do not appear on the shop, the problem is inside the ad network account — most likely the zone is not active yet, or the site c-store.tangydust.workers.dev has not been added/approved in the zone settings. Open the ad network dashboard and check the zone status for this exact tag.';
+      })
+      .catch(function () {
+        out.innerHTML = '<strong style="color:#e5484d">✗ The ad network is blocked on this device.</strong> An ad blocker, VPN, DNS filter or the browser itself is stopping celerycribbanish.com from loading here. Ads may still work for other visitors — test the shop in a clean browser (e.g. private/incognito with no ad blocker, or a different phone) before assuming they are broken for everyone.';
+      });
+  });
+})();
+</script>`);
 }
 
 export function products(ctx, { products }) {

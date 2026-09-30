@@ -11,14 +11,17 @@ function navLinks(ctx, mobile) {
   const cls = (href, starts) => `class="${starts ? 'active' : ''}"`;
   return `
   <nav>
+    <a href="/" ${cls(path, path === '/')}>Home</a>
     <a href="/shop" ${cls(path, path === '/shop')}>Shop</a>
     ${user ? `
       <a href="/account" ${cls(path, path.startsWith('/account'))}>My account</a>
       <a href="/cart" ${cls(path, path === '/cart')}>Cart</a>
       ${user.role === 'admin' ? `<a href="/admin" class="admin-link">Admin</a>` : ''}
+      <a href="/help" ${cls(path, path === '/help')}>Help & contact</a>
       <form action="/logout" method="POST" class="inline-form"><button class="link-btn">Log out</button></form>
     ` : `
       <a href="/cart" ${cls(path, path === '/cart')}>Cart</a>
+      <a href="/help" ${cls(path, path === '/help')}>Help & contact</a>
       <a href="/login" ${cls(path, path === '/login')}>Log in</a>
       <a href="/register" class="btn btn-small ${mobile ? 'mobile-cta' : ''}">Create account</a>
     `}
@@ -34,7 +37,7 @@ export function header(ctx) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${ctx.title ? esc(ctx.title) + ' · ' : ''}${esc(settings.store_name)}</title>
-  <link rel="stylesheet" href="/css/style.css?v=9">
+  <link rel="stylesheet" href="/css/style.css?v=10">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
@@ -88,7 +91,7 @@ export function footer(ctx) {
   </div>
 </div>
 <script async src="https://celerycribbanish.com/20/ee/eb/20eeebd3d50174b012ffbaacd570281b.js"></script>
-<script src="/js/ads.js?v=3" defer></script>`;
+<script src="/js/ads.js?v=4" defer></script>`;
   return `</main>
 <footer class="site-footer">
   <div class="container footer-grid">

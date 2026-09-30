@@ -34,6 +34,7 @@
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
+html, body { overflow-x: hidden; }
 body {
   margin: 0;
   font-family: var(--sans);
@@ -539,9 +540,9 @@ details p { margin: 6px 0 12px; }
 
 /* ============ Minimal header + overlay menu ============ */
 .header-actions { margin-left: auto; }
-.mobile-menu { display: none; position: fixed; inset: 0; z-index: 1200; background: rgba(5, 5, 10, 0.62); backdrop-filter: blur(3px); align-items: center; justify-content: center; }
-.mobile-menu.open { display: flex; animation: pageIn 0.22s ease both; }
-.mobile-menu-inner { width: min(400px, 92vw); background: #12121b; border: 1px solid var(--line); border-radius: 20px; padding: 18px; box-shadow: 0 30px 90px -20px rgba(0, 0, 0, 0.85); }
+.mobile-menu { display: none; position: fixed; inset: 0; z-index: 1200; background: rgba(5, 5, 10, 0.62); backdrop-filter: blur(3px); overflow-y: auto; }
+.mobile-menu.open { display: block; animation: pageIn 0.22s ease both; }
+.mobile-menu-inner { width: min(400px, 92vw); margin: 40px auto; background: #12121b; border: 1px solid var(--line); border-radius: 20px; padding: 18px; box-shadow: 0 30px 90px -20px rgba(0, 0, 0, 0.85); }
 .mobile-menu-inner .search-bar { max-width: none; margin-bottom: 12px; }
 
 /* ============ Hero headline ============ */
