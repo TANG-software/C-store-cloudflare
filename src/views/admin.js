@@ -349,6 +349,31 @@ export function homepage(ctx, { cards }) {
 </div>
 
 <div class="card">
+  <h2>Headings, claims & FAQ</h2>
+  <p class="muted small">Every heading and claim on the customer pages. <strong>Leave a field empty to remove that text from the site</strong> — add new badge/FAQ lines to add claims.</p>
+  <form action="/admin/settings" method="POST" class="form-grid">
+    <label class="span2">Top bar (very top of every page)<input name="top_bar_text" value="${esc(ctx.settings.top_bar_text || '')}" placeholder="Free EU shipping over €75 · PayPal & 300+ cryptocurrencies · 21% VAT included"></label>
+    <label>Small label above the headline<input name="hero_overline" value="${esc(ctx.settings.hero_overline || '')}" placeholder="Netherlands · EU shipping"></label>
+    <label>Hero button text<input name="hero_cta" value="${esc(ctx.settings.hero_cta || '')}" placeholder="Shop here!"></label>
+    <label>Stats heading<input name="stats_heading" value="${esc(ctx.settings.stats_heading || '')}" placeholder="C Store stats"></label>
+    <label>Stat 1 label<input name="stat_orders_label" value="${esc(ctx.settings.stat_orders_label || '')}" placeholder="Orders completed"></label>
+    <label>Stat 2 label<input name="stat_customers_label" value="${esc(ctx.settings.stat_customers_label || '')}" placeholder="Happy customers"></label>
+    <label>Stat 3 label<input name="stat_products_label" value="${esc(ctx.settings.stat_products_label || '')}" placeholder="Products listed"></label>
+    <label class="span2">Stats description<textarea name="stats_text" rows="2">${esc(ctx.settings.stats_text || '')}</textarea></label>
+    <label>About-us heading<input name="about_heading" value="${esc(ctx.settings.about_heading || '')}" placeholder="About us"></label>
+    <label>Categories heading<input name="categories_heading" value="${esc(ctx.settings.categories_heading || '')}" placeholder="Shop by category"></label>
+    <label>Featured heading<input name="featured_heading" value="${esc(ctx.settings.featured_heading || '')}" placeholder="Popular right now"></label>
+    <label>New arrivals heading<input name="newest_heading" value="${esc(ctx.settings.newest_heading || '')}" placeholder="New arrivals"></label>
+    <label>Reviews heading<input name="reviews_heading" value="${esc(ctx.settings.reviews_heading || '')}" placeholder="What customers say"></label>
+    <label>Payments heading<input name="payments_heading" value="${esc(ctx.settings.payments_heading || '')}" placeholder="We support different payment methods"></label>
+    <label>Related products heading (product page)<input name="related_heading" value="${esc(ctx.settings.related_heading || '')}" placeholder="You may also like"></label>
+    <label>FAQ heading (help page)<input name="faq_heading" value="${esc(ctx.settings.faq_heading || '')}" placeholder="Frequently asked questions"></label>
+    <label class="span2">FAQ entries — one per line, format: Question || Answer<textarea name="faqs" rows="6">${esc(ctx.settings.faqs || '')}</textarea></label>
+    <div class="span2"><button class="btn">Save headings, claims & FAQ</button></div>
+  </form>
+</div>
+
+<div class="card">
   <h2>About-us feature cards</h2>
   ${feats.map((f) => `<div class="hp-edit">${featureForm(f)}${del(f.id, 'card')}</div>`).join('') || '<p class="muted">No feature cards — the About-us card list is hidden on the homepage.</p>'}
   <div class="hp-add">${featureForm(null)}</div>

@@ -44,7 +44,7 @@ export function header(ctx) {
   <script>document.documentElement.classList.add('js');</script>
 </head>
 <body>
-<div class="top-bar"><div class="container">Free EU shipping over €${(Number(settings.free_shipping_threshold_cents) / 100).toFixed(2)} &middot; PayPal & 300+ cryptocurrencies &middot; 21% VAT included</div></div>
+${String(settings.top_bar_text || '').trim() ? `<div class="top-bar"><div class="container">${esc(String(settings.top_bar_text).trim())}</div></div>` : ''}
 <header class="site-header">
   <div class="container header-inner">
     <a href="/" class="logo" aria-label="Home">

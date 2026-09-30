@@ -16,20 +16,22 @@ export const FEATURE_ICONS = {
   coin: '<circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/>',
 };
 
+const t = (ctx, k) => String((ctx.settings || {})[k] || '').trim();
+
 export function home(ctx, { categories, featured, newest, stats, cards }) {
   const S = ctx.settings;
   const free = (Number(S.free_shipping_threshold_cents) / 100).toFixed(2);
   const headline = String(S.hero_headline || '').trim() || `${S.store_name} is the perfect destination for all your needs!`;
-  const badges = String(S.hero_badges || '').split('\n').map((s) => s.trim()).filter(Boolean);
+  const badges = String(S.hero_badges || '').split(ctx, '\n').map((s) => s.trim()).filter(Boolean);
   const aboutText = String(S.about_text || '').trim() || `${S.store_name} keeps it simple: we hold our own stock in the Netherlands, describe every product the way it actually arrives, and answer email ourselves — no scripts, no call center. Prices include VAT, and shipping is free above €${free}.`;
   const icon = (paths, extra = '') => `<span class="feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ${extra}>${paths}</svg></span>`;
   const stars = (n) => '★'.repeat(n) + '☆'.repeat(Math.max(0, 5 - n));
   return page(ctx, `
 <section class="hero">
-  <p class="hero-overline">Netherlands &middot; EU shipping</p>
+  ${t(ctx, 'hero_overline') ? `<p class="hero-overline">${esc(t(ctx, 'hero_overline'))}</p>` : ''}
   <h1 class="hero-headline">${esc(headline)}</h1>
   ${S.store_tagline ? `<p class="hero-tag">${esc(S.store_tagline)}</p>` : ''}
-  <a href="/shop" class="btn btn-lg btn-pill">Shop here!</a>
+  ${t(ctx, 'hero_cta') ? `<a href="/shop" class="btn btn-lg btn-pill">${esc(t(ctx, 'hero_cta'))}</a>` : ''}
   ${badges.length ? `
   <div class="hero-badges">
     ${badges.map((b) => `<span>${esc(b)}</span>`).join('')}
@@ -37,19 +39,19 @@ export function home(ctx, { categories, featured, newest, stats, cards }) {
 </section>
 
 <section class="section">
-  <h2>${esc(S.store_name)} stats</h2>
-  <p class="muted">A quick look at what we've achieved and what keeps our customers coming back — updated live with every order.</p>
+  ${t(ctx, 'stats_heading') ? `<h2>${esc(t(ctx, 'stats_heading'))}</h2>` : ''}
+  ${t(ctx, 'stats_text') ? `<p class="muted">${esc(t(ctx, 'stats_text'))}</p>` : ''}
   <div class="stats-grid">
-    <div class="stat-box"><span class="num">${stats.orders}</span><span class="bar"></span><span class="lbl">Orders completed</span></div>
-    <div class="stat-box"><span class="num">${stats.customers}</span><span class="bar"></span><span class="lbl">Happy customers</span></div>
-    <div class="stat-box"><span class="num">${stats.products}</span><span class="bar"></span><span class="lbl">Products listed</span></div>
+    ${t(ctx, 'stat_orders_label') ? `<div class="stat-box"><span class="num">${stats.orders}</span><span class="bar"></span><span class="lbl">${esc(t(ctx, 'stat_orders_label'))}</span></div>` : ''}
+    ${t(ctx, 'stat_customers_label') ? `<div class="stat-box"><span class="num">${stats.customers}</span><span class="bar"></span><span class="lbl">${esc(t(ctx, 'stat_customers_label'))}</span></div>` : ''}
+    ${t(ctx, 'stat_products_label') ? `<div class="stat-box"><span class="num">${stats.products}</span><span class="bar"></span><span class="lbl">${esc(t(ctx, 'stat_products_label'))}</span></div>` : ''}
   </div>
 </section>
 
 ${cards.feature.length ? `
 <section class="section">
   <div class="card">
-    <h2>About us</h2>
+    ${t(ctx, 'about_heading') ? `<h2>${esc(t(ctx, 'about_heading'))}</h2>` : ''}
     <p class="muted">${esc(aboutText)}</p>
     <div class="feature-grid">
       ${cards.feature.map((f) => `
@@ -63,7 +65,7 @@ ${cards.feature.length ? `
 </section>` : ''}
 
 <section class="section">
-  <h2>Shop by category</h2>
+  ${t(ctx, 'categories_heading') ? `<h2>${esc(t(ctx, 'categories_heading'))}</h2>` : ''}
   <div class="category-grid">
     ${categories.map((c) => `
       <a href="/shop?category=${esc(c.slug)}" class="category-card">
@@ -74,18 +76,18 @@ ${cards.feature.length ? `
 </section>
 
 <section class="section">
-  <h2>Popular right now</h2>
+  ${t(ctx, 'featured_heading') ? `<h2>${esc(t(ctx, 'featured_heading'))}</h2>` : ''}
   <div class="product-grid">${featured.map((p) => productCard(p)).join('')}</div>
 </section>
 
 <section class="section">
-  <h2>New arrivals</h2>
+  ${t(ctx, 'newest_heading') ? `<h2>${esc(t(ctx, 'newest_heading'))}</h2>` : ''}
   <div class="product-grid">${newest.map((p) => productCard(p)).join('')}</div>
 </section>
 
 ${cards.review.length ? `
 <section class="section">
-  <h2>What customers say</h2>
+  ${t(ctx, 'reviews_heading') ? `<h2>${esc(t(ctx, 'reviews_heading'))}</h2>` : ''}
   <div class="review-grid">
     ${cards.review.map((r) => `
     <div class="review-card">
@@ -98,7 +100,7 @@ ${cards.review.length ? `
 
 ${cards.pay.length ? `
 <section class="section">
-  <h2 class="center">We support different payment methods</h2>
+  ${t(ctx, 'payments_heading') ? `<h2 class="center">${esc(t(ctx, 'payments_heading'))}</h2>` : ''}
   <p class="muted center small">Multiple secure payment methods at checkout</p>
   <div class="pay-strip">
     ${cards.pay.map((p) => `<div class="pay-tile">${esc(p.title)}${p.body ? ` <span class="cur">${esc(p.body)}</span>` : ''}</div>`).join('')}
@@ -156,7 +158,7 @@ export function product(ctx, { p, category, related }) {
 
 ${related.length ? `
 <section class="section">
-  <h2>You may also like</h2>
+  ${t(ctx, 'related_heading') ? `<h2>${esc(t(ctx, 'related_heading'))}</h2>` : ''}
   <div class="product-grid">${related.map((r) => productCard(r)).join('')}</div>
 </section>` : ''}`);
 }
@@ -203,6 +205,10 @@ export function cart(ctx, { details }) {
 }
 
 export function help(ctx) {
+  const faqItems = String((ctx.settings || {}).faqs || '').split('\n').map((l) => l.trim()).filter(Boolean).map((l) => {
+    const i = l.indexOf('||');
+    return i === -1 ? [l, ''] : [l.slice(0, i).trim(), l.slice(i + 2).trim()];
+  });
   const { settings } = ctx;
   const free = Number(settings.free_shipping_threshold_cents || 0);
   return page(ctx, `
@@ -237,16 +243,10 @@ export function help(ctx) {
     <p class="muted">${esc(settings.store_address)}</p>
   </div>` : ''}
 
+  ${faqItems.length ? `
   <div class="card">
-    <h2>Frequently asked questions</h2>
-    <details><summary>Which payment methods do you accept?</summary>
-      <p class="muted">PayPal (including card payments through PayPal) and cryptocurrencies — Bitcoin, Ethereum, USDT and 300+ coins, depending on the options available at checkout.</p></details>
-    <details><summary>Why do I need to verify my email address?</summary>
-      <p class="muted">For your security and to prevent fraud, we verify every customer's email address with a one-time code before the first order — that's all that's required. Verifying your mobile number as well is optional, and makes it easier for us to reach you about your delivery.</p></details>
-    <details><summary>I paid with crypto — why is my order still “pending”?</summary>
-      <p class="muted">Cryptocurrency payments need network confirmations. Hosted checkouts (Coinbase Commerce, NOWPayments, BitPay) confirm automatically within minutes. Direct wallet transfers are verified by our team, usually within a few hours.</p></details>
-    <details><summary>Where do you ship?</summary>
-      <p class="muted">We ship from the Netherlands across the EU. Dutch delivery takes 1–2 business days; free shipping on orders over €${(free / 100).toFixed(2)}.</p></details>
-  </div>
+    ${t(ctx, 'faq_heading') ? `<h2>${esc(t(ctx, 'faq_heading'))}</h2>` : ''}
+    ${faqItems.map(([q, a]) => `<details><summary>${esc(q)}</summary><p class="muted">${esc(a)}</p></details>`).join('\n    ')}
+  </div>` : ''}
 </section>`);
 }
