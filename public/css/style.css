@@ -1,3 +1,8 @@
+/* no blue tap/click highlight on phones */
+* { -webkit-tap-highlight-color: transparent; }
+:focus { outline: none; }
+:focus-visible { outline: 2px solid rgba(168, 85, 247, 0.55); outline-offset: 2px; }
+
 html { overflow-x: clip; }
 /* ============================================================
    C Store — Neon Purple Edition
@@ -543,7 +548,7 @@ details p { margin: 6px 0 12px; }
 
 /* ============ Minimal header + overlay menu ============ */
 .header-actions { margin-left: auto; }
-.mobile-menu { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; height: 100%; z-index: 1200; background: rgba(5, 5, 10, 0.62); overflow-y: auto; }
+.mobile-menu { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; height: 100%; z-index: 1200; background: rgba(5, 5, 10, 0.72); -webkit-backdrop-filter: blur(9px); backdrop-filter: blur(9px); overflow-y: auto; }
 .mobile-menu.open { display: block; animation: pageIn 0.22s ease both; }
 .mobile-menu-inner { width: 92vw; max-width: 400px; margin: 40px auto; background: #12121b; border: 1px solid var(--line); border-radius: 20px; padding: 18px; box-shadow: 0 30px 90px -20px rgba(0, 0, 0, 0.85); }
 .mobile-menu-inner .search-bar { max-width: none; margin-bottom: 12px; }
@@ -583,3 +588,14 @@ details p { margin: 6px 0 12px; }
 .ad-strip-close { flex: none; background: none; border: none; color: #8f8f9e; cursor: pointer; font-size: 0.95rem; line-height: 1; padding: 6px 4px 6px 8px; border-radius: 6px; }
 .ad-strip-close:hover { color: #fff; background: rgba(255, 255, 255, 0.08); }
 body.has-adstrip { padding-bottom: 46px; }
+
+/* ---------- product card swing on tap ---------- */
+@keyframes cardSwing {
+  0% { transform: rotate(0deg) scale(1); }
+  25% { transform: rotate(1.8deg) scale(0.98); }
+  50% { transform: rotate(-1.5deg) scale(0.99); }
+  75% { transform: rotate(0.9deg) scale(0.995); }
+  100% { transform: rotate(0deg) scale(1); }
+}
+.product-card.swing { animation: cardSwing 0.3s ease; }
+.product-card { -webkit-transform: translateZ(0); transform: translateZ(0); }
