@@ -1,3 +1,4 @@
+html { overflow-x: clip; }
 /* ============================================================
    C Store — Neon Purple Edition
    Deep black · neon violet glow · Poppins + Inter · grid texture
@@ -34,7 +35,7 @@
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-html, body { overflow-x: hidden; }
+
 body {
   margin: 0;
   font-family: var(--sans);
