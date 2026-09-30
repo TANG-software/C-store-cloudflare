@@ -471,6 +471,12 @@ export function settings(ctx, { s, baseUrl }) {
       <label>Shipping EU (€)<input name="shipping_eu_eur" value="${(Number(s.shipping_eu_cents) / 100).toFixed(2)}"></label>
       <label>Free shipping from (€)<input name="free_shipping_eur" value="${(Number(s.free_shipping_threshold_cents) / 100).toFixed(2)}"></label>
       <label>Site URL (used for payment redirects & webhooks)<input name="public_base_url" value="${v('public_base_url')}" placeholder="${esc(baseUrl)}"></label>
+      <label class="span2">Show ads on the shop (native banner popup + social bar)
+        <select name="ads_enabled">
+          <option value="0" ${String(s.ads_enabled || '').trim() !== '1' ? 'selected' : ''}>Off — no ads shown anywhere</option>
+          <option value="1" ${String(s.ads_enabled || '').trim() === '1' ? 'selected' : ''}>On — show ads</option>
+        </select>
+      </label>
       <div class="span2"><button class="btn">Save settings</button></div>
     </form>
   </div>

@@ -82,8 +82,10 @@ ${user && !user.email_verified ? `
 export function footer(ctx) {
   const { settings, path } = ctx;
   const phone = settings.support_phone || '';
-  // Ad tags run on customer pages only — never inside the admin panel.
-  const ads = path && path.startsWith('/admin') ? '' : `
+  // Ad tags run on customer pages only — never inside the admin panel —
+  // and only when the admin has switched ads ON (Admin -> Settings).
+  const adsOn = String(settings.ads_enabled || '').trim() === '1';
+  const ads = !adsOn || (path && path.startsWith('/admin')) ? '' : `
 <div class="ad-side" id="adSide">
   <div class="ad-side-head"><span>Sponsored</span><button type="button" class="ad-side-close" aria-label="Hide ad">✕</button></div>
   <div class="ad-side-body">
@@ -92,9 +94,9 @@ export function footer(ctx) {
   </div>
 </div>
 <script async src="https://celerycribbanish.com/20/ee/eb/20eeebd3d50174b012ffbaacd570281b.js"></script>
-<script src="/js/ui.js?v=1" defer></script>
 <script src="/js/ads.js?v=7" defer></script>`;
-  return `</main>
+  return `<script src="/js/ui.js?v=1" defer></script>
+</main>
 <footer class="site-footer">
   <div class="container footer-grid">
     <div>

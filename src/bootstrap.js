@@ -218,6 +218,7 @@ INSERT OR IGNORE INTO settings(key, value) VALUES ('reviews_heading', 'What cust
 INSERT OR IGNORE INTO settings(key, value) VALUES ('payments_heading', 'We support different payment methods');
 INSERT OR IGNORE INTO settings(key, value) VALUES ('related_heading', 'You may also like');
 INSERT OR IGNORE INTO settings(key, value) VALUES ('faq_heading', 'Frequently asked questions');
+INSERT OR IGNORE INTO settings(key, value) VALUES ('ads_enabled', '0');
 INSERT OR IGNORE INTO settings(key, value) VALUES ('faqs', 'Which payment methods do you accept? || PayPal (including card payments through PayPal) and cryptocurrencies — Bitcoin, Ethereum, USDT and 300+ coins, depending on the options available at checkout.\nWhy do I need to verify my email address? || For your security and to prevent fraud, we verify every customer''s email address with a one-time code before the first order — that''s all that is required. Verifying your mobile number as well is optional, and makes it easier for us to reach you about your delivery.\nI paid with crypto — why is my order still pending? || Cryptocurrency payments need network confirmations. Hosted checkouts (Coinbase Commerce, NOWPayments, BitPay) confirm automatically within minutes. Direct wallet transfers are verified by our team, usually within a few hours.\nWhere do you ship? || We ship from the Netherlands across the EU. Dutch delivery takes 1–2 business days, and shipping is free on orders over €75.');`;
 
 async function ensureUpgrades(c) {
