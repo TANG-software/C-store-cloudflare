@@ -9,20 +9,23 @@ const CAT_ICONS = {
 function navLinks(ctx, mobile) {
   const { user, path } = ctx;
   const cls = (href, starts) => `class="${starts ? 'active' : ''}"`;
+  const social = `
+      ${String(ctx.settings.discord_url || '').trim() ? `<a href="${esc(ctx.settings.discord_url)}" rel="noopener">Discord Server</a>` : ''}
+      ${String(ctx.settings.telegram_url || '').trim() ? `<a href="${esc(ctx.settings.telegram_url)}" rel="noopener">Telegram</a>` : ''}`;
   return `
   <nav>
     <a href="/" ${cls(path, path === '/')}>Home</a>
-    <a href="/shop" ${cls(path, path === '/shop')}>Shop</a>
+    <a href="/shop" ${cls(path, path === '/shop')}>Products</a>
+    <a href="/#reviews">Reviews</a>
+    ${social}
+    <a href="/cart" ${cls(path, path === '/cart')}>Cart</a>
+    <a href="/help" ${cls(path, path === '/help')}>Help & contact</a>
     ${user ? `
-      <a href="/account" ${cls(path, path.startsWith('/account'))}>My account</a>
-      <a href="/cart" ${cls(path, path === '/cart')}>Cart</a>
+      <a href="/account" ${cls(path, path.startsWith('/account'))}>Accounts</a>
       ${user.role === 'admin' ? `<a href="/admin" class="admin-link">Admin</a>` : ''}
-      <a href="/help" ${cls(path, path === '/help')}>Help & contact</a>
       <form action="/logout" method="POST" class="inline-form"><button class="link-btn">Log out</button></form>
     ` : `
-      <a href="/cart" ${cls(path, path === '/cart')}>Cart</a>
-      <a href="/help" ${cls(path, path === '/help')}>Help & contact</a>
-      <a href="/login" ${cls(path, path === '/login')}>Log in</a>
+      <a href="/login" ${cls(path, path === '/login')}>Login</a>
       <a href="/register" class="btn btn-small ${mobile ? 'mobile-cta' : ''}">Create account</a>
     `}
   </nav>`;
@@ -37,7 +40,15 @@ export function header(ctx) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${ctx.title ? esc(ctx.title) + ' · ' : ''}${esc(settings.store_name)}</title>
-  <link rel="stylesheet" href="/css/style.css?v=15">
+  <meta property="og:title" content="${esc(ctx.title ? ctx.title + ' · ' + settings.store_name : settings.store_name)}">
+  <meta property="og:description" content="${esc(settings.store_tagline || 'Everything you need, delivered across the Netherlands.')}">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="${esc((ctx.origin || '') + '/')}">
+  <meta property="og:image" content="${esc((ctx.origin || '') + '/og-logo.png')}">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="stylesheet" href="/css/style.css?v=16">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
@@ -53,13 +64,14 @@ ${String(settings.top_bar_text || '').trim() ? `<div class="top-bar"><div class=
     </a>
     <div class="header-actions">
       <a href="/cart" class="cart-link" aria-label="Cart"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8h12l-1.2 12.2a1.4 1.4 0 0 1-1.4 1.3H8.6a1.4 1.4 0 0 1-1.4-1.3L6 8z"/><path d="M9 10V6.5a3 3 0 0 1 6 0V10"/></svg> <span class="cart-count">${cartCount}</span></a>
-      <button class="menu-btn" aria-label="Menu" onclick="document.getElementById('mobileMenu').classList.toggle('open')">
+      <button class="menu-btn" aria-label="Menu" onclick="var m=document.getElementById('mobileMenu'),s=document.getElementById('menuScrim');var o=!m.classList.contains('open');m.classList.toggle('open',o);s.classList.toggle('open',o)">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></svg>
       </button>
     </div>
   </div>
 </header>
-  <div class="mobile-menu" id="mobileMenu" onclick="if (event.target === this) this.classList.remove('open')">
+  <div class="menu-scrim" id="menuScrim" onclick="document.getElementById('mobileMenu').classList.remove('open'); this.classList.remove('open')"></div>
+  <div class="mobile-menu" id="mobileMenu">
     <div class="mobile-menu-inner">
       <form class="search-bar" action="/shop" method="get">
         <input type="search" name="q" placeholder="Search products…" value="${esc(q || '')}">
@@ -95,7 +107,7 @@ export function footer(ctx) {
 </div>
 <script async src="https://celerycribbanish.com/20/ee/eb/20eeebd3d50174b012ffbaacd570281b.js"></script>
 <script src="/js/ads.js?v=7" defer></script>`;
-  return `<script src="/js/ui.js?v=1" defer></script>
+  return `<script src="/js/ui.js?v=2" defer></script>
 </main>
 <footer class="site-footer">
   <div class="container footer-grid">
@@ -165,11 +177,10 @@ export function productCard(p) {
   return `<a href="/product/${esc(p.slug)}" class="product-card">
   <div class="product-img"><img src="${esc(p.image_url)}" alt="${esc(p.name)}" loading="lazy"></div>
   <div class="product-body">
-    <span class="product-cat">${esc(p.category_name || '')}</span>
     <h3 class="product-name">${esc(p.name)}</h3>
     ${p.stock > 0 ? `<span class="stock in">${p.stock} In Stock</span>` : '<span class="stock out">Out of Stock</span>'}
     <div class="product-foot">
-      <span class="price">€${(p.price_cents / 100).toFixed(2)}</span>
+      <span class="price-wrap"><span class="price-label">Price</span> <span class="price">€${(p.price_cents / 100).toFixed(2)}</span></span>
       <span class="card-go" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></span>
     </div>
   </div>

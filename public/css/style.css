@@ -302,7 +302,7 @@ html.js .category-grid .reveal:nth-child(2n) { transition-delay: 0.07s; }
 .product-img { aspect-ratio: 4 / 3; background: #10101a; overflow: hidden; position: relative; }
 .product-img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1); }
 .product-card:hover .product-img img { transform: scale(1.07); }
-.product-body { padding: 15px 16px 16px; display: flex; flex-direction: column; gap: 5px; flex: 1; }
+.product-body { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 5px; flex: 1; }
 .product-cat { color: var(--purple); text-transform: uppercase; font-size: 0.66rem; letter-spacing: 0.14em; font-weight: 700; }
 .product-name { font-family: var(--head); font-size: 0.98rem; margin: 0; color: #fff; font-weight: 600; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 2.7em; }
 .stock { display: block; min-height: 1.25em; }
@@ -548,9 +548,12 @@ details p { margin: 6px 0 12px; }
 
 /* ============ Minimal header + overlay menu ============ */
 .header-actions { margin-left: auto; }
-.mobile-menu { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; height: 100%; z-index: 1200; background: rgba(5, 5, 10, 0.72); -webkit-backdrop-filter: blur(9px); backdrop-filter: blur(9px); overflow-y: auto; }
-.mobile-menu.open { display: block; animation: pageIn 0.22s ease both; }
-.mobile-menu-inner { width: 92vw; max-width: 400px; margin: 40px auto; background: #12121b; border: 1px solid var(--line); border-radius: 20px; padding: 18px; box-shadow: 0 30px 90px -20px rgba(0, 0, 0, 0.85); }
+.mobile-menu { position: fixed; top: 0; left: 0; bottom: 0; width: 78vw; max-width: 300px; height: 100%; z-index: 1200; background: #12121b; border-right: 1px solid rgba(168, 85, 247, 0.45); overflow-y: auto; -webkit-transform: translateX(-105%); transform: translateX(-105%); -webkit-transition: -webkit-transform 0.28s cubic-bezier(0.22, 0.61, 0.36, 1); transition: transform 0.28s cubic-bezier(0.22, 0.61, 0.36, 1); }
+.mobile-menu.open { -webkit-transform: translateX(0); transform: translateX(0); box-shadow: 30px 0 90px rgba(0, 0, 0, 0.55); }
+.menu-scrim { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 1190; background: rgba(5, 5, 10, 0.66); opacity: 0; -webkit-transition: opacity 0.28s ease; transition: opacity 0.28s ease; }
+.menu-scrim.open { display: block; opacity: 1; }
+
+.mobile-menu-inner { padding: 20px 18px 34px; }
 .mobile-menu-inner .search-bar { max-width: none; margin-bottom: 12px; }
 
 /* ============ Hero headline ============ */
@@ -578,3 +581,23 @@ details p { margin: 6px 0 12px; }
   .product-grid { grid-template-columns: 1fr; }
 }
 
+
+.mobile-menu-inner nav { display: flex; flex-direction: column; gap: 2px; margin-top: 16px; }
+.mobile-menu-inner nav a, .mobile-menu-inner nav .link-btn { display: block; padding: 11px 12px; border-radius: 10px; font-size: 0.98rem; color: #cfc4e8; border-left: 2px solid transparent; }
+.mobile-menu-inner nav a.active { color: #fff; font-weight: 700; background: rgba(168, 85, 247, 0.12); border-left-color: #a855f7; }
+.mobile-menu-inner nav a:hover { color: #fff; background: rgba(168, 85, 247, 0.1); text-decoration: none; }
+.price-wrap { display: flex; align-items: baseline; gap: 8px; }
+.price-label { color: #8f8f9e; font-size: 0.8rem; }
+.product-foot { margin-top: auto; display: flex; align-items: center; justify-content: space-between; }
+.product-card .price { color: #c084fc; font-weight: 700; font-size: 1.06rem; }
+.product-card { position: relative; }
+.product-card::after { content: ""; position: absolute; top: -1px; left: -1px; right: -1px; bottom: -1px; border-radius: 17px; z-index: -1; background: linear-gradient(135deg, rgba(168, 85, 247, 0.55), rgba(99, 102, 241, 0.35), rgba(168, 85, 247, 0.55)); opacity: 0; -webkit-transition: opacity 0.25s ease; transition: opacity 0.25s ease; }
+.product-card:hover::after { opacity: 1; }
+.product-card.zooming { z-index: 900; animation: cardZoom 0.26s ease forwards; pointer-events: none; }
+@keyframes cardZoom {
+  0% { transform: scale(1); }
+  60% { transform: scale(1.55); opacity: 0.85; box-shadow: 0 30px 80px rgba(168, 85, 247, 0.35); }
+  100% { transform: scale(2.1); opacity: 0; }
+}
+.zoom-dim { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 880; background: rgba(5, 5, 10, 0.55); animation: zoomDim 0.26s ease forwards; }
+@keyframes zoomDim { from { opacity: 0; } to { opacity: 1; } }

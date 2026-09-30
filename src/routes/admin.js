@@ -1,3 +1,4 @@
+import { DEMO_CATALOG_SQL } from '../bootstrap.js';
 // C Store Workers — admin panel routes: dashboard, products, categories,
 // orders, users, payments credentials, settings.
 import { Hono } from 'hono';
@@ -8,6 +9,20 @@ import { FEATURE_ICONS } from '../views/shop.js';
 import * as views from '../views/admin.js';
 
 const admin = new Hono();
+admin.post('/products/demo', async (c) => {
+  const orders = await q.first(c, 'SELECT COUNT(*) AS n FROM orders');
+  if (orders.n > 0) {
+    await flash(c, 'error', 'There are real orders in the database — demo products were NOT loaded, so no order data gets broken.');
+    return c.redirect('/admin/products');
+  }
+  await c.env.DB.prepare('DELETE FROM products').run();
+  await c.env.DB.prepare('DELETE FROM categories').run();
+  const { statements } = await import('../bootstrap.js');
+  for (const s of statements(DEMO_CATALOG_SQL)) await c.env.DB.prepare(s).run();
+  await flash(c, 'success', 'Demo catalog loaded — 12 products in 4 categories.');
+  return c.redirect('/admin/products');
+});
+
 export default admin;
 
 // Credential sections editable from Admin → Payments (stored in D1 settings).

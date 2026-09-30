@@ -103,46 +103,6 @@ INSERT OR IGNORE INTO settings(key, value) VALUES ('free_shipping_threshold_cent
 INSERT OR IGNORE INTO settings(key, value) VALUES ('wallet_btc', '');
 INSERT OR IGNORE INTO settings(key, value) VALUES ('wallet_eth', '');
 INSERT OR IGNORE INTO settings(key, value) VALUES ('wallet_usdt_trc20', '');
-INSERT OR IGNORE INTO categories(name, slug) VALUES ('Electronics', 'electronics');
-INSERT OR IGNORE INTO products(category_id, name, slug, description, price_cents, stock, image_url) VALUES ((SELECT id FROM categories WHERE slug = 'electronics'), 'Wireless Noise-Cancelling Headphones', 'wireless-noise-cancelling-headphones', 'Premium over-ear headphones with active noise cancellation and 30-hour battery life.', 12900, 24, 'https://picsum.photos/seed/wireless-noise-cancelling-headphones/600/450');
-INSERT OR IGNORE INTO products(category_id, name, slug, description, price_cents, stock, image_url) VALUES ((SELECT id FROM categories WHERE slug = 'electronics'), 'Smart Fitness Watch', 'smart-fitness-watch', 'Track your workouts, heart rate and sleep with this water-resistant smartwatch.', 8950, 40, 'https://picsum.photos/seed/smart-fitness-watch/600/450');
-INSERT OR IGNORE INTO products(category_id, name, slug, description, price_cents, stock, image_url) VALUES ((SELECT id FROM categories WHERE slug = 'electronics'), 'Bluetooth Speaker (Waterproof)', 'bluetooth-speaker-waterproof', 'Compact 360° sound speaker, IPX7 waterproof — perfect for the beach or kitchen.', 4995, 60, 'https://picsum.photos/seed/bluetooth-speaker-waterproof/600/450');
-INSERT OR IGNORE INTO products(category_id, name, slug, description, price_cents, stock, image_url) VALUES ((SELECT id FROM categories WHERE slug = 'electronics'), 'USB-C Fast Charging Power Bank 20,000 mAh', 'usb-c-fast-charging-power-bank-20-000-mah', 'Charge your phone up to 5 times. Dual USB-C ports with 22.5W output.', 3595, 80, 'https://picsum.photos/seed/usb-c-fast-charging-power-bank-20-000-mah/600/450');
-INSERT OR IGNORE INTO categories(name, slug) VALUES ('Fashion', 'fashion');
-INSERT OR IGNORE INTO products(category_id, name, slug, description, price_cents, stock, image_url) VALUES ((SELECT id FROM categories WHERE slug = 'fashion'), 'Classic Denim Jacket', 'classic-denim-jacket', 'Timeless unisex denim jacket made from 100% organic cotton.', 6995, 30, 'https://picsum.photos/seed/classic-denim-jacket/600/450');
-INSERT OR IGNORE INTO products(category_id, name, slug, description, price_cents, stock, image_url) VALUES ((SELECT id FROM categories WHERE slug = 'fashion'), 'Merino Wool Scarf', 'merino-wool-scarf', 'Soft, warm and itch-free merino wool scarf woven in the EU.', 2995, 50, 'https://picsum.photos/seed/merino-wool-scarf/600/450');
-INSERT OR IGNORE INTO products(category_id, name, slug, description, price_cents, stock, image_url) VALUES ((SELECT id FROM categories WHERE slug = 'fashion'), 'Leather Crossbody Bag', 'leather-crossbody-bag', 'Handmade full-grain leather bag with adjustable strap.', 8500, 18, 'https://picsum.photos/seed/leather-crossbody-bag/600/450');
-INSERT OR IGNORE INTO products(category_id, name, slug, description, price_cents, stock, image_url) VALUES ((SELECT id FROM categories WHERE slug = 'fashion'), 'Everyday Canvas Sneakers', 'everyday-canvas-sneakers', 'Minimalist low-top sneakers with cushioned insoles.', 5495, 45, 'https://picsum.photos/seed/everyday-canvas-sneakers/600/450');
-INSERT OR IGNORE INTO categories(name, slug) VALUES ('Home & Living', 'home-living');
-INSERT OR IGNORE INTO products(category_id, name, slug, description, price_cents, stock, image_url) VALUES ((SELECT id FROM categories WHERE slug = 'home-living'), 'Aroma Diffuser with LED', 'aroma-diffuser-with-led', 'Ultrasonic 300ml essential oil diffuser with 7 colour ambient light.', 3295, 35, 'https://picsum.photos/seed/aroma-diffuser-with-led/600/450');
-INSERT OR IGNORE INTO products(category_id, name, slug, description, price_cents, stock, image_url) VALUES ((SELECT id FROM categories WHERE slug = 'home-living'), 'Scandinavian Table Lamp', 'scandinavian-table-lamp', 'Oak and linen table lamp for warm, cozy interior lighting.', 4595, 22, 'https://picsum.photos/seed/scandinavian-table-lamp/600/450');
-INSERT OR IGNORE INTO products(category_id, name, slug, description, price_cents, stock, image_url) VALUES ((SELECT id FROM categories WHERE slug = 'home-living'), 'Ceramic Pour-Over Coffee Set', 'ceramic-pour-over-coffee-set', 'Handcrafted ceramic dripper and carafe for slow-brew mornings.', 4200, 28, 'https://picsum.photos/seed/ceramic-pour-over-coffee-set/600/450');
-INSERT OR IGNORE INTO products(category_id, name, slug, description, price_cents, stock, image_url) VALUES ((SELECT id FROM categories WHERE slug = 'home-living'), 'Organic Cotton Bedding Set (Queen)', 'organic-cotton-bedding-set-queen', 'Breathable 300-thread-count bedding in soft neutral tones.', 7995, 15, 'https://picsum.photos/seed/organic-cotton-bedding-set-queen/600/450');
-INSERT OR IGNORE INTO categories(name, slug) VALUES ('Beauty', 'beauty');
-INSERT OR IGNORE INTO products(category_id, name, slug, description, price_cents, stock, image_url) VALUES ((SELECT id FROM categories WHERE slug = 'beauty'), 'Vitamin C Brightening Serum', 'vitamin-c-brightening-serum', '10% vitamin C serum with hyaluronic acid for glowing skin.', 2495, 70, 'https://picsum.photos/seed/vitamin-c-brightening-serum/600/450');
-INSERT OR IGNORE INTO products(category_id, name, slug, description, price_cents, stock, image_url) VALUES ((SELECT id FROM categories WHERE slug = 'beauty'), 'Bamboo Charcoal Face Mask', 'bamboo-charcoal-face-mask', 'Deep-cleansing peel-off mask for all skin types.', 1495, 90, 'https://picsum.photos/seed/bamboo-charcoal-face-mask/600/450');
-INSERT OR IGNORE INTO products(category_id, name, slug, description, price_cents, stock, image_url) VALUES ((SELECT id FROM categories WHERE slug = 'beauty'), 'Rosemary Hair Growth Oil', 'rosemary-hair-growth-oil', 'Natural oil blend for stronger, healthier hair.', 1895, 65, 'https://picsum.photos/seed/rosemary-hair-growth-oil/600/450');
-INSERT OR IGNORE INTO products(category_id, name, slug, description, price_cents, stock, image_url) VALUES ((SELECT id FROM categories WHERE slug = 'beauty'), 'SPF50 Sunscreen (Reef Safe)', 'spf50-sunscreen-reef-safe', 'Broad-spectrum mineral sunscreen, no white cast.', 1695, 85, 'https://picsum.photos/seed/spf50-sunscreen-reef-safe/600/450');
-INSERT OR IGNORE INTO categories(name, slug) VALUES ('Sports & Outdoors', 'sports-outdoors');
-INSERT OR IGNORE INTO products(category_id, name, slug, description, price_cents, stock, image_url) VALUES ((SELECT id FROM categories WHERE slug = 'sports-outdoors'), 'Yoga Mat (Non-Slip, 6mm)', 'yoga-mat-non-slip-6mm', 'Eco-friendly TPE yoga mat with alignment lines.', 3295, 50, 'https://picsum.photos/seed/yoga-mat-non-slip-6mm/600/450');
-INSERT OR IGNORE INTO products(category_id, name, slug, description, price_cents, stock, image_url) VALUES ((SELECT id FROM categories WHERE slug = 'sports-outdoors'), 'Adjustable Dumbbell 20 kg', 'adjustable-dumbbell-20-kg', 'Space-saving adjustable dumbbell, 2–20 kg in seconds.', 8995, 20, 'https://picsum.photos/seed/adjustable-dumbbell-20-kg/600/450');
-INSERT OR IGNORE INTO products(category_id, name, slug, description, price_cents, stock, image_url) VALUES ((SELECT id FROM categories WHERE slug = 'sports-outdoors'), 'Cycling Repair Kit', 'cycling-repair-kit', 'Everything you need for roadside bike repairs in a compact pouch.', 2795, 40, 'https://picsum.photos/seed/cycling-repair-kit/600/450');
-INSERT OR IGNORE INTO products(category_id, name, slug, description, price_cents, stock, image_url) VALUES ((SELECT id FROM categories WHERE slug = 'sports-outdoors'), 'Insulated Hiking Bottle 750ml', 'insulated-hiking-bottle-750ml', 'Keeps drinks cold 24h / hot 12h. Leak-proof stainless steel.', 2295, 75, 'https://picsum.photos/seed/insulated-hiking-bottle-750ml/600/450');
-INSERT OR IGNORE INTO categories(name, slug) VALUES ('Toys & Games', 'toys-games');
-INSERT OR IGNORE INTO products(category_id, name, slug, description, price_cents, stock, image_url) VALUES ((SELECT id FROM categories WHERE slug = 'toys-games'), 'Strategy Board Game: Expedition', 'strategy-board-game-expedition', 'Award-winning family board game for 2–5 players, ages 10+.', 3995, 32, 'https://picsum.photos/seed/strategy-board-game-expedition/600/450');
-INSERT OR IGNORE INTO products(category_id, name, slug, description, price_cents, stock, image_url) VALUES ((SELECT id FROM categories WHERE slug = 'toys-games'), '1,000-Piece Puzzle: Dutch Landscapes', '1-000-piece-puzzle-dutch-landscapes', 'Beautiful aerial photography of tulip fields and windmills.', 1895, 55, 'https://picsum.photos/seed/1-000-piece-puzzle-dutch-landscapes/600/450');
-INSERT OR IGNORE INTO products(category_id, name, slug, description, price_cents, stock, image_url) VALUES ((SELECT id FROM categories WHERE slug = 'toys-games'), 'Wooden Building Blocks (100 pcs)', 'wooden-building-blocks-100-pcs', 'FSC-certified beech blocks for creative play.', 2595, 38, 'https://picsum.photos/seed/wooden-building-blocks-100-pcs/600/450');
-INSERT OR IGNORE INTO products(category_id, name, slug, description, price_cents, stock, image_url) VALUES ((SELECT id FROM categories WHERE slug = 'toys-games'), 'Card Game: Quick Wit Party Pack', 'card-game-quick-wit-party-pack', 'Fast-paced party game for 3+ players.', 1595, 100, 'https://picsum.photos/seed/card-game-quick-wit-party-pack/600/450');
-INSERT OR IGNORE INTO categories(name, slug) VALUES ('Groceries', 'groceries');
-INSERT OR IGNORE INTO products(category_id, name, slug, description, price_cents, stock, image_url) VALUES ((SELECT id FROM categories WHERE slug = 'groceries'), 'Organic Coffee Beans 1kg (Dark Roast)', 'organic-coffee-beans-1kg-dark-roast', 'Fairtrade arabica beans, roasted in Rotterdam.', 2495, 120, 'https://picsum.photos/seed/organic-coffee-beans-1kg-dark-roast/600/450');
-INSERT OR IGNORE INTO products(category_id, name, slug, description, price_cents, stock, image_url) VALUES ((SELECT id FROM categories WHERE slug = 'groceries'), 'Manuka Honey 250g', 'manuka-honey-250g', 'UMF10+ certified New Zealand manuka honey.', 3995, 40, 'https://picsum.photos/seed/manuka-honey-250g/600/450');
-INSERT OR IGNORE INTO products(category_id, name, slug, description, price_cents, stock, image_url) VALUES ((SELECT id FROM categories WHERE slug = 'groceries'), 'Extra Virgin Olive Oil 750ml', 'extra-virgin-olive-oil-750ml', 'Cold-pressed single-estate olive oil from Greece.', 1895, 90, 'https://picsum.photos/seed/extra-virgin-olive-oil-750ml/600/450');
-INSERT OR IGNORE INTO products(category_id, name, slug, description, price_cents, stock, image_url) VALUES ((SELECT id FROM categories WHERE slug = 'groceries'), 'Artisan Chocolate Box (16 pc)', 'artisan-chocolate-box-16-pc', 'Handmade Belgian chocolates in a gift box.', 2250, 60, 'https://picsum.photos/seed/artisan-chocolate-box-16-pc/600/450');
-INSERT OR IGNORE INTO categories(name, slug) VALUES ('Books', 'books');
-INSERT OR IGNORE INTO products(category_id, name, slug, description, price_cents, stock, image_url) VALUES ((SELECT id FROM categories WHERE slug = 'books'), 'The Art of Slow Living (Hardcover)', 'the-art-of-slow-living-hardcover', 'A beautifully illustrated guide to a calmer life.', 2295, 45, 'https://picsum.photos/seed/the-art-of-slow-living-hardcover/600/450');
-INSERT OR IGNORE INTO products(category_id, name, slug, description, price_cents, stock, image_url) VALUES ((SELECT id FROM categories WHERE slug = 'books'), 'Netherlands Cycling Routes: 50 Maps', 'netherlands-cycling-routes-50-maps', 'Detailed cycling maps covering all twelve provinces.', 2795, 30, 'https://picsum.photos/seed/netherlands-cycling-routes-50-maps/600/450');
-INSERT OR IGNORE INTO products(category_id, name, slug, description, price_cents, stock, image_url) VALUES ((SELECT id FROM categories WHERE slug = 'books'), 'Modern Cooking for One', 'modern-cooking-for-one', '60 quick, no-waste recipes for solo cooks.', 2695, 35, 'https://picsum.photos/seed/modern-cooking-for-one/600/450');
-INSERT OR IGNORE INTO products(category_id, name, slug, description, price_cents, stock, image_url) VALUES ((SELECT id FROM categories WHERE slug = 'books'), 'Kids'' Adventure Atlas', 'kids-adventure-atlas', 'Colourful world atlas with fun facts for ages 6–11.', 1995, 50, 'https://picsum.photos/seed/kids-adventure-atlas/600/450');
 INSERT OR IGNORE INTO users(name, email, phone, password_hash, role, email_verified, phone_verified, force_password_change) VALUES ('Store Administrator', 'admin@cstore.com', '+31000000000', 'pbkdf2$100000$lWOMXg3ZRvboFUaS/6ixPA==$Kz6EdGReSkyrEKmIFzNkqFLgFrT6JoOut0F0vMnQAnI=', 'admin', 1, 1, 1);
 
 `;
@@ -176,7 +136,7 @@ INSERT INTO homepage_cards(section, sort, title, body, stars, when_label, icon) 
 
 let ready = false;
 
-function statements(sql) {
+export function statements(sql) {
   return sql
     .replace(/--[^\n]*/g, '')
     .split(';')
@@ -232,6 +192,28 @@ async function ensureUpgrades(c) {
   }
 }
 
+
+// Demo catalog — zynox-style digital goods. Used to seed a fresh database
+// and by the admin "load demo products" button (replaces all products).
+export const DEMO_CATALOG_SQL = `
+INSERT OR IGNORE INTO categories(name, slug) VALUES ('Discord', 'discord');
+INSERT OR IGNORE INTO categories(name, slug) VALUES ('Game Accounts', 'game-accounts');
+INSERT OR IGNORE INTO categories(name, slug) VALUES ('Streaming', 'streaming');
+INSERT OR IGNORE INTO categories(name, slug) VALUES ('Social Media', 'social-media');
+INSERT OR IGNORE INTO products(category_id, name, slug, description, price_cents, stock, image_url) VALUES ((SELECT id FROM categories WHERE slug = 'discord'), 'Discord Nitro 3 Months', 'discord-nitro-3-months', 'Full nitro perks on a fresh account — instant delivery, full access included.', 450, 120, '/img/products/nitro.png');
+INSERT OR IGNORE INTO products(category_id, name, slug, description, price_cents, stock, image_url) VALUES ((SELECT id FROM categories WHERE slug = 'discord'), '14x Server Boosts 1 Month', '14x-server-boosts-1-month', 'Fourteen boosts for one month — enough for level 3 on your server.', 349, 45, '/img/products/boosts.png');
+INSERT OR IGNORE INTO products(category_id, name, slug, description, price_cents, stock, image_url) VALUES ((SELECT id FROM categories WHERE slug = 'discord'), 'Nitro Boost 1 Year', 'nitro-boost-1-year', 'Best value — twelve months of full nitro on a fresh account.', 2499, 0, '/img/products/nitro-year.png');
+INSERT OR IGNORE INTO products(category_id, name, slug, description, price_cents, stock, image_url) VALUES ((SELECT id FROM categories WHERE slug = 'discord'), 'Nitro Basic 1 Year', 'nitro-basic-1-year', 'Basic plan with instant delivery on your own account.', 999, 200, '/img/products/nitro-basic.png');
+INSERT OR IGNORE INTO products(category_id, name, slug, description, price_cents, stock, image_url) VALUES ((SELECT id FROM categories WHERE slug = 'discord'), 'Discord Aged Account 2020', 'discord-aged-account-2020', 'Created in 2020 — full access, never used for spam.', 149, 864, '/img/products/aged.png');
+INSERT OR IGNORE INTO products(category_id, name, slug, description, price_cents, stock, image_url) VALUES ((SELECT id FROM categories WHERE slug = 'discord'), 'Random Discord Decoration', 'random-discord-decoration', 'A random avatar decoration for your profile — surprise pick.', 175, 91, '/img/products/decoration.png');
+INSERT OR IGNORE INTO products(category_id, name, slug, description, price_cents, stock, image_url) VALUES ((SELECT id FROM categories WHERE slug = 'game-accounts'), 'Brawl Stars Account', 'brawl-stars-account', 'Fresh account with starter gear — full access, instant delivery.', 495, 30, '/img/products/brawl.png');
+INSERT OR IGNORE INTO products(category_id, name, slug, description, price_cents, stock, image_url) VALUES ((SELECT id FROM categories WHERE slug = 'game-accounts'), 'Fortnite Full Access Account', 'fortnite-full-access-account', 'Full access account with lifetime warranty and email change.', 349, 15, '/img/products/fortnite.png');
+INSERT OR IGNORE INTO products(category_id, name, slug, description, price_cents, stock, image_url) VALUES ((SELECT id FROM categories WHERE slug = 'game-accounts'), 'Roblox Full Access Account', 'roblox-full-access-account', 'Full access, instant delivery — great for a fresh start.', 249, 60, '/img/products/roblox.png');
+INSERT OR IGNORE INTO products(category_id, name, slug, description, price_cents, stock, image_url) VALUES ((SELECT id FROM categories WHERE slug = 'streaming'), 'YouTube Aged Account', 'youtube-aged-account', 'Aged account, ready to use — full access included.', 699, 25, '/img/products/youtube.png');
+INSERT OR IGNORE INTO products(category_id, name, slug, description, price_cents, stock, image_url) VALUES ((SELECT id FROM categories WHERE slug = 'streaming'), 'Spotify Upgrade 1 Year', 'spotify-upgrade-1-year', 'Your own account upgraded for a full year — no password needed.', 1499, 40, '/img/products/spotify.png');
+INSERT OR IGNORE INTO products(category_id, name, slug, description, price_cents, stock, image_url) VALUES ((SELECT id FROM categories WHERE slug = 'social-media'), 'Telegram Premium 3 Months', 'telegram-premium-3-months', 'Premium badge, faster transfers and bigger uploads for three months.', 399, 80, '/img/products/telegram.png');
+`;
+
 export async function ensureDb(c) {
   if (ready) return;
   const check = await c.env.DB.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='settings'").first();
@@ -243,6 +225,9 @@ export async function ensureDb(c) {
     return;
   }
   for (const s of statements(SCHEMA_SQL)) {
+    await c.env.DB.prepare(s).run();
+  }
+  for (const s of statements(DEMO_CATALOG_SQL)) {
     await c.env.DB.prepare(s).run();
   }
   for (const s of statements(SEED_SQL)) {

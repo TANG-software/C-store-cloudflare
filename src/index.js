@@ -24,7 +24,7 @@ app.use('*', async (c, next) => {
   const cartCount = Object.values(session.cart).reduce((a, b) => a + Number(b), 0);
   const flash = await takeFlash(c);
   c.set('session', session);
-  c.set('ctx', { user, settings, flash, cartCount, path: new URL(c.req.url).pathname, q: c.req.query('q') || '' });
+  const _u = new URL(c.req.url); c.set('ctx', { user, settings, flash, cartCount, path: _u.pathname, origin: _u.origin, q: c.req.query('q') || '' });
   c.set('helpers', makeHelpers());
   await next();
 });

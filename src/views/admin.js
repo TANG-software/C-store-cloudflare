@@ -80,6 +80,14 @@ ${stats.pendingVerification > 0 ? `<div class="flash flash-warn">${stats.pending
 }
 
 export function products(ctx, { products }) {
+  const demoBtn = `
+<div class="card">
+  <h2>Demo catalog</h2>
+  <p class="muted small">Replaces ALL products and categories with the demo catalog (12 digital products, 4 categories). Only works while there are no orders in the store.</p>
+  <form action="/admin/products/demo" method="POST" onsubmit="return confirm('Replace all current products and categories with the demo catalog?')">
+    <button class="btn">Load demo products</button>
+  </form>
+</div>`;
   const rows = products.map((p) => `
       <tr>
         <td>${p.id}</td>
@@ -98,6 +106,7 @@ export function products(ctx, { products }) {
   return adminPage(ctx, `
 <div class="section-head">
   <h1>Products</h1>
+${demoBtn}
   <a class="btn" href="/admin/products/new">+ New product</a>
 </div>
 <div class="card">

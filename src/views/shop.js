@@ -86,7 +86,7 @@ ${cards.feature.length ? `
 </section>
 
 ${cards.review.length ? `
-<section class="section">
+<section class="section" id="reviews">
   ${t(ctx, 'reviews_heading') ? `<h2>${esc(t(ctx, 'reviews_heading'))}</h2>` : ''}
   <div class="review-grid">
     ${cards.review.map((r) => `
