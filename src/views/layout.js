@@ -37,7 +37,7 @@ export function header(ctx) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${ctx.title ? esc(ctx.title) + ' · ' : ''}${esc(settings.store_name)}</title>
-  <link rel="stylesheet" href="/css/style.css?v=14">
+  <link rel="stylesheet" href="/css/style.css?v=15">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
@@ -91,14 +91,9 @@ export function footer(ctx) {
     <div id="container-782b52d4fbc0e6542b57e224518e4e1b"></div>
   </div>
 </div>
-<div class="ad-strip" id="adStrip" role="button" aria-label="Sponsored offer">
-  <span class="ad-strip-dot"></span>
-  <span class="ad-strip-text"><b>Sponsored</b> &middot; tap to view our partner offer</span>
-  <button type="button" class="ad-strip-close" aria-label="Hide ad strip">✕</button>
-</div>
 <script async src="https://celerycribbanish.com/20/ee/eb/20eeebd3d50174b012ffbaacd570281b.js"></script>
 <script src="/js/ui.js?v=1" defer></script>
-<script src="/js/ads.js?v=6" defer></script>`;
+<script src="/js/ads.js?v=7" defer></script>`;
   return `</main>
 <footer class="site-footer">
   <div class="container footer-grid">

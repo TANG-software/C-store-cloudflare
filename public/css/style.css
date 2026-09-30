@@ -578,24 +578,3 @@ details p { margin: 6px 0 12px; }
   .product-grid { grid-template-columns: 1fr; }
 }
 
-/* ---------- bottom ad strip (click = smartlink popunder) ---------- */
-.ad-strip { position: fixed; left: 0; right: 0; bottom: 0; z-index: 940; display: flex; align-items: center; gap: 9px; height: 42px; padding: 0 12px 0 14px; background: rgba(12, 12, 17, 0.96); border-top: 1px solid rgba(168, 85, 247, 0.4); cursor: pointer; -webkit-user-select: none; user-select: none; }
-.ad-strip.hidden { display: none; }
-.ad-strip-dot { flex: none; width: 7px; height: 7px; border-radius: 50%; background: #a855f7; animation: adStripPulse 2.4s ease-in-out infinite; }
-@keyframes adStripPulse { 0%, 100% { box-shadow: 0 0 4px rgba(168, 85, 247, 0.5); } 50% { box-shadow: 0 0 12px rgba(168, 85, 247, 0.95); } }
-.ad-strip-text { flex: 1; min-width: 0; font-size: 0.74rem; letter-spacing: 0.05em; color: #b9aecf; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.ad-strip-text b { color: #fff; font-weight: 600; }
-.ad-strip-close { flex: none; background: none; border: none; color: #8f8f9e; cursor: pointer; font-size: 0.95rem; line-height: 1; padding: 6px 4px 6px 8px; border-radius: 6px; }
-.ad-strip-close:hover { color: #fff; background: rgba(255, 255, 255, 0.08); }
-body.has-adstrip { padding-bottom: 46px; }
-
-/* ---------- product card swing on tap ---------- */
-@keyframes cardSwing {
-  0% { transform: rotate(0deg) scale(1); }
-  25% { transform: rotate(1.8deg) scale(0.98); }
-  50% { transform: rotate(-1.5deg) scale(0.99); }
-  75% { transform: rotate(0.9deg) scale(0.995); }
-  100% { transform: rotate(0deg) scale(1); }
-}
-.product-card.swing { animation: cardSwing 0.3s ease; }
-.product-card { -webkit-transform: translateZ(0); transform: translateZ(0); }
