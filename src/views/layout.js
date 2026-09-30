@@ -48,7 +48,7 @@ export function header(ctx) {
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" type="image/png" href="/favicon.png">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-  <link rel="stylesheet" href="/css/style.css?v=16">
+  <link rel="stylesheet" href="/css/style.css?v=17">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
@@ -73,6 +73,7 @@ ${String(settings.top_bar_text || '').trim() ? `<div class="top-bar"><div class=
   <div class="menu-scrim" id="menuScrim" onclick="document.getElementById('mobileMenu').classList.remove('open'); this.classList.remove('open')"></div>
   <div class="mobile-menu" id="mobileMenu">
     <div class="mobile-menu-inner">
+      <span class="menu-brand">${esc(settings.store_name)}</span>
       <form class="search-bar" action="/shop" method="get">
         <input type="search" name="q" placeholder="Search products…" value="${esc(q || '')}">
         <button type="submit" aria-label="Search"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4.2-4.2"/></svg></button>
@@ -107,7 +108,7 @@ export function footer(ctx) {
 </div>
 <script async src="https://celerycribbanish.com/20/ee/eb/20eeebd3d50174b012ffbaacd570281b.js"></script>
 <script src="/js/ads.js?v=7" defer></script>`;
-  return `<script src="/js/ui.js?v=2" defer></script>
+  return `<script src="/js/ui.js?v=3" defer></script>
 </main>
 <footer class="site-footer">
   <div class="container footer-grid">
