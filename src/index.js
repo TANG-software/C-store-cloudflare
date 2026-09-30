@@ -29,6 +29,14 @@ app.use('*', async (c, next) => {
   await next();
 });
 
+// Always serve fresh HTML — phone browsers were showing days-old cached pages
+// (old design, broken menus). no-cache = revalidate with the server on every visit.
+app.use('*', async (c, next) => {
+  await next();
+  const ct = c.res.headers.get('content-type') || '';
+  if (ct.includes('text/html')) c.res.headers.set('Cache-Control', 'no-cache');
+});
+
 function makeHelpers() {
   return {
     baseUrl: (c) => {
