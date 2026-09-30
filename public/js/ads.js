@@ -1,10 +1,12 @@
 // C Store — light ad engine (customer pages only; layout skips /admin).
-// 1) Side popup with the native banner — hidden until the ad network actually
-//    delivers an ad into the container (no empty "Sponsored" box), dismissable,
-//    stays hidden for the rest of the browser session.
+// 1) Side popup with the native banner: starts as a "ghost" — invisible and
+//    unclickable, but it still occupies its space in the layout so the ad
+//    network can measure the container and deliver an ad into it. The moment
+//    the network injects an ad, the box fades in. Dismissable; stays hidden
+//    for the rest of the browser session.
 // 2) Clicking the bottom ad strip (the network's social bar) opens the
 //    smartlink behind the page (popunder behaviour). Clicks on the shop's own
-//    UI never trigger anything.
+//    UI never trigger anything. NO popunder script is loaded.
 (function () {
   'use strict';
 
@@ -15,14 +17,19 @@
   var side = document.getElementById('adSide');
   if (side) {
     var cont = document.getElementById(NATIVE_CONTAINER);
+    var dismissed = false;
+    try { dismissed = sessionStorage.getItem('cstore_adside') === 'off'; } catch (e) {}
+
     var hasAd = cont && cont.childElementCount > 0;
     if (!hasAd) {
-      // No ad delivered (yet) — keep the box fully hidden so it never covers
-      // content for nothing. Show it the moment the network injects an ad.
-      side.classList.add('hidden');
+      if (dismissed) side.classList.add('hidden');
+      else side.classList.add('ghost'); // invisible but measurable
       if (cont && 'MutationObserver' in window) {
         new MutationObserver(function () {
-          if (cont.childElementCount > 0) side.classList.remove('hidden');
+          if (cont.childElementCount > 0) {
+            side.classList.remove('ghost');
+            side.classList.remove('hidden');
+          }
         }).observe(cont, { childList: true, subtree: true });
       }
     }
@@ -31,7 +38,6 @@
       side.classList.add('hidden');
       try { sessionStorage.setItem('cstore_adside', 'off'); } catch (e) {}
     });
-    try { if (sessionStorage.getItem('cstore_adside') === 'off') side.classList.add('hidden'); } catch (e) {}
   }
 
   // ---------- bottom strip -> smartlink (popunder style) ----------

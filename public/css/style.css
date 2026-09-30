@@ -524,6 +524,8 @@ details p { margin: 6px 0 12px; }
 /* ============ Ads ============ */
 .ad-side { position: fixed; right: 14px; bottom: 84px; width: 320px; max-width: calc(100vw - 28px); z-index: 950; background: #0e0e15; border: 1px solid rgba(168, 85, 247, 0.35); border-radius: 12px; overflow: hidden; box-shadow: 0 18px 50px -18px rgba(0, 0, 0, 0.75); }
 .ad-side.hidden { display: none; }
+.ad-side { transition: opacity 0.4s ease; }
+.ad-side.ghost { opacity: 0; pointer-events: none; }
 .ad-side-head { display: flex; justify-content: space-between; align-items: center; padding: 7px 10px; font-size: 0.66rem; letter-spacing: 0.09em; text-transform: uppercase; color: #8f8f9e; border-bottom: 1px solid rgba(255, 255, 255, 0.07); }
 .ad-side-close { flex: none; background: none; border: none; color: #8f8f9e; cursor: pointer; font-size: 0.8rem; padding: 2px 6px; border-radius: 6px; }
 .ad-side-close:hover { color: #fff; background: rgba(255, 255, 255, 0.08); }
