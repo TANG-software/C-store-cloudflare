@@ -522,14 +522,14 @@ details p { margin: 6px 0 12px; }
 .otp-note form { display: inline; }
 
 /* ============ Ads ============ */
-.ad-side { position: fixed; right: 14px; bottom: 84px; width: 320px; max-width: calc(100vw - 28px); z-index: 950; background: #0e0e15; border: 1px solid rgba(168, 85, 247, 0.35); border-radius: 12px; overflow: hidden; box-shadow: 0 18px 50px -18px rgba(0, 0, 0, 0.75); }
+.ad-side { position: fixed; right: 12px; bottom: 58px; width: 88vw; max-width: 264px; z-index: 950; background: #0e0e15; border: 1px solid rgba(168, 85, 247, 0.35); border-radius: 12px; overflow: hidden; box-shadow: 0 18px 50px -18px rgba(0, 0, 0, 0.75); }
 .ad-side.hidden { display: none; }
 .ad-side { transition: opacity 0.4s ease; }
 .ad-side.ghost { opacity: 0; pointer-events: none; }
 .ad-side-head { display: flex; justify-content: space-between; align-items: center; padding: 7px 10px; font-size: 0.66rem; letter-spacing: 0.09em; text-transform: uppercase; color: #8f8f9e; border-bottom: 1px solid rgba(255, 255, 255, 0.07); }
 .ad-side-close { flex: none; background: none; border: none; color: #8f8f9e; cursor: pointer; font-size: 0.8rem; padding: 2px 6px; border-radius: 6px; }
 .ad-side-close:hover { color: #fff; background: rgba(255, 255, 255, 0.08); }
-.ad-side-body { padding: 8px; min-height: 110px; max-height: 260px; overflow: hidden; background: #0a0a10; }
+.ad-side-body { padding: 6px; min-height: 54px; max-height: 86px; overflow: hidden; background: #0a0a10; }
 @media (max-width: 520px) { .ad-side { right: 8px; left: 8px; width: auto; bottom: 80px; } }
 
 /* ============ Logo (animated circular badge) ============ */
@@ -572,3 +572,14 @@ details p { margin: 6px 0 12px; }
 @media (max-width: 640px) {
   .product-grid { grid-template-columns: 1fr; }
 }
+
+/* ---------- bottom ad strip (click = smartlink popunder) ---------- */
+.ad-strip { position: fixed; left: 0; right: 0; bottom: 0; z-index: 940; display: flex; align-items: center; gap: 9px; height: 42px; padding: 0 12px 0 14px; background: rgba(12, 12, 17, 0.96); border-top: 1px solid rgba(168, 85, 247, 0.4); cursor: pointer; -webkit-user-select: none; user-select: none; }
+.ad-strip.hidden { display: none; }
+.ad-strip-dot { flex: none; width: 7px; height: 7px; border-radius: 50%; background: #a855f7; animation: adStripPulse 2.4s ease-in-out infinite; }
+@keyframes adStripPulse { 0%, 100% { box-shadow: 0 0 4px rgba(168, 85, 247, 0.5); } 50% { box-shadow: 0 0 12px rgba(168, 85, 247, 0.95); } }
+.ad-strip-text { flex: 1; min-width: 0; font-size: 0.74rem; letter-spacing: 0.05em; color: #b9aecf; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ad-strip-text b { color: #fff; font-weight: 600; }
+.ad-strip-close { flex: none; background: none; border: none; color: #8f8f9e; cursor: pointer; font-size: 0.95rem; line-height: 1; padding: 6px 4px 6px 8px; border-radius: 6px; }
+.ad-strip-close:hover { color: #fff; background: rgba(255, 255, 255, 0.08); }
+body.has-adstrip { padding-bottom: 46px; }
