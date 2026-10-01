@@ -40,12 +40,20 @@ export function header(ctx) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${ctx.title ? esc(ctx.title) + ' · ' : ''}${esc(settings.store_name)}</title>
+  <meta property="og:site_name" content="${esc(settings.store_name)}">
   <meta property="og:title" content="${esc(ctx.title ? ctx.title + ' · ' + settings.store_name : settings.store_name)}">
   <meta property="og:description" content="${esc(settings.store_tagline || 'Everything you need, delivered across the Netherlands.')}">
   <meta property="og:type" content="website">
   <meta property="og:url" content="${esc((ctx.origin || '') + '/')}">
   <meta property="og:image" content="${esc((ctx.origin || '') + '/og-logo.png')}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="${esc(settings.store_name)}">
+  <meta name="description" content="${esc(settings.store_tagline || 'Everything you need, delivered across the Netherlands.')}">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="${esc(settings.store_name)}">
+  <meta name="twitter:description" content="${esc(settings.store_tagline || 'Everything you need, delivered across the Netherlands.')}">
+  <meta name="twitter:image" content="${esc((ctx.origin || '') + '/og-logo.png')}">
   <link rel="icon" type="image/png" href="/favicon.png">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="stylesheet" href="/css/style.css?v=17">
