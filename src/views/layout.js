@@ -102,7 +102,6 @@ ${user && !user.email_verified ? `
 
 export function footer(ctx) {
   const { settings, path } = ctx;
-  const phone = settings.support_phone || '';
   // Ad tags run on customer pages only — never inside the admin panel —
   // and only when the admin has switched ads ON (Admin -> Settings).
   const adsOn = String(settings.ads_enabled || '').trim() === '1';
@@ -143,7 +142,6 @@ export function footer(ctx) {
       </div>
       <p class="muted small" style="margin-bottom:0">
         <a href="mailto:${esc(settings.support_email)}">${esc(settings.support_email)}</a>
-        ${phone ? `<br>Phone — <a href="tel:${esc(phone.replace(/\s/g, ''))}">${esc(phone)}</a>` : ''}
       </p>
     </div>
   </div>

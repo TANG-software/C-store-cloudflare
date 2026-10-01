@@ -495,7 +495,6 @@ export function settings(ctx, { s, baseUrl }) {
     <p class="muted small">These appear on the Help page and in the footer, so customers know how to reach you.</p>
     <form action="/admin/settings" method="POST" class="form-grid">
       <label>Support email<input name="support_email" value="${v('support_email')}" placeholder="support@cstore.nl"></label>
-      <label>Support phone<input name="support_phone" value="${v('support_phone')}" placeholder="+31 20 123 4567"></label>
       <label>Discord invite URL (optional)<input name="discord_url" value="${v('discord_url')}" placeholder="https://discord.gg/…"></label>
       <label>Telegram URL (optional)<input name="telegram_url" value="${v('telegram_url')}" placeholder="https://t.me/…"></label>
       <label class="span2">Store address (optional)<textarea name="store_address" rows="2" placeholder="Keizersgracht 1, 1015 CJ Amsterdam, Netherlands">${v('store_address')}</textarea></label>

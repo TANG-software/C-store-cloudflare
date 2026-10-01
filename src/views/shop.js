@@ -227,14 +227,6 @@ export function help(ctx) {
       <p class="muted small">We usually reply within one business day.</p>
     </div>
 
-    <div class="card center contact-card">
-      <div class="big-icon">✦</div>
-      <h2>Call us</h2>
-      ${settings.support_phone
-        ? `<p><a href="tel:${esc(settings.support_phone.replace(/\s/g, ''))}">${esc(settings.support_phone)}</a></p>
-           <p class="muted small">Mon–Fri, 09:00–17:00 CET.</p>`
-        : '<p class="muted">Phone number coming soon — please email us for now.</p>'}
-    </div>
   </div>
 
   ${settings.store_address ? `
