@@ -185,6 +185,19 @@ async function ensureUpgrades(c) {
   for (const s of statements(UPGRADE_SETTINGS_SQL)) {
     await c.env.DB.prepare(s).run();
   }
+  // One-time: swap the very first demo catalog (physical goods) for the
+  // current digital-product demo catalog. Only runs while the store still
+  // holds the original seeded demo items and no real orders exist, so a
+  // store with its own products or orders is never touched.
+  const legacy = await c.env.DB.prepare("SELECT COUNT(*) AS n FROM products WHERE slug IN ('smart-fitness-watch','wireless-noise-cancelling-headphones','vitamin-c-brightening-serum')").first();
+  if (legacy && legacy.n > 0) {
+    const orders = await c.env.DB.prepare('SELECT COUNT(*) AS n FROM orders').first();
+    if (!orders || orders.n === 0) {
+      await c.env.DB.prepare('DELETE FROM products').run();
+      await c.env.DB.prepare('DELETE FROM categories').run();
+      for (const s of statements(DEMO_CATALOG_SQL)) await c.env.DB.prepare(s).run();
+    }
+  }
   // products.payment_methods (admin can restrict which payment methods a product allows)
   const row = await c.env.DB.prepare("SELECT sql FROM sqlite_master WHERE type='table' AND name='products'").first();
   if (row && row.sql && !/payment_methods/i.test(row.sql)) {
