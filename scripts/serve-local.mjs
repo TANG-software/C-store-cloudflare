@@ -55,6 +55,22 @@ const server = http.createServer(async (req, res) => {
         return res.end('not found');
       }
     }
+    // serve everything else under public/ (images, icons, etc.) like the
+    // production assets binding does
+    const staticMatch = /^\/(img\/|favicon\.png|apple-touch-icon\.png|og-logo\.png)/.test(req.url);
+    if (staticMatch) {
+      try {
+        const p = new URL('../public' + req.url.split('?')[0], import.meta.url);
+        const buf = fs.readFileSync(p);
+        const ext = p.pathname.split('.').pop().toLowerCase();
+        const types = { png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', svg: 'image/svg+xml', webp: 'image/webp', ico: 'image/x-icon' };
+        res.writeHead(200, { 'Content-Type': types[ext] || 'application/octet-stream', 'Cache-Control': 'public, max-age=3600' });
+        return res.end(buf);
+      } catch (e) {
+        res.writeHead(404);
+        return res.end('not found');
+      }
+    }
     const chunks = [];
     for await (const chunk of req) chunks.push(chunk);
     const body = chunks.length ? Buffer.concat(chunks) : undefined;
