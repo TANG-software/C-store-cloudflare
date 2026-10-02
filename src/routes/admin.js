@@ -245,7 +245,7 @@ admin.post('/settings', async (c) => {
   for (const [form, key] of Object.entries(euros)) {
     if (form in b) await setSetting(c, key, String(Math.round(Number(String(b[form] || '0').replace(',', '.')) * 100)));
   }
-  for (const key of ['store_name', 'store_tagline', 'support_email', 'support_phone', 'store_address', 'public_base_url', 'wallet_btc', 'wallet_eth', 'wallet_usdt_trc20', 'hero_headline', 'hero_badges', 'about_text', 'discord_url', 'telegram_url', 'top_bar_text', 'hero_overline', 'hero_cta', 'stats_heading', 'stats_text', 'stat_orders_label', 'stat_customers_label', 'stat_products_label', 'about_heading', 'categories_heading', 'featured_heading', 'newest_heading', 'reviews_heading', 'payments_heading', 'related_heading', 'faq_heading', 'faqs', 'ads_enabled']) {
+  for (const key of ['store_name', 'store_tagline', 'support_email', 'support_phone', 'store_address', 'public_base_url', 'wallet_btc', 'wallet_eth', 'wallet_usdt_trc20', 'hero_headline', 'hero_badges', 'about_text', 'discord_url', 'telegram_url', 'top_bar_text', 'hero_overline', 'hero_cta', 'stats_heading', 'stats_text', 'stat_orders_label', 'stat_customers_label', 'stat_products_label', 'about_heading', 'categories_heading', 'featured_heading', 'newest_heading', 'reviews_heading', 'payments_heading', 'related_heading', 'faq_heading', 'faqs']) {
     if (key in b) await setSetting(c, key, String(b[key] ?? '').trim());
   }
   await flash(c, 'success', 'Settings saved.');
