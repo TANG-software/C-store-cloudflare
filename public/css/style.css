@@ -626,3 +626,12 @@ details p { margin: 6px 0 12px; }
   }
 }
 .menu-brand { font-family: var(--head); font-weight: 800; font-size: 1.35rem; letter-spacing: 0.02em; padding: 2px 12px 14px; display: block; }
+
+/* ---------- bottom ad strip (only when the owner enables it) ---------- */
+.ad-strip { position: fixed; left: 0; right: 0; bottom: 0; z-index: 940; display: flex; align-items: center; gap: 9px; height: 42px; padding: 0 12px 0 14px; background: rgba(12, 12, 17, 0.96); border-top: 1px solid rgba(168, 85, 247, 0.4); cursor: pointer; }
+.ad-strip-dot { flex: none; width: 7px; height: 7px; border-radius: 50%; background: #a855f7; animation: adStripPulse 2.4s ease-in-out infinite; }
+@keyframes adStripPulse { 0%, 100% { box-shadow: 0 0 4px rgba(168, 85, 247, 0.5); } 50% { box-shadow: 0 0 12px rgba(168, 85, 247, 0.95); } }
+.ad-strip-text { flex: 1; min-width: 0; font-size: 0.74rem; letter-spacing: 0.05em; color: #b9aecf; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ad-strip-text b { color: #fff; font-weight: 600; }
+.ad-strip-close { flex: none; background: none; border: none; color: #8f8f9e; cursor: pointer; font-size: 0.95rem; line-height: 1; padding: 6px 4px 6px 8px; border-radius: 6px; }
+body.has-adstrip { padding-bottom: 46px; }

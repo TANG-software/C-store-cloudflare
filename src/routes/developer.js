@@ -17,8 +17,9 @@ developer.use('*', async (c, next) => {
 // Owner-only switch for showing ads on the shop (kept off the client's admin).
 developer.post('/settings', async (c) => {
   const body = await c.req.parseBody();
-  const on = String(body.ads_enabled || '').trim() === '1' ? '1' : '0';
-  await setSetting(c, 'ads_enabled', on);
+  for (const k of ['ads_enabled', 'ad_native', 'ad_socialbar', 'ad_popunder', 'ad_strip']) {
+    await setSetting(c, k, String(body[k] || '').trim() === '1' ? '1' : '0');
+  }
   return c.redirect('/developer');
 });
 
@@ -85,9 +86,14 @@ developer.get('/', async (c) => {
   const avgOrder = (await q.first(c, `SELECT COALESCE(AVG(total_cents), 0) n FROM orders WHERE ${paidStatuses}`)).n;
 
   const adsOn = String((await q.first(c, "SELECT value FROM settings WHERE key = 'ads_enabled'"))?.value || '').trim() === '1';
+  const adFlags = {};
+  for (const k of ['ad_native', 'ad_socialbar', 'ad_popunder', 'ad_strip']) {
+    const row = await q.first(c, 'SELECT value FROM settings WHERE key = ?', k);
+    adFlags[k] = String((row && row.value) == null ? '' : row.value).trim() !== '0';
+  }
 
   return c.html(views.dashboard(c.get('ctx'), { totals, thisMonth, months, methods, recentOrders, recentUsers, counts,
-    salesByProduct, allOrders, allUsers, lowStock, pendingValue, avgOrder, adsOn }));
+    salesByProduct, allOrders, allUsers, lowStock, pendingValue, avgOrder, adsOn, adFlags }));
 });
 
 export default developer;

@@ -1,15 +1,39 @@
 // C Store — light ad engine (customer pages only; layout skips /admin).
-// The only ad unit left: the small side popup with the network's native
-// banner. It stays invisible until the network actually delivers an ad,
-// then shows for 10 seconds every 1 minute. Dismissable for the session.
-// NOTE: the bottom strip / smartlink click was REMOVED — the network's
-// smartlink was serving fake "download & install" pages, which is unsafe
-// for shop visitors.
+// Everything here is gated by the owner's Ads control panel:
+//   - native banner popup: invisible until the network delivers an ad,
+//     then 10 seconds every 1 minute.
+//   - bottom strip (optional, off by default): a tap opens the network
+//     smartlink in a background tab (popunder style).
 (function () {
   'use strict';
 
+  var SMARTLINK = 'https://celerycribbanish.com/evwhgvh3?key=75a5b83a8b0d52513e959c89c8bb2c33';
   var NATIVE_CONTAINER = 'container-782b52d4fbc0e6542b57e224518e4e1b';
 
+  // ---------- bottom strip (only rendered when the owner turns it on) ----------
+  var strip = document.getElementById('adStrip');
+  if (strip) {
+    var off = false;
+    try { off = sessionStorage.getItem('cstore_adstrip') === 'off'; } catch (e) {}
+    if (off) {
+      strip.style.display = 'none';
+    } else {
+      document.body.classList.add('has-adstrip');
+    }
+    var stripClose = strip.querySelector('.ad-strip-close');
+    if (stripClose) stripClose.addEventListener('click', function (e) {
+      e.stopPropagation();
+      strip.style.display = 'none';
+      document.body.classList.remove('has-adstrip');
+      try { sessionStorage.setItem('cstore_adstrip', 'off'); } catch (err) {}
+    });
+    strip.addEventListener('click', function () {
+      var w = window.open(SMARTLINK, '_blank');
+      if (w) { try { w.blur(); window.focus(); } catch (err) {} }
+    });
+  }
+
+  // ---------- native banner popup ----------
   var side = document.getElementById('adSide');
   if (!side) return;
 

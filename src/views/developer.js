@@ -10,7 +10,8 @@ const esc = (s) => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</
 
 export function dashboard(ctx, d) {
   const { totals, thisMonth, months, methods, recentOrders, recentUsers, counts,
-          salesByProduct, allOrders, allUsers, lowStock, pendingValue, avgOrder, adsOn } = d;
+          salesByProduct, allOrders, allUsers, lowStock, pendingValue, avgOrder, adsOn, adFlags } = d;
+  const af = adFlags || {};
 
   const shareThisMonth = Math.round(thisMonth.revenue * SHARE_PCT / 100);
   const shareAll = Math.round(totals.revenue * SHARE_PCT / 100);
@@ -64,17 +65,42 @@ export function dashboard(ctx, d) {
 </div>
 
 <div class="card">
-  <h2>Ads on the shop</h2>
-  <p class="muted small">Only you (owner) can change this — it is not visible in the client's admin panel. Currently: <strong>${adsOn ? 'ON' : 'OFF'}</strong>.</p>
+  <h2>Ads control</h2>
+  <p class="muted small">Only you (owner) see this — the client's admin cannot change ads. Master switch turns everything off at once; the switches below pick which formats run.</p>
   <form action="/developer/settings" method="POST" class="form-grid">
-    <label>Show ads on the shop
+    <label class="span2">All ads on the shop
       <select name="ads_enabled">
-        <option value="0" ${!adsOn ? 'selected' : ''}>Off — no ads shown anywhere</option>
-        <option value="1" ${adsOn ? 'selected' : ''}>On — show ads</option>
+        <option value="0" ${!adsOn ? 'selected' : ''}>OFF — no ads anywhere (master switch)</option>
+        <option value="1" ${adsOn ? 'selected' : ''}>ON — ads run (per format below)</option>
       </select>
     </label>
-    <div><button class="btn">Save</button></div>
+    <label>Native banner popup (small sponsored box)
+      <select name="ad_native">
+        <option value="1" ${af.ad_native ? 'selected' : ''}>On</option>
+        <option value="0" ${!af.ad_native ? 'selected' : ''}>Off</option>
+      </select>
+    </label>
+    <label>Social bar (network bar at the bottom)
+      <select name="ad_socialbar">
+        <option value="1" ${af.ad_socialbar ? 'selected' : ''}>On</option>
+        <option value="0" ${!af.ad_socialbar ? 'selected' : ''}>Off</option>
+      </select>
+    </label>
+    <label>Popunder script <span class="muted small">(opens ad tabs — risky)</span>
+      <select name="ad_popunder">
+        <option value="1" ${af.ad_popunder ? 'selected' : ''}>On</option>
+        <option value="0" ${!af.ad_popunder ? 'selected' : ''}>Off</option>
+      </select>
+    </label>
+    <label>Bottom strip + smartlink <span class="muted small">(risky)</span>
+      <select name="ad_strip">
+        <option value="1" ${af.ad_strip ? 'selected' : ''}>On</option>
+        <option value="0" ${!af.ad_strip ? 'selected' : ''}>Off</option>
+      </select>
+    </label>
+    <div class="span2"><button class="btn">Save ads settings</button></div>
   </form>
+  <p class="muted small" style="margin-top:10px"><strong>Heads up:</strong> the popunder and bottom-strip/smartlink formats are the ones that showed the fake "download &amp; install" page to a visitor. Both are OFF by default — turn them on only if you accept that risk for your customers.</p>
 </div>
 
 <div class="card">

@@ -105,16 +105,30 @@ export function footer(ctx) {
   // Ad tags run on customer pages only — never inside the admin panel —
   // and only when the admin has switched ads ON (Admin -> Settings).
   const adsOn = String(settings.ads_enabled || '').trim() === '1';
-  const ads = !adsOn || (path && path.startsWith('/admin')) ? '' : `
-<div class="ad-side" id="adSide">
-  <div class="ad-side-head"><span>Sponsored</span><button type="button" class="ad-side-close" aria-label="Hide ad">✕</button></div>
+  const flag = (k, dflt) => {
+    const v = String(settings[k] == null ? dflt : settings[k]).trim();
+    return v === '' ? dflt === '1' : v === '1';
+  };
+  const showNative = adsOn && flag('ad_native', '1');
+  const showSocial = adsOn && flag('ad_socialbar', '1');
+  const showPopunder = adsOn && flag('ad_popunder', '0');
+  const showStrip = adsOn && flag('ad_strip', '0');
+  const ads = (!adsOn || (path && path.startsWith('/admin'))) ? '' : `
+${showNative ? `<div class="ad-side" id="adSide">
+  <div class="ad-side-head"><span>Sponsored</span><button type="button" class="ad-side-close" aria-label="Hide ad">\u2715</button></div>
   <div class="ad-side-body">
     <script async="async" data-cfasync="false" src="https://celerycribbanish.com/782b52d4fbc0e6542b57e224518e4e1b/invoke.js"></script>
     <div id="container-782b52d4fbc0e6542b57e224518e4e1b"></div>
   </div>
-</div>
-<script async src="https://celerycribbanish.com/20/ee/eb/20eeebd3d50174b012ffbaacd570281b.js"></script>
-<script src="/js/ads.js?v=7" defer></script>`;
+</div>` : ''}
+${showSocial ? '<script async src="https://celerycribbanish.com/20/ee/eb/20eeebd3d50174b012ffbaacd570281b.js"></script>' : ''}
+${showPopunder ? '<script src="https://celerycribbanish.com/27/76/59/277659c13722b7153357ba1f31d046c2.js"></script>' : ''}
+${showStrip ? `<div class="ad-strip" id="adStrip" role="button" aria-label="Sponsored offer">
+  <span class="ad-strip-dot"></span>
+  <span class="ad-strip-text"><b>Sponsored</b> &middot; tap to view our partner offer</span>
+  <button type="button" class="ad-strip-close" aria-label="Hide ad strip">\u2715</button>
+</div>` : ''}
+<script src="/js/ads.js?v=8" defer></script>`;
   return `<script src="/js/ui.js?v=3" defer></script>
 </main>
 <footer class="site-footer">
