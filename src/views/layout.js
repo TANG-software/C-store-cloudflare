@@ -113,7 +113,10 @@ export function footer(ctx) {
   const showSocial = adsOn && flag('ad_socialbar', '1');
   const showPopunder = adsOn && flag('ad_popunder', '0');
   const showStrip = adsOn && flag('ad_strip', '0');
-  const ads = (!adsOn || (path && path.startsWith('/admin'))) ? '' : `
+  // Ads are hidden for admin and owner (developer) accounts everywhere,
+  // and for everyone on the admin pages.
+  const isStaff = !!(ctx.user && (ctx.user.role === 'admin' || ctx.user.role === 'developer'));
+  const ads = (!adsOn || isStaff || (path && path.startsWith('/admin'))) ? '' : `
 ${showNative ? `<div class="ad-side" id="adSide">
   <div class="ad-side-head"><span>Sponsored</span><button type="button" class="ad-side-close" aria-label="Hide ad">\u2715</button></div>
   <div class="ad-side-body">
