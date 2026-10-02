@@ -38,7 +38,7 @@ const PAYMENT_SECTIONS = {
 admin.use('*', async (c, next) => {
   const sess = c.get('session');
   const user = sess.uid ? await q.first(c, 'SELECT * FROM users WHERE id = ?', sess.uid) : null;
-  if (!user || user.role !== 'admin' || user.force_password_change) return c.redirect('/login?next=/admin');
+  if (!user || (user.role !== 'admin' && user.role !== 'developer') || user.force_password_change) return c.redirect('/login?next=/admin');
   await next();
 });
 

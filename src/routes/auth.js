@@ -118,7 +118,7 @@ auth.post('/change-password', async (c) => {
   }
   await q.run(c, 'UPDATE users SET password_hash = ?, force_password_change = 0 WHERE id = ?', await hashPassword(String(b.password)), sess.uid);
   await flash(c, 'success', 'Password changed.');
-  return c.redirect(user.role === 'admin' ? '/admin' : '/account');
+  return c.redirect(user.role === 'developer' ? '/developer' : user.role === 'admin' ? '/admin' : '/account');
 });
 
 auth.get('/account', async (c) => {

@@ -11,8 +11,10 @@ const ICON_LABELS = {
 function adminNav(ctx) {
   const { path } = ctx;
   const link = (href, label, match) => `<a href="${href}" class="${match ? 'active' : ''}">${label}</a>`;
+  const isDev = ctx.user && ctx.user.role === 'developer';
   return `
 <nav class="admin-nav">
+  ${isDev ? link('/developer', 'Owner dashboard', false) : ''}
   ${link('/admin', 'Dashboard', path === '/admin')}
   ${link('/admin/products', 'Products', path.startsWith('/admin/products'))}
   ${link('/admin/categories', 'Categories', path.startsWith('/admin/categories'))}

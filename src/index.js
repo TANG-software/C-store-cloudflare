@@ -9,6 +9,7 @@ import shop from './routes/shop.js';
 import auth from './routes/auth.js';
 import checkout from './routes/checkout.js';
 import admin from './routes/admin.js';
+import developer from './routes/developer.js';
 import webhooks from './routes/webhooks.js';
 import { notFound, serverError } from './views/auth.js';
 
@@ -96,6 +97,7 @@ app.route('/', auth);
 app.route('/', checkout);
 app.route('/', webhooks);
 app.route('/admin', admin);
+app.route('/developer', developer);
 
 app.notFound((c) => c.html(notFound(c.get('ctx') || { user: null, settings: { store_name: 'C Store' }, flash: [], cartCount: 0, path: '/404' }), 404));
 

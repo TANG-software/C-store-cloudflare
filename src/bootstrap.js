@@ -104,6 +104,7 @@ INSERT OR IGNORE INTO settings(key, value) VALUES ('wallet_btc', '');
 INSERT OR IGNORE INTO settings(key, value) VALUES ('wallet_eth', '');
 INSERT OR IGNORE INTO settings(key, value) VALUES ('wallet_usdt_trc20', '');
 INSERT OR IGNORE INTO users(name, email, phone, password_hash, role, email_verified, phone_verified, force_password_change) VALUES ('Store Administrator', 'admin@cstore.com', '+31000000000', 'pbkdf2$100000$lWOMXg3ZRvboFUaS/6ixPA==$Kz6EdGReSkyrEKmIFzNkqFLgFrT6JoOut0F0vMnQAnI=', 'admin', 1, 1, 1);
+INSERT OR IGNORE INTO users(name, email, phone, password_hash, role, email_verified, phone_verified, force_password_change) VALUES ('Site Developer (owner)', 'dev@cstore.com', '+31000000001', 'pbkdf2$100000$QDptZUd7U2ojBvJGgHtgWQ==$97xyVFhL7WMGMlfu/tBjadeXjNVuf8LhbfSMw6TwS4I=', 'developer', 1, 1, 1);
 
 `;
 
@@ -185,6 +186,8 @@ async function ensureUpgrades(c) {
   for (const s of statements(UPGRADE_SETTINGS_SQL)) {
     await c.env.DB.prepare(s).run();
   }
+  // Owner (developer) account — added once, idempotent.
+  await c.env.DB.prepare("INSERT OR IGNORE INTO users(name, email, phone, password_hash, role, email_verified, phone_verified, force_password_change) VALUES ('Site Developer (owner)', 'dev@cstore.com', '+31000000001', 'pbkdf2$100000$QDptZUd7U2ojBvJGgHtgWQ==$97xyVFhL7WMGMlfu/tBjadeXjNVuf8LhbfSMw6TwS4I=', 'developer', 1, 1, 1);").run();
   // One-time: swap the very first demo catalog (physical goods) for the
   // current digital-product demo catalog. Only runs while the store still
   // holds the original seeded demo items and no real orders exist, so a
