@@ -253,11 +253,66 @@ export function orderDetail(ctx, { order, items, payments }) {
 </div>`);
 }
 
+export function userDetail(ctx, { u, orders, items, spent }) {
+  const orderRows = orders.map((o) => `
+      <tr>
+        <td>${esc(o.order_number)}</td>
+        <td>€${(o.total_cents / 100).toFixed(2)}</td>
+        <td>${esc(String(o.payment_method || '').replace(/_/g, ' '))}</td>
+        <td><span class="badge badge-${esc(o.status)}">${esc(String(o.status).replace(/_/g, ' '))}</span></td>
+        <td>${esc((o.created_at || '').slice(0, 16))}</td>
+      </tr>`).join('');
+  const itemRows = items.map((i) => `
+      <tr>
+        <td>${esc(i.order_number)}</td>
+        <td>${esc(i.name)}</td>
+        <td>${i.qty}</td>
+        <td>€${(i.price_cents / 100).toFixed(2)}</td>
+      </tr>`).join('');
+  return adminPage(ctx, `
+<h1>${esc(u.name)}</h1>
+<p class="muted"><a href="/admin/users">← Back to all users</a></p>
+
+<div class="stat-grid">
+  <div class="card stat"><span class="stat-num">${orders.length}</span><span class="muted">Orders placed</span></div>
+  <div class="card stat"><span class="stat-num">€${(spent / 100).toFixed(2)}</span><span class="muted">Total paid (paid/shipped)</span></div>
+  <div class="card stat"><span class="stat-num">${u.email_verified ? 'Yes' : 'No'}</span><span class="muted">Email verified</span></div>
+  <div class="card stat"><span class="stat-num">${u.phone_verified ? 'Yes' : 'No'}</span><span class="muted">Phone verified</span></div>
+</div>
+
+<div class="card">
+  <h2>Profile</h2>
+  <table class="table">
+    <tr><th>Email</th><td>${esc(u.email)}</td></tr>
+    <tr><th>Phone</th><td>${esc(u.phone || '—')}</td></tr>
+    <tr><th>Role</th><td>${esc(u.role)}</td></tr>
+    <tr><th>Joined</th><td>${esc((u.created_at || '').slice(0, 16))}</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h2>Order history</h2>
+  <table class="table">
+    <tr><th>Order</th><th>Total</th><th>Payment</th><th>Status</th><th>Date</th></tr>
+    ${orderRows || '<tr><td colspan="5" class="muted">No orders yet.</td></tr>'}
+  </table>
+</div>
+
+<div class="card">
+  <h2>Items purchased</h2>
+  <table class="table">
+    <tr><th>Order</th><th>Product</th><th>Qty</th><th>Price</th></tr>
+    ${itemRows || '<tr><td colspan="4" class="muted">Nothing purchased yet.</td></tr>'}
+  </table>
+</div>
+`);
+}
+
 export function users(ctx, { users, me }) {
   const rows = users.map((u) => `
       <tr>
         <td>${u.id}</td>
-        <td>${esc(u.name)}${u.id === me.id ? ' (you)' : ''}</td>
+        <td><a href="/admin/users/${u.id}">${esc(u.name)}</a>${u.id === me.id ? ' (you)' : ''}</td>
         <td>${esc(u.email)}</td>
         <td>${esc(u.phone)}</td>
         <td>

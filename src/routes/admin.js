@@ -146,6 +146,18 @@ admin.get('/users', async (c) => {
   return c.html(views.users(c.get('ctx'), { users, me: c.get('ctx').user }));
 });
 
+admin.get('/users/:id', async (c) => {
+  const id = Number(c.req.param('id'));
+  const user = await q.first(c, 'SELECT * FROM users WHERE id = ?', id);
+  if (!user) return c.redirect('/admin/users');
+  const orders = await q.all(c, 'SELECT * FROM orders WHERE user_id = ? ORDER BY id DESC', id);
+  const items = await q.all(c, `
+    SELECT oi.*, o.order_number FROM order_items oi JOIN orders o ON o.id = oi.order_id
+    WHERE o.user_id = ? ORDER BY oi.id DESC`, id);
+  const spent = await q.first(c, "SELECT COALESCE(SUM(total_cents), 0) n FROM orders WHERE user_id = ? AND status IN ('paid','shipped')", id);
+  return c.html(views.userDetail(c.get('ctx'), { u: user, orders, items, spent: spent.n }));
+});
+
 admin.post('/users/:id/verify', async (c) => {
   const b = await c.req.parseBody();
   const ch = b.channel === 'phone' ? 'phone' : 'email';

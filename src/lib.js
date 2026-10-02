@@ -97,13 +97,18 @@ export function clearSigned(c, name) {
 
 // ---------------- flash ----------------
 export async function flash(c, type, msg) {
-  const cur = (await readSigned(c, 'cstore_flash')) || [];
-  cur.push({ type, msg });
+  // Reuse the set already taken this request (otherwise we would re-read the
+  // incoming cookie and write every old message back, so flashes pile up).
+  let cur = c.get && c.get('flashState');
+  if (!cur) cur = (await readSigned(c, 'cstore_flash')) || [];
+  cur = cur.concat([{ type, msg }]);
+  if (c.set) c.set('flashState', cur);
   await writeSigned(c, 'cstore_flash', cur, 300);
 }
 export async function takeFlash(c) {
   const cur = (await readSigned(c, 'cstore_flash')) || [];
   if (cur.length) clearSigned(c, 'cstore_flash');
+  if (c.set) c.set('flashState', []);
   return cur;
 }
 
