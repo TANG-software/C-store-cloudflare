@@ -127,9 +127,15 @@ export function account(ctx, { user, orders }) {
           <td>€${(o.total_cents / 100).toFixed(2)}</td>
           <td><span class="badge badge-${esc(o.status)}">${esc(o.status.replace(/_/g, ' '))}</span></td>
         </tr>`).join('');
+  const staffLinks = user.role === 'developer'
+    ? `<div class="card"><h2>Owner tools</h2><p class="muted small">You are signed in as the site owner (developer).</p><a class="btn" href="/developer">Owner dashboard</a> <a class="btn" href="/admin">Store admin</a></div>`
+    : user.role === 'admin'
+      ? `<div class="card"><h2>Store admin</h2><a class="btn" href="/admin">Open admin panel</a></div>`
+      : '';
   return page(ctx, `
 <section class="section narrow">
   <h1>My account</h1>
+  ${staffLinks}
   <div class="verify-grid">
     <div class="card">
       <h2>Profile</h2>

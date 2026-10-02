@@ -22,7 +22,7 @@ function navLinks(ctx, mobile) {
     <a href="/help" ${cls(path, path === '/help')}>Help & contact</a>
     ${user ? `
       <a href="/account" ${cls(path, path.startsWith('/account'))}>Accounts</a>
-      ${user.role === 'admin' ? `<a href="/admin" class="admin-link">Admin</a>` : ''}
+      ${user.role === 'developer' ? `<a href="/developer" class="admin-link">Owner dashboard</a><a href="/admin" class="admin-link">Store admin</a>` : user.role === 'admin' ? `<a href="/admin" class="admin-link">Admin</a>` : ''}
       <form action="/logout" method="POST" class="inline-form"><button class="link-btn">Log out</button></form>
     ` : `
       <a href="/login" ${cls(path, path === '/login')}>Login</a>
