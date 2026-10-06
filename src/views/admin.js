@@ -271,6 +271,15 @@ export function userDetail(ctx, { u, orders, items, spent }) {
       </tr>`).join('');
   return adminPage(ctx, `
 <h1>${esc(u.name)}</h1>
+
+<div class="card">
+  <h2>Set a new password</h2>
+  <p class="muted small">Use this if this user cannot log in. The new password works immediately and no forced change is required.</p>
+  <form action="/admin/users/${u.id}/password" method="POST" class="form-grid">
+    <label class="span2">New password (at least 8 characters)<input name="password" type="text" placeholder="Type a new password"></label>
+    <div class="span2"><button class="btn">Set password</button></div>
+  </form>
+</div>
 <p class="muted"><a href="/admin/users">← Back to all users</a></p>
 
 <div class="stat-grid">

@@ -158,6 +158,20 @@ admin.get('/users/:id', async (c) => {
   return c.html(views.userDetail(c.get('ctx'), { u: user, orders, items, spent: spent.n }));
 });
 
+admin.post('/users/:id/password', async (c) => {
+  const id = Number(c.req.param('id'));
+  const b = await c.req.parseBody();
+  const pw = String(b.password || '');
+  if (pw.length < 8) {
+    await flash(c, 'error', 'The new password must be at least 8 characters long.');
+    return c.redirect('/admin/users/' + id);
+  }
+  const { hashPassword } = await import('../lib.js');
+  await q.run(c, 'UPDATE users SET password_hash = ?, force_password_change = 0 WHERE id = ?', await hashPassword(pw), id);
+  await flash(c, 'success', 'Password set. The user can now log in with the new password.');
+  return c.redirect('/admin/users/' + id);
+});
+
 admin.post('/users/:id/verify', async (c) => {
   const b = await c.req.parseBody();
   const ch = b.channel === 'phone' ? 'phone' : 'email';
