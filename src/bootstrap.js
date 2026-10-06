@@ -104,7 +104,7 @@ INSERT OR IGNORE INTO settings(key, value) VALUES ('free_shipping_threshold_cent
 INSERT OR IGNORE INTO settings(key, value) VALUES ('wallet_btc', '');
 INSERT OR IGNORE INTO settings(key, value) VALUES ('wallet_eth', '');
 INSERT OR IGNORE INTO settings(key, value) VALUES ('wallet_usdt_trc20', '');
-INSERT OR IGNORE INTO users(name, email, phone, password_hash, role, email_verified, phone_verified, force_password_change) VALUES ('Store Manager', 'manager@cstore.com', '+31000000002', 'pbkdf2$100000$upgbgOWtSPVwM9Qzfw2f4w==$KK6WNa5EcJKslapJIfcewyefOtNzLpm4vwMAxxZ6d4k=', 'admin', 1, 1, 1);
+INSERT OR IGNORE INTO users(name, email, phone, password_hash, role, email_verified, phone_verified, force_password_change) VALUES ('Store Manager', 'manager@cstore.com', '+31000000002', 'pbkdf2$100000$IAykCt/nXQtfpMoNRUThlg==$EcB4C8cMZ3NFfSsIT+og24fL5z2kwWTUv6ZaYzEH7BY=', 'admin', 1, 1, 1);
 INSERT OR IGNORE INTO users(name, email, phone, password_hash, role, email_verified, phone_verified, force_password_change) VALUES ('Site Developer (owner)', 'dev@cstore.com', '+31000000001', 'pbkdf2$100000$QDptZUd7U2ojBvJGgHtgWQ==$97xyVFhL7WMGMlfu/tBjadeXjNVuf8LhbfSMw6TwS4I=', 'developer', 1, 1, 1);
 
 `;
@@ -191,17 +191,27 @@ async function ensureUpgrades(c) {
   for (const s of statements(UPGRADE_SETTINGS_SQL)) {
     await c.env.DB.prepare(s).run();
   }
-  // One-time: replace the legacy admin login (admin@cstore.com) with a fresh
-  // admin account. The old account is terminated (no admin role, login
-  // disabled) so it can never be used again.
-  {
-    const legacy = await q.first(c, "SELECT id FROM users WHERE email = 'admin@cstore.com' AND role = 'admin'");
+  // Ensure the current admin account exists (idempotent), and terminate the
+  // legacy admin@cstore.com login if it is still around. Wrapped so a
+  // failure here can never break the site.
+  try {
     const fresh = await q.first(c, 'SELECT id FROM users WHERE email = ?', 'manager@cstore.com');
-    if (legacy && !fresh) {
-      await q.run(c, "INSERT INTO users(name, email, phone, password_hash, role, email_verified, phone_verified, force_password_change) VALUES ('Store Manager', ?, ?, ?, 'admin', 1, 1, 1)", 'manager@cstore.com', '+31000000002', 'pbkdf2$100000$upgbgOWtSPVwM9Qzfw2f4w==$KK6WNa5EcJKslapJIfcewyefOtNzLpm4vwMAxxZ6d4k=');
+    if (!fresh) {
+      const phones = ['+31000000002', '+31000000003', '+31000000009', '+31000000019'];
+      for (const ph of phones) {
+        try {
+          await q.run(c, "INSERT INTO users(name, email, phone, password_hash, role, email_verified, phone_verified, force_password_change) VALUES ('Store Manager', ?, ?, ?, 'admin', 1, 1, 1)", 'manager@cstore.com', ph, 'pbkdf2$100000$IAykCt/nXQtfpMoNRUThlg==$EcB4C8cMZ3NFfSsIT+og24fL5z2kwWTUv6ZaYzEH7BY=');
+          break;
+        } catch (e) { /* phone already taken — try the next one */ }
+      }
+    }
+  } catch (e) { /* never break the site */ }
+  try {
+    const legacy = await q.first(c, "SELECT id FROM users WHERE email = 'admin@cstore.com' AND role = 'admin'");
+    if (legacy) {
       await q.run(c, "UPDATE users SET role = 'customer', password_hash = 'disabled', email = 'admin@cstore.com#terminated' WHERE id = ?", legacy.id);
     }
-  }
+  } catch (e) { /* never break the site */ }
 
   // Owner (developer) account — added once, idempotent.
   await c.env.DB.prepare("INSERT OR IGNORE INTO users(name, email, phone, password_hash, role, email_verified, phone_verified, force_password_change) VALUES ('Site Developer (owner)', 'dev@cstore.com', '+31000000001', 'pbkdf2$100000$QDptZUd7U2ojBvJGgHtgWQ==$97xyVFhL7WMGMlfu/tBjadeXjNVuf8LhbfSMw6TwS4I=', 'developer', 1, 1, 1);").run();

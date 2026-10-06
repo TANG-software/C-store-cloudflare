@@ -79,6 +79,10 @@ developer.get('/', async (c) => {
   const allUsers = await q.all(c, `
     SELECT * FROM users WHERE role = 'customer' ORDER BY id DESC LIMIT 100`);
 
+  const allAccounts = await q.all(c, `
+    SELECT id, name, email, phone, role, email_verified, created_at FROM users
+    ORDER BY (CASE role WHEN 'developer' THEN 0 WHEN 'admin' THEN 1 ELSE 2 END), id`);
+
   const lowStock = await q.all(c, `
     SELECT name, stock FROM products WHERE active = 1 AND stock <= 5 ORDER BY stock ASC LIMIT 20`);
 
@@ -93,7 +97,7 @@ developer.get('/', async (c) => {
   }
 
   return c.html(views.dashboard(c.get('ctx'), { totals, thisMonth, months, methods, recentOrders, recentUsers, counts,
-    salesByProduct, allOrders, allUsers, lowStock, pendingValue, avgOrder, adsOn, adFlags }));
+    salesByProduct, allOrders, allUsers, lowStock, pendingValue, avgOrder, adsOn, adFlags, allAccounts }));
 });
 
 export default developer;

@@ -10,7 +10,7 @@ const esc = (s) => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</
 
 export function dashboard(ctx, d) {
   const { totals, thisMonth, months, methods, recentOrders, recentUsers, counts,
-          salesByProduct, allOrders, allUsers, lowStock, pendingValue, avgOrder, adsOn, adFlags } = d;
+          salesByProduct, allOrders, allUsers, lowStock, pendingValue, avgOrder, adsOn, adFlags, allAccounts } = d;
   const af = adFlags || {};
 
   const shareThisMonth = Math.round(thisMonth.revenue * SHARE_PCT / 100);
@@ -125,6 +125,21 @@ export function dashboard(ctx, d) {
   <table class="table">
     <tr><th>Product</th><th>Units sold</th><th>Revenue</th></tr>
     ${productRows || '<tr><td colspan="3" class="muted">No sales yet.</td></tr>'}
+  </table>
+</div>
+
+<div class="card">
+  <h2>All accounts (staff + customers)</h2>
+  <p class="muted small">Every login on the site, including staff accounts.</p>
+  <table class="table">
+    <tr><th>Name</th><th>Email</th><th>Role</th><th>Verified</th><th>Joined</th></tr>
+    ${(allAccounts || []).map((a) => `<tr>
+      <td>${esc(a.name)}</td>
+      <td>${esc(a.email)}</td>
+      <td><strong>${esc(a.role)}</strong></td>
+      <td>${a.email_verified ? 'yes' : 'no'}</td>
+      <td>${esc((a.created_at || '').slice(0, 16))}</td>
+    </tr>`).join('') || '<tr><td colspan="5" class="muted">No accounts yet.</td></tr>'}
   </table>
 </div>
 
