@@ -42,9 +42,9 @@ curl -s -b /tmp/u1 -c /tmp/u1 -X POST -d "code=$PC" $B/verify/phone -o /dev/null
 
 echo "=== 5. admin first login + forced password change ==="
 curl -s -c /tmp/adm -o /dev/null $B/login
-curl -s -b /tmp/adm -c /tmp/adm -X POST -d "email=admin@cstore.com&password=Admin@123" $B/login -o /dev/null -w "  admin login: %{http_code} -> %{redirect_url}\n"
+curl -s -b /tmp/adm -c /tmp/adm -X POST -d "email=manager@cstore.com&password=CStore#Admin2026" $B/login -o /dev/null -w "  admin login: %{http_code} -> %{redirect_url}\n"
 curl -s -b /tmp/adm -c /tmp/adm -o /dev/null -w "  /admin before pw change: %{http_code} -> %{redirect_url}\n" $B/admin
-curl -s -b /tmp/adm -c /tmp/adm -X POST --data-urlencode "current=Admin@123" --data-urlencode "password=NewSecurePass1" --data-urlencode "confirm=NewSecurePass1" $B/change-password -o /dev/null -w "  pw change: %{http_code} -> %{redirect_url}\n"
+curl -s -b /tmp/adm -c /tmp/adm -X POST --data-urlencode "current=CStore#Admin2026" --data-urlencode "password=NewSecurePass1" --data-urlencode "confirm=NewSecurePass1" $B/change-password -o /dev/null -w "  pw change: %{http_code} -> %{redirect_url}\n"
 for p in /admin /admin/products /admin/categories /admin/orders /admin/users /admin/payments /admin/settings; do
   printf "  %-20s %s\n" "$p" "$(curl -s -b /tmp/adm -o /dev/null -w '%{http_code}' $B$p)"
 done
@@ -93,7 +93,7 @@ curl -s $B/ | grep -o "help@cstore.nl" | head -1 | sed 's/^/  footer email: /'
 
 echo "=== 10. old admin password rejected ==="
 curl -s -c /tmp/adm2 -o /dev/null $B/login
-curl -s -b /tmp/adm2 -c /tmp/adm2 -X POST -d "email=admin@cstore.com&password=Admin@123" $B/login -o /dev/null -w "  old pw login: %{http_code} (expect 401)\n"
+curl -s -b /tmp/adm2 -c /tmp/adm2 -X POST -d "email=manager@cstore.com&password=CStore#Admin2026" $B/login -o /dev/null -w "  legacy admin login: %{http_code} (expect 401)\n"
 
 echo "=== 11. admin product create ==="
 CID=$(curl -s -b /tmp/adm $B/admin/products/new | grep -o '<option value="[0-9]*"' | head -1 | grep -oE '[0-9]+')
