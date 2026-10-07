@@ -142,6 +142,12 @@ export function productForm(ctx, { p, categories }) {
         <option value="0" ${p && !p.active ? 'selected' : ''}>Hidden</option>
       </select>
     </label>
+    <label>Product type
+      <select name="digital">
+        <option value="1" ${!p || Number(p.digital) === 1 ? 'selected' : ''}>Digital account (no shipping, instant delivery)</option>
+        <option value="0" ${p && Number(p.digital) === 0 ? 'selected' : ''}>Physical item (shipping address + fee)</option>
+      </select>
+    </label>
     <label class="span2">Image URL<input name="image_url" value="${p ? esc(p.image_url) : ''}" placeholder="https://…"></label>
     <label class="span2">Description<textarea name="description" rows="4">${p ? esc(p.description) : ''}</textarea></label>
     <div class="span2">
@@ -211,6 +217,15 @@ export function orderDetail(ctx, { order, items, payments }) {
         <tr><td>${esc(pm.provider)}</td><td>${esc(pm.status)}</td><td><code>${esc(String(pm.ext_id || '').slice(0, 24))}</code></td><td>${esc(pm.updated_at.slice(0, 16).replace('T', ' '))}</td></tr>`).join('');
   return adminPage(ctx, `
 <h1>Order ${esc(order.order_number)} <span class="badge badge-${esc(order.status)}">${esc(order.status.replace(/_/g, ' '))}</span></h1>
+
+<div class="card">
+  <h2>Account details for the customer</h2>
+  <p class="muted small">Paste the account login/credentials here after the payment is confirmed. The customer sees this text on their order page straight away. Leave empty if there is nothing to hand over yet.</p>
+  <form action="/admin/orders/${order.id}/delivery" method="POST" class="form-grid">
+    <label class="span2">Account details<textarea name="delivery_text" rows="5" placeholder="Email: ...&#10;Password: ...&#10;Extra notes for the buyer">${esc(order.delivery_text || '')}</textarea></label>
+    <div class="span2"><button class="btn">Save account details</button></div>
+  </form>
+</div>
 
 <div class="verify-grid">
   <div class="card">

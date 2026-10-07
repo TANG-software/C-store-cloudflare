@@ -4,7 +4,7 @@ import { page } from './layout.js';
 
 const EU = ['NL', 'BE', 'DE', 'FR', 'LU', 'AT', 'IT', 'ES', 'PT', 'DK', 'SE', 'FI', 'IE', 'PL', 'CZ', 'SK', 'HU', 'SI', 'HR', 'EE', 'LV', 'LT', 'GR', 'RO', 'BG', 'CY', 'MT'];
 
-export function checkout(ctx, { user, details, methods, restricted }) {
+export function checkout(ctx, { user, details, methods, restricted, allDigital }) {
   const firstAvailable = (ms) => {
     const i = ms.findIndex((m) => m.available);
     return i === -1 ? -2 : i;
@@ -25,11 +25,13 @@ export function checkout(ctx, { user, details, methods, restricted }) {
   <form action="/checkout" method="POST" class="checkout-grid">
     <div>
       <div class="card">
-        <h2>Shipping details</h2>
+        <h2>${allDigital ? 'Your details' : 'Shipping details'}</h2>
+        ${allDigital ? '<p class="muted small">Digital delivery — no address needed. Your account details appear on the order page as soon as the payment is confirmed.</p>' : ''}
         <div class="form-grid">
-          <label>Full name<input name="ship_name" required value="${esc(user.name)}"></label>
+          <label>Full name<input name="ship_name" ${allDigital ? '' : 'required'} value="${esc(user.name)}"></label>
           <label>Email<input type="email" name="ship_email" required value="${esc(user.email)}" readonly class="muted-input"></label>
-          <label>Mobile number<input name="ship_phone" required value="${esc(user.phone)}" placeholder="+31 6 12345678"></label>
+          <label>Mobile number<input name="ship_phone" ${allDigital ? '' : 'required'} value="${esc(user.phone)}" placeholder="+31 6 12345678"></label>
+          ${allDigital ? '' : `
           <label>Address<input name="ship_address" required placeholder="Street and number"></label>
           <label>City<input name="ship_city" required></label>
           <label>Postal code<input name="ship_postal_code" required placeholder="1234 AB"></label>
@@ -38,7 +40,7 @@ export function checkout(ctx, { user, details, methods, restricted }) {
               <option value="NL" selected>🇳🇱 Netherlands</option>
               ${EU.filter((c) => c !== 'NL').map((c) => `<option value="${c}">${c}</option>`).join('')}
             </select>
-          </label>
+          </label>`}
         </div>
       </div>
 
@@ -53,7 +55,7 @@ export function checkout(ctx, { user, details, methods, restricted }) {
       <h2>Order summary</h2>
       ${details.items.map((it) => `<div class="row"><span>${it.qty}× ${esc(it.product.name)}</span><span>€${(it.line_total / 100).toFixed(2)}</span></div>`).join('')}
       <div class="row"><span>Subtotal</span><span>€${(details.subtotal / 100).toFixed(2)}</span></div>
-      <div class="row muted"><span>Shipping</span><span>NL €${(Number(ctx.settings.shipping_nl_cents) / 100).toFixed(2)} · EU €${(Number(ctx.settings.shipping_eu_cents) / 100).toFixed(2)} · free over €${(Number(ctx.settings.free_shipping_threshold_cents) / 100).toFixed(2)}</span></div>
+      ${allDigital ? `<div class="row muted"><span>Delivery</span><span>Instant — digital</span></div>` : `<div class="row muted"><span>Shipping</span><span>NL €${(Number(ctx.settings.shipping_nl_cents) / 100).toFixed(2)} · EU €${(Number(ctx.settings.shipping_eu_cents) / 100).toFixed(2)} · free over €${(Number(ctx.settings.free_shipping_threshold_cents) / 100).toFixed(2)}</span></div>`}
       <button type="submit" class="btn btn-lg btn-block">Continue to payment</button>
     </aside>
   </form>
@@ -146,6 +148,17 @@ export function orderStatus(ctx, { order, items }) {
     <p class="muted">Order <strong>${esc(order.order_number)}</strong> · placed ${esc(order.created_at.slice(0, 16).replace('T', ' '))}</p>
     <span class="badge badge-${esc(order.status)}">${esc(order.status.replace(/_/g, ' '))}</span>
   </div>
+
+  ${order.delivery_text && String(order.delivery_text).trim() ? `
+  <div class="card">
+    <h2>Your account details</h2>
+    <p class="muted small">Keep these safe — this is the account you bought.</p>
+    <pre style="white-space:pre-wrap;word-break:break-word;background:#0a0a10;border:1px solid var(--line);border-radius:10px;padding:12px;font-size:0.88rem">${esc(String(order.delivery_text))}</pre>
+  </div>` : `
+  <div class="card">
+    <h2>Your account details</h2>
+    <p class="muted">These appear here as soon as your payment is confirmed and the account is handed over. If you have just paid, refresh this page in a moment.</p>
+  </div>`}
 
   <div class="card">
     <h2>Items</h2>

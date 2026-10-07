@@ -41,7 +41,8 @@ CREATE TABLE IF NOT EXISTS products (
   stock INTEGER NOT NULL DEFAULT 0,
   image_url TEXT NOT NULL DEFAULT '',
   active INTEGER NOT NULL DEFAULT 1,
-  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  digital INTEGER NOT NULL DEFAULT 1
 );
 CREATE TABLE IF NOT EXISTS orders (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -61,7 +62,8 @@ CREATE TABLE IF NOT EXISTS orders (
   ship_postal_code TEXT NOT NULL,
   ship_country TEXT NOT NULL DEFAULT 'NL',
   txid TEXT,
-  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  delivery_text TEXT NOT NULL DEFAULT ''
 );
 CREATE TABLE IF NOT EXISTS order_items (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -232,6 +234,15 @@ async function ensureUpgrades(c) {
   const row = await c.env.DB.prepare("SELECT sql FROM sqlite_master WHERE type='table' AND name='products'").first();
   if (row && row.sql && !/payment_methods/i.test(row.sql)) {
     await c.env.DB.prepare("ALTER TABLE products ADD COLUMN payment_methods TEXT NOT NULL DEFAULT ''").run();
+  }
+  // products.digital — digital goods (accounts) skip shipping at checkout
+  if (row && row.sql && !/\bdigital\b/i.test(row.sql)) {
+    await c.env.DB.prepare("ALTER TABLE products ADD COLUMN digital INTEGER NOT NULL DEFAULT 1").run();
+  }
+  // orders.delivery_text — the account details handed to the buyer
+  const orow = await c.env.DB.prepare("SELECT sql FROM sqlite_master WHERE type='table' AND name='orders'").first();
+  if (orow && orow.sql && !/delivery_text/i.test(orow.sql)) {
+    await c.env.DB.prepare("ALTER TABLE orders ADD COLUMN delivery_text TEXT NOT NULL DEFAULT ''").run();
   }
 }
 

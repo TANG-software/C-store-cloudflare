@@ -77,13 +77,14 @@ admin.post('/products/save', async (c) => {
   const price = Math.round(Number(String(b.price_eur || '0').replace(',', '.')) * 100);
   const slug = slugify(b.name);
   const paymentMethods = [].concat(b.payment_methods || []).join(',');
+  const digital = b.digital === '1' ? 1 : 0;
   if (b.id) {
-    await q.run(c, `UPDATE products SET category_id = ?, name = ?, slug = ?, description = ?, price_cents = ?, stock = ?, image_url = ?, active = ?, payment_methods = ? WHERE id = ?`,
-      Number(b.category_id), String(b.name), slug, String(b.description || ''), price, Number(b.stock) || 0, String(b.image_url || ''), b.active === '1' ? 1 : 0, paymentMethods, Number(b.id));
+    await q.run(c, `UPDATE products SET category_id = ?, name = ?, slug = ?, description = ?, price_cents = ?, stock = ?, image_url = ?, active = ?, payment_methods = ?, digital = ? WHERE id = ?`,
+      Number(b.category_id), String(b.name), slug, String(b.description || ''), price, Number(b.stock) || 0, String(b.image_url || ''), b.active === '1' ? 1 : 0, paymentMethods, digital, Number(b.id));
     await flash(c, 'success', 'Product updated.');
   } else {
-    await q.run(c, `INSERT INTO products(category_id, name, slug, description, price_cents, stock, image_url, active, payment_methods) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      Number(b.category_id), String(b.name), slug + '-' + Date.now().toString(36).slice(-4), String(b.description || ''), price, Number(b.stock) || 0, String(b.image_url || ''), b.active === '1' ? 1 : 0, paymentMethods);
+    await q.run(c, `INSERT INTO products(category_id, name, slug, description, price_cents, stock, image_url, active, payment_methods, digital) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      Number(b.category_id), String(b.name), slug + '-' + Date.now().toString(36).slice(-4), String(b.description || ''), price, Number(b.stock) || 0, String(b.image_url || ''), b.active === '1' ? 1 : 0, paymentMethods, digital);
     await flash(c, 'success', 'Product created.');
   }
   return c.redirect('/admin/products');
@@ -128,6 +129,13 @@ admin.get('/orders/:id', async (c) => {
   const items = await q.all(c, 'SELECT * FROM order_items WHERE order_id = ?', order.id);
   const payments = await q.all(c, 'SELECT * FROM payments WHERE order_id = ? ORDER BY id DESC', order.id);
   return c.html(views.orderDetail(c.get('ctx'), { order, items, payments }));
+});
+
+admin.post('/orders/:id/delivery', async (c) => {
+  const b = await c.req.parseBody();
+  await q.run(c, 'UPDATE orders SET delivery_text = ? WHERE id = ?', String(b.delivery_text || ''), Number(c.req.param('id')));
+  await flash(c, 'success', 'Account details saved — the customer can see them on their order page.');
+  return c.redirect('/admin/orders/' + c.req.param('id'));
 });
 
 admin.post('/orders/:id/status', async (c) => {

@@ -32,7 +32,8 @@ checkout.get('/checkout', async (c) => {
     await flash(c, 'error', restricted ? 'No available payment method is allowed for the products in your cart — please remove them or contact us.' : 'No payment method is configured yet — please check back soon.');
     return c.redirect('/cart');
   }
-  return c.html(views.checkout(c.get('ctx'), { user, details, methods, restricted }));
+  const allDigital = details.items.every((it) => Number(it.product.digital) === 1);
+  return c.html(views.checkout(c.get('ctx'), { user, details, methods, restricted, allDigital }));
 });
 
 checkout.post('/checkout', async (c) => {
@@ -61,19 +62,24 @@ checkout.post('/checkout', async (c) => {
   for (const it of details.items) {
     if (it.qty > it.product.stock) { await flash(c, 'error', `Only ${it.product.stock} × ${it.product.name} left in stock.`); return c.redirect('/cart'); }
   }
+  // Digital (account) products need no address and no shipping fee.
+  const allDigital = details.items.every((it) => Number(it.product.digital) === 1);
   const shipping = b.ship_country === 'NL'
     ? Number(settings.shipping_nl_cents)
     : Number(settings.shipping_eu_cents);
   const free = Number(settings.free_shipping_threshold_cents);
-  const shippingCents = details.subtotal >= free ? 0 : shipping;
+  const shippingCents = allDigital ? 0 : (details.subtotal >= free ? 0 : shipping);
 
   const orderNumber = makeOrderNumber();
   const r = await q.run(c,
     `INSERT INTO orders(order_number, user_id, payment_method, subtotal_cents, shipping_cents, total_cents, ship_name, ship_email, ship_phone, ship_address, ship_city, ship_postal_code, ship_country)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     orderNumber, user.id, method, details.subtotal, shippingCents, details.subtotal + shippingCents,
-    String(b.ship_name || ''), String(b.ship_email || user.email), String(b.ship_phone || user.phone),
-    String(b.ship_address || ''), String(b.ship_city || ''), String(b.ship_postal_code || ''), String(b.ship_country || 'NL'));
+    String(b.ship_name || user.name || ''), String(b.ship_email || user.email), String(b.ship_phone || user.phone || ''),
+    allDigital ? 'Digital delivery' : String(b.ship_address || ''),
+    allDigital ? '-' : String(b.ship_city || ''),
+    allDigital ? '-' : String(b.ship_postal_code || ''),
+    allDigital ? 'NL' : String(b.ship_country || 'NL'));
   const orderId = r.meta?.last_row_id;
   for (const it of details.items) {
     await q.run(c, 'INSERT INTO order_items(order_id, product_id, name, price_cents, qty) VALUES (?, ?, ?, ?, ?)', orderId, it.product.id, it.product.name, it.product.price_cents, it.qty);
