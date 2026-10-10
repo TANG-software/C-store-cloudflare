@@ -11,7 +11,7 @@ checkout.get('/checkout', async (c) => {
   if (!sess.uid) return c.redirect('/login?next=/checkout');
   const user = await q.first(c, 'SELECT * FROM users WHERE id = ?', sess.uid);
   if (!user) return c.redirect('/login');
-  if (!user.email_verified) { await flash(c, 'error', 'Please verify your email address before placing an order — it only takes a minute.'); return c.redirect('/verify'); }
+  if (String(c.get('ctx').settings.require_email_verification || '1') !== '0' && !user.email_verified) { await flash(c, 'error', 'Please verify your email address before placing an order — it only takes a minute.'); return c.redirect('/verify'); }
   const details = await c.get('helpers').cartDetails(c);
   if (!details.items.length) return c.redirect('/cart');
 
@@ -40,7 +40,8 @@ checkout.post('/checkout', async (c) => {
   const sess = c.get('session');
   if (!sess.uid) return c.redirect('/login?next=/checkout');
   const user = await q.first(c, 'SELECT * FROM users WHERE id = ?', sess.uid);
-  if (!user || !user.email_verified) return c.redirect('/verify');
+  const needVerify = String(c.get('ctx').settings.require_email_verification || '1') !== '0';
+  if (!user || (needVerify && !user.email_verified)) return c.redirect(needVerify ? '/verify' : '/login');
   const b = await c.req.parseBody();
   const method = String(b.payment_method || '');
   const settings = c.get('ctx').settings;

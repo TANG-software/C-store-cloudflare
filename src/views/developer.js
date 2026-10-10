@@ -10,7 +10,8 @@ const esc = (s) => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</
 
 export function dashboard(ctx, d) {
   const { totals, thisMonth, months, methods, recentOrders, recentUsers, counts,
-          salesByProduct, allOrders, allUsers, lowStock, pendingValue, avgOrder, adsOn, adFlags, allAccounts } = d;
+          salesByProduct, allOrders, allUsers, lowStock, pendingValue, avgOrder, adsOn, adFlags, allAccounts, setup } = d;
+  const st = setup || {};
   const af = adFlags || {};
 
   const shareThisMonth = Math.round(thisMonth.revenue * SHARE_PCT / 100);
@@ -62,6 +63,27 @@ export function dashboard(ctx, d) {
   <div class="card stat"><span class="stat-num">${counts.orders}</span><span class="muted">Orders (all)</span></div>
   <div class="card stat"><span class="stat-num">${counts.pending}</span><span class="muted">Pending orders (${eur(pendingValue)})</span></div>
   <div class="card stat"><span class="stat-num">${eur(avgOrder)}</span><span class="muted">Average order value</span></div>
+</div>
+
+<div class="card">
+  <h2>Store setup — what is still missing</h2>
+  <p class="muted small">Do these yourself from this owner account — the client does not need to do anything technical. Green = done, red = still to do.</p>
+  <table class="table">
+    <tr><td>Products in the shop</td><td>${st.products ? `<strong style="color:#30a46c">✓ ${st.products} products</strong>` : '<strong style="color:#e5484d">✗ no products yet</strong> — Admin → Products'}</td></tr>
+    <tr><td>Crypto wallets (no account needed)</td><td>${st.wallets ? '<strong style="color:#30a46c">✓ set</strong>' : '<strong style="color:#e5484d">✗ not set</strong> — Admin → Payments → Wallets'}</td></tr>
+    <tr><td>Email key (free Resend account)</td><td>${st.emailKey ? '<strong style="color:#30a46c">✓ set</strong>' : '<strong style="color:#e5484d">✗ not set</strong> — needed for verification emails'}</td></tr>
+    <tr><td>PayPal (client's own account)</td><td>${st.paypal ? '<strong style="color:#30a46c">✓ set</strong>' : '<strong style="color:#e5484d">✗ not set</strong> — optional, add when ready'}</td></tr>
+  </table>
+  <form action="/developer/settings" method="POST" class="form-grid" style="margin-top:12px">
+    <label class="span2">Require email verification before ordering
+      <select name="require_email_verification">
+        <option value="1" ${st.verifyOn ? 'selected' : ''}>On — customers must verify (needs the email key)</option>
+        <option value="0" ${!st.verifyOn ? 'selected' : ''}>Off — customers can order right away (no email key needed)</option>
+      </select>
+    </label>
+    <div class="span2"><button class="btn">Save</button></div>
+  </form>
+  <p class="muted small" style="margin-top:10px">If you turn verification OFF, the shop can take real orders today with only wallet addresses — no email account needed. Turn it back on once the client has his Resend key.</p>
 </div>
 
 <div class="card">

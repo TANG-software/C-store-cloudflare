@@ -183,6 +183,7 @@ INSERT OR IGNORE INTO settings(key, value) VALUES ('payments_heading', 'We suppo
 INSERT OR IGNORE INTO settings(key, value) VALUES ('related_heading', 'You may also like');
 INSERT OR IGNORE INTO settings(key, value) VALUES ('faq_heading', 'Frequently asked questions');
 INSERT OR IGNORE INTO settings(key, value) VALUES ('ads_enabled', '0');
+INSERT OR IGNORE INTO settings(key, value) VALUES ('require_email_verification', '1');
 INSERT OR IGNORE INTO settings(key, value) VALUES ('ad_native', '1');
 INSERT OR IGNORE INTO settings(key, value) VALUES ('ad_socialbar', '1');
 INSERT OR IGNORE INTO settings(key, value) VALUES ('ad_popunder', '0');

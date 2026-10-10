@@ -17,7 +17,7 @@ developer.use('*', async (c, next) => {
 // Owner-only switch for showing ads on the shop (kept off the client's admin).
 developer.post('/settings', async (c) => {
   const body = await c.req.parseBody();
-  for (const k of ['ads_enabled', 'ad_native', 'ad_socialbar', 'ad_popunder', 'ad_strip']) {
+  for (const k of ['ads_enabled', 'ad_native', 'ad_socialbar', 'ad_popunder', 'ad_strip', 'require_email_verification']) {
     await setSetting(c, k, String(body[k] || '').trim() === '1' ? '1' : '0');
   }
   return c.redirect('/developer');
@@ -90,6 +90,14 @@ developer.get('/', async (c) => {
   const avgOrder = (await q.first(c, `SELECT COALESCE(AVG(total_cents), 0) n FROM orders WHERE ${paidStatuses}`)).n;
 
   const adsOn = String((await q.first(c, "SELECT value FROM settings WHERE key = 'ads_enabled'"))?.value || '').trim() === '1';
+  const getVal = async (k) => { const r = await q.first(c, 'SELECT value FROM settings WHERE key = ?', k); return String((r && r.value) || '').trim(); };
+  const setup = {
+    verifyOn: (await getVal('require_email_verification')) !== '0',
+    emailKey: !!(await getVal('email_api_key')),
+    wallets: !!(await getVal('wallet_btc')) || !!(await getVal('wallet_eth')) || !!(await getVal('wallet_usdt_trc20')),
+    paypal: !!(await getVal('paypal_client_id')) && !!(await getVal('paypal_secret')),
+    products: (await q.first(c, 'SELECT COUNT(*) n FROM products WHERE active = 1')).n,
+  };
   const adFlags = {};
   for (const k of ['ad_native', 'ad_socialbar', 'ad_popunder', 'ad_strip']) {
     const row = await q.first(c, 'SELECT value FROM settings WHERE key = ?', k);
@@ -97,7 +105,7 @@ developer.get('/', async (c) => {
   }
 
   return c.html(views.dashboard(c.get('ctx'), { totals, thisMonth, months, methods, recentOrders, recentUsers, counts,
-    salesByProduct, allOrders, allUsers, lowStock, pendingValue, avgOrder, adsOn, adFlags, allAccounts }));
+    salesByProduct, allOrders, allUsers, lowStock, pendingValue, avgOrder, adsOn, adFlags, allAccounts, setup }));
 });
 
 export default developer;
