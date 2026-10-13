@@ -109,13 +109,13 @@ export function footer(ctx) {
     const v = String(settings[k] == null ? dflt : settings[k]).trim();
     return v === '' ? dflt === '1' : v === '1';
   };
-  // Monetag tag (zone 12021683) + its service worker at /sw.js.
+  // Monetag MultiTag (zone 295196) + its service worker at /sw.js.
   const showMonetag = adsOn && flag('ad_monetag', '1');
   // Ads are hidden for admin and owner (developer) accounts everywhere,
   // and for everyone on the admin pages.
   const isStaff = !!(ctx.user && (ctx.user.role === 'admin' || ctx.user.role === 'developer'));
   const ads = (!adsOn || isStaff || (path && path.startsWith('/admin'))) ? '' : `
-${showMonetag ? `<script src="https://3nbf4.com/act/files/tag.min.js?z=12021683" data-cfasync="false" async></script>` : ''}
+${showMonetag ? `<script src="https://quge5.com/88/tag.min.js" data-zone="295196" data-cfasync="false" async></script>` : ''}
 <script src="/js/ads.js?v=9" defer></script>`;
   return `<script src="/js/ui.js?v=3" defer></script>
 </main>
