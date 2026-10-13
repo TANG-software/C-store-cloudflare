@@ -96,10 +96,16 @@ export function dashboard(ctx, d) {
         <option value="1" ${adsOn ? 'selected' : ''}>ON — ads run (per format below)</option>
       </select>
     </label>
-    <label class="span2">Monetag MultiTag (zone 295196 — in-page push / vignette / popunder)
+    <label>Monetag MultiTag (zone 295196 — in-page push / popunder)
       <select name="ad_monetag">
         <option value="1" ${af.ad_monetag ? 'selected' : ''}>On</option>
         <option value="0" ${!af.ad_monetag ? 'selected' : ''}>Off</option>
+      </select>
+    </label>
+    <label>Monetag vignette banner (zone 12023087)
+      <select name="ad_vignette">
+        <option value="1" ${af.ad_vignette ? 'selected' : ''}>On</option>
+        <option value="0" ${!af.ad_vignette ? 'selected' : ''}>Off</option>
       </select>
     </label>
     <div class="span2"><button class="btn">Save ads settings</button></div>
