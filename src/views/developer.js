@@ -102,7 +102,13 @@ export function dashboard(ctx, d) {
         <option value="0" ${!af.ad_monetag ? 'selected' : ''}>Off</option>
       </select>
     </label>
-    <label>Monetag vignette banner (zone 12023087)
+    <label>Monetag top banner (zone 12023625 — shows at the top of the page)
+      <select name="ad_topbanner">
+        <option value="1" ${af.ad_topbanner ? 'selected' : ''}>On</option>
+        <option value="0" ${!af.ad_topbanner ? 'selected' : ''}>Off</option>
+      </select>
+    </label>
+    <label>Monetag vignette (zone 12023087 — full-page, max once per 10 min)
       <select name="ad_vignette">
         <option value="1" ${af.ad_vignette ? 'selected' : ''}>On</option>
         <option value="0" ${!af.ad_vignette ? 'selected' : ''}>Off</option>

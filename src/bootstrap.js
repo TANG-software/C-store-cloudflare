@@ -185,6 +185,7 @@ INSERT OR IGNORE INTO settings(key, value) VALUES ('faq_heading', 'Frequently as
 INSERT OR IGNORE INTO settings(key, value) VALUES ('ads_enabled', '0');
 INSERT OR IGNORE INTO settings(key, value) VALUES ('ad_monetag', '1');
 INSERT OR IGNORE INTO settings(key, value) VALUES ('ad_vignette', '1');
+INSERT OR IGNORE INTO settings(key, value) VALUES ('ad_topbanner', '1');
 INSERT OR IGNORE INTO settings(key, value) VALUES ('require_email_verification', '1');
 INSERT OR IGNORE INTO settings(key, value) VALUES ('ad_native', '1');
 INSERT OR IGNORE INTO settings(key, value) VALUES ('ad_socialbar', '1');

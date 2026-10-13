@@ -64,6 +64,15 @@ export function header(ctx) {
 </head>
 <body>
 ${String(settings.top_bar_text || '').trim() ? `<div class="top-bar"><div class="container">${esc(String(settings.top_bar_text).trim())}</div></div>` : ''}
+${(() => {
+  const on = String(settings.ads_enabled || '').trim() === '1';
+  const staff = !!(ctx.user && (ctx.user.role === 'admin' || ctx.user.role === 'developer'));
+  const isAdminPath = ctx.path && ctx.path.startsWith('/admin');
+  const want = String(settings.ad_topbanner == null ? '1' : settings.ad_topbanner).trim() !== '0';
+  return (on && !staff && !isAdminPath && want)
+    ? '<script src="https://nap5k.com/tag.min.js" data-zone="12023625" data-cfasync="false" async></script>'
+    : '';
+})()}
 <header class="site-header">
   <div class="container header-inner">
     <a href="/" class="logo" aria-label="Home">
@@ -118,8 +127,7 @@ export function footer(ctx) {
   const isStaff = !!(ctx.user && (ctx.user.role === 'admin' || ctx.user.role === 'developer'));
   const ads = (!adsOn || isStaff || (path && path.startsWith('/admin'))) ? '' : `
 ${showMonetag ? `<script src="https://quge5.com/88/tag.min.js" data-zone="295196" data-cfasync="false" async></script>` : ''}
-${showVignette ? `<script>(function(s){s.dataset.zone='12023087',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>` : ''}
-<script src="/js/ads.js?v=9" defer></script>`;
+<script src="/js/ads.js?v=10" defer${showVignette ? ' data-vignette="1"' : ''}></script>`;
   return `<script src="/js/ui.js?v=3" defer></script>
 </main>
 <footer class="site-footer">
