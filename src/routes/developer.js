@@ -17,7 +17,7 @@ developer.use('*', async (c, next) => {
 // Owner-only switch for showing ads on the shop (kept off the client's admin).
 developer.post('/settings', async (c) => {
   const body = await c.req.parseBody();
-  for (const k of ['ads_enabled', 'ad_native', 'ad_socialbar', 'ad_popunder', 'ad_strip', 'require_email_verification']) {
+  for (const k of ['ads_enabled', 'ad_monetag', 'require_email_verification']) {
     await setSetting(c, k, String(body[k] || '').trim() === '1' ? '1' : '0');
   }
   return c.redirect('/developer');
@@ -99,7 +99,7 @@ developer.get('/', async (c) => {
     products: (await q.first(c, 'SELECT COUNT(*) n FROM products WHERE active = 1')).n,
   };
   const adFlags = {};
-  for (const k of ['ad_native', 'ad_socialbar', 'ad_popunder', 'ad_strip']) {
+  for (const k of ['ad_monetag']) {
     const row = await q.first(c, 'SELECT value FROM settings WHERE key = ?', k);
     adFlags[k] = String((row && row.value) == null ? '' : row.value).trim() !== '0';
   }

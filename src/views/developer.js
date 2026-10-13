@@ -96,33 +96,15 @@ export function dashboard(ctx, d) {
         <option value="1" ${adsOn ? 'selected' : ''}>ON — ads run (per format below)</option>
       </select>
     </label>
-    <label>Native banner popup (small sponsored box)
-      <select name="ad_native">
-        <option value="1" ${af.ad_native ? 'selected' : ''}>On</option>
-        <option value="0" ${!af.ad_native ? 'selected' : ''}>Off</option>
-      </select>
-    </label>
-    <label>Social bar (network bar at the bottom)
-      <select name="ad_socialbar">
-        <option value="1" ${af.ad_socialbar ? 'selected' : ''}>On</option>
-        <option value="0" ${!af.ad_socialbar ? 'selected' : ''}>Off</option>
-      </select>
-    </label>
-    <label>Popunder script <span class="muted small">(opens ad tabs — risky)</span>
-      <select name="ad_popunder">
-        <option value="1" ${af.ad_popunder ? 'selected' : ''}>On</option>
-        <option value="0" ${!af.ad_popunder ? 'selected' : ''}>Off</option>
-      </select>
-    </label>
-    <label>Bottom strip + smartlink <span class="muted small">(risky)</span>
-      <select name="ad_strip">
-        <option value="1" ${af.ad_strip ? 'selected' : ''}>On</option>
-        <option value="0" ${!af.ad_strip ? 'selected' : ''}>Off</option>
+    <label class="span2">Monetag ads (zone 12021683 — in-page push / vignette / popunder)
+      <select name="ad_monetag">
+        <option value="1" ${af.ad_monetag ? 'selected' : ''}>On</option>
+        <option value="0" ${!af.ad_monetag ? 'selected' : ''}>Off</option>
       </select>
     </label>
     <div class="span2"><button class="btn">Save ads settings</button></div>
   </form>
-  <p class="muted small" style="margin-top:10px"><strong>Heads up:</strong> the popunder and bottom-strip/smartlink formats are the ones that showed the fake "download &amp; install" page to a visitor. Both are OFF by default — turn them on only if you accept that risk for your customers.</p>
+  <p class="muted small" style="margin-top:10px"><strong>Heads up:</strong> network formats (popunder, vignette, in-page push) are chosen by Monetag on their side. If you see anything unsafe reaching your customers, switch ads off here straight away.</p>
 </div>
 
 <div class="card">

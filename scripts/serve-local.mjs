@@ -57,13 +57,13 @@ const server = http.createServer(async (req, res) => {
     }
     // serve everything else under public/ (images, icons, etc.) like the
     // production assets binding does
-    const staticMatch = /^\/(img\/|favicon\.png|apple-touch-icon\.png|og-logo\.png)/.test(req.url);
+    const staticMatch = /^\/(img\/|favicon\.png|apple-touch-icon\.png|og-logo\.png|sw\.js|ads\.txt)/.test(req.url);
     if (staticMatch) {
       try {
         const p = new URL('../public' + req.url.split('?')[0], import.meta.url);
         const buf = fs.readFileSync(p);
         const ext = p.pathname.split('.').pop().toLowerCase();
-        const types = { png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', svg: 'image/svg+xml', webp: 'image/webp', ico: 'image/x-icon' };
+        const types = { png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', svg: 'image/svg+xml', webp: 'image/webp', ico: 'image/x-icon', js: 'application/javascript', txt: 'text/plain' };
         res.writeHead(200, { 'Content-Type': types[ext] || 'application/octet-stream', 'Cache-Control': 'public, max-age=3600' });
         return res.end(buf);
       } catch (e) {

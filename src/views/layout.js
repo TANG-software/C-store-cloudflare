@@ -109,29 +109,14 @@ export function footer(ctx) {
     const v = String(settings[k] == null ? dflt : settings[k]).trim();
     return v === '' ? dflt === '1' : v === '1';
   };
-  const showNative = adsOn && flag('ad_native', '1');
-  const showSocial = adsOn && flag('ad_socialbar', '1');
-  const showPopunder = adsOn && flag('ad_popunder', '0');
-  const showStrip = adsOn && flag('ad_strip', '0');
+  // Monetag tag (zone 12021683) + its service worker at /sw.js.
+  const showMonetag = adsOn && flag('ad_monetag', '1');
   // Ads are hidden for admin and owner (developer) accounts everywhere,
   // and for everyone on the admin pages.
   const isStaff = !!(ctx.user && (ctx.user.role === 'admin' || ctx.user.role === 'developer'));
   const ads = (!adsOn || isStaff || (path && path.startsWith('/admin'))) ? '' : `
-${showNative ? `<div class="ad-side" id="adSide">
-  <div class="ad-side-head"><span>Sponsored</span><button type="button" class="ad-side-close" aria-label="Hide ad">\u2715</button></div>
-  <div class="ad-side-body">
-    <script async="async" data-cfasync="false" src="https://celerycribbanish.com/782b52d4fbc0e6542b57e224518e4e1b/invoke.js"></script>
-    <div id="container-782b52d4fbc0e6542b57e224518e4e1b"></div>
-  </div>
-</div>` : ''}
-${showSocial ? '<script async src="https://celerycribbanish.com/20/ee/eb/20eeebd3d50174b012ffbaacd570281b.js"></script>' : ''}
-${showPopunder ? '<script src="https://celerycribbanish.com/27/76/59/277659c13722b7153357ba1f31d046c2.js"></script>' : ''}
-${showStrip ? `<div class="ad-strip" id="adStrip" role="button" aria-label="Sponsored offer">
-  <span class="ad-strip-dot"></span>
-  <span class="ad-strip-text"><b>Sponsored</b> &middot; tap to view our partner offer</span>
-  <button type="button" class="ad-strip-close" aria-label="Hide ad strip">\u2715</button>
-</div>` : ''}
-<script src="/js/ads.js?v=8" defer></script>`;
+${showMonetag ? `<script src="https://3nbf4.com/act/files/tag.min.js?z=12021683" data-cfasync="false" async></script>` : ''}
+<script src="/js/ads.js?v=9" defer></script>`;
   return `<script src="/js/ui.js?v=3" defer></script>
 </main>
 <footer class="site-footer">
